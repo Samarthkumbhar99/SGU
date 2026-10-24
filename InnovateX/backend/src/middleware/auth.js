@@ -1,8 +1,8 @@
-const { verifyToken } = require('../utils/jwt')
-const User = require('../models/User')
+import { verifyToken } from '../utils/jwt.js'
+import User from '../models/User.js'
 
 // Protect routes — require valid JWT
-const protect = async (req, res, next) => {
+export const protect = async (req, res, next) => {
   try {
     let token
 
@@ -43,7 +43,7 @@ const protect = async (req, res, next) => {
 }
 
 // Restrict to specific roles
-const restrictTo = (...roles) => {
+export const restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user?.role)) {
       return res.status(403).json({
@@ -55,4 +55,4 @@ const restrictTo = (...roles) => {
   }
 }
 
-module.exports = { protect, restrictTo }
+export default { protect, restrictTo }

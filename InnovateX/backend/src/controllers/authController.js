@@ -1,8 +1,10 @@
-const { z } = require('zod')
-const mongoose = require('mongoose')
-const User = require('../models/User')
-const { generateToken } = require('../utils/jwt')
-const { OAuth2Client } = require('google-auth-library')
+import { z } from 'zod'
+import mongoose from 'mongoose'
+import User from '../models/User.js'
+import { generateToken } from '../utils/jwt.js'
+import { OAuth2Client } from 'google-auth-library'
+import env from '../config/env.js'
+import logger from '../utils/logger.js'
 
 // Helper to get OAuth client with up-to-date environment variables
 const getGoogleClient = () => {
@@ -414,7 +416,17 @@ const getMe = async (req, res) => {
   res.json({ success: true, user: req.user.toSafeJSON ? req.user.toSafeJSON() : req.user })
 }
 
-module.exports = {
+export {
+  signup,
+  login,
+  googleAuth,
+  googleExchangeCode,
+  googleRedirect,
+  googleCallback,
+  getMe,
+}
+
+export default {
   signup,
   login,
   googleAuth,

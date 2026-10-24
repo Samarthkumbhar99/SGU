@@ -1,67 +1,104 @@
-const express = require('express')
-const cors = require('cors')
-const helmet = require('helmet')
-const morgan = require('morgan')
-const cookieParser = require('cookie-parser')
+import express from 'express'
+import cors from 'cors'
+import helmet from 'helmet'
+import cookieParser from 'cookie-parser'
+import rateLimit from 'express-rate-limit'
+import pinoHttp from 'pino-http'
+import { randomUUID } from 'crypto'
 
-const authRoutes = require('./routes/authRoutes')
-const dashboardRoutes = require('./routes/dashboardRoutes')
-const { errorHandler, notFound } = require('./middleware/errorHandler')
+import env from './config/env.js'
+import logger from './utils/logger.js'
+import setupSwagger from './config/swagger.js'
+import healthRoutes from './routes/healthRoutes.js'
+import authRoutes from './routes/authRoutes.js'
+import dashboardRoutes from './routes/dashboardRoutes.js'
+import { errorHandler, notFound } from './middleware/errorHandler.js'
 
 const app = express()
 
-// ——— Security ———
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
-}))
+// ——— Correlation ID Middleware ———
+app.use((req, res, next) => {
+  const correlationId = req.headers['x-correlation-id'] || req.headers['x-request-id'] || randomUUID()
+  req.correlationId = correlationId
+  res.setHeader('x-correlation-id', correlationId)
+  next()
+})
+
+// ——— Security: Helmet ———
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    contentSecurityPolicy: env.NODE_ENV === 'production' ? undefined : false,
+  })
+)
+
+// ——— Security: Rate Limiting ———
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: env.NODE_ENV === 'test' ? 10000 : 300, // Max 300 requests per 15 mins
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again after 15 minutes.',
+  },
+})
+app.use('/api/', limiter)
 
 // ——— CORS ———
 const allowedOrigins = [
-  process.env.FRONTEND_URL || 'http://localhost:5173',
+  env.FRONTEND_URL,
+  'http://localhost:5173',
   'http://localhost:5174',
+  ...(env.CORS_ORIGIN ? env.CORS_ORIGIN.split(',').map((s) => s.trim()) : []),
 ]
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. curl, mobile apps, same-origin)
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true)
-    } else {
-      callback(new Error(`CORS: origin '${origin}' not allowed.`))
-    }
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}))
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, mobile apps, same-origin)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error(`CORS: origin '${origin}' not allowed.`))
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-correlation-id', 'x-request-id'],
+  })
+)
 
 // ——— Body parsing ———
 app.use(express.json({ limit: '5mb' }))
 app.use(express.urlencoded({ extended: true, limit: '5mb' }))
 app.use(cookieParser())
 
-// ——— Logging ———
-if (process.env.NODE_ENV !== 'test') {
-  app.use(morgan('dev'))
+// ——— Structured HTTP Logging ———
+if (env.NODE_ENV !== 'test') {
+  app.use(
+    pinoHttp({
+      logger,
+      genReqId: (req) => req.correlationId,
+      customLogLevel: (req, res, err) => {
+        if (res.statusCode >= 500 || err) return 'error'
+        if (res.statusCode >= 400) return 'warn'
+        return 'info'
+      },
+    })
+  )
 }
 
-// ——— Health check ———
-app.get('/api/v1/health', (req, res) => {
-  res.json({
-    success: true,
-    status: 'ok',
-    service: 'supplychield-backend',
-    version: '1.0.0',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-  })
-})
+// ——— Swagger / OpenAPI Documentation ———
+setupSwagger(app)
 
 // ——— API Routes ———
+app.use('/api/v1/health', healthRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/dashboard', dashboardRoutes)
 
-// ——— 404 & Error handling ———
+// ——— 404 & Centralized Error handling ———
 app.use(notFound)
 app.use(errorHandler)
 
-module.exports = app
+export default app

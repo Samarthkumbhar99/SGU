@@ -1,13 +1,12 @@
-const express = require('express')
+import express from 'express'
+import { protect } from '../middleware/auth.js'
+
 const router = express.Router()
-const { protect } = require('../middleware/auth')
 
 // Dashboard summary endpoint
 // Returns aggregated KPIs from the network
 router.get('/summary', protect, async (req, res, next) => {
   try {
-    // In Phase 3 this will aggregate from Mongoose models.
-    // For Phase 1/2, return the demo synthetic dataset.
     const summary = {
       totalInventory: 284750,
       inventoryChange: 3.2,
@@ -31,4 +30,4 @@ router.get('/summary', protect, async (req, res, next) => {
   }
 })
 
-module.exports = router
+export default router
