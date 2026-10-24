@@ -29,48 +29,49 @@ import {
  */
 function OnboardingNavbar({ user, onSkip }) {
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-xs px-4 sm:px-8 py-3.5 flex items-center justify-between">
-      {/* Brand & Logo */}
-      <div className="flex items-center gap-3">
+    <header className="sticky top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-sky-100 shadow-xs px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
+      {/* Brand & Logo - Clean & Single-Line */}
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <img
           src="/logo.webp"
           alt="SupplyShield AI Logo"
-          className="w-9 h-9 object-contain rounded-xl shadow-xs border border-sky-100 p-0.5 bg-white"
+          className="w-8 h-8 sm:w-9 sm:h-9 object-contain rounded-xl shadow-xs border border-sky-100 p-0.5 bg-white shrink-0"
         />
-        <div className="flex items-center gap-2">
-          <span className="text-base font-extrabold tracking-tight text-slate-900">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 whitespace-nowrap">
             Supply<span className="text-sky-600">Shield</span> <span className="text-slate-900 font-extrabold">AI</span>
           </span>
-          <span className="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200">
+          <span className="hidden md:inline-block text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200 whitespace-nowrap">
             AI Setup & KYC
           </span>
         </div>
       </div>
 
       {/* Middle: Clean / Minimalist (NO OTHER NAVLINKS — only appear once in dashboard) */}
-      <div className="hidden md:flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+      <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 font-medium whitespace-nowrap">
         <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1" />
         <span>Live FMCG Calibration Channel</span>
       </div>
 
-      {/* Right: User identity & Skip for now button for general users */}
-      <div className="flex items-center gap-3">
+      {/* Right: User identity (desktop) & Skip button (compact single-line on mobile) */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         {user?.name && (
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100/80 border border-slate-200 text-xs font-semibold text-slate-700">
+          <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100/80 border border-slate-200 text-xs font-semibold text-slate-700 whitespace-nowrap">
             <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">
               {user.name.charAt(0).toUpperCase()}
             </span>
-            <span className="truncate max-w-[120px]">{user.name}</span>
+            <span className="truncate max-w-[100px]">{user.name}</span>
           </div>
         )}
 
         <button
           type="button"
           onClick={onSkip}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 hover:text-sky-800 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-xs"
+          className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 hover:text-sky-800 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-xs whitespace-nowrap shrink-0"
           title="Skip setup and proceed straight to dashboard with defaults"
         >
-          <span>Skip for now</span>
+          <span className="hidden sm:inline">Skip for now</span>
+          <span className="sm:hidden">Skip</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
