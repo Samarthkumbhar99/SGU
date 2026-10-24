@@ -251,14 +251,9 @@ export default function HeroAnimation() {
 
             {/* Robot Torso with Shield Matrix */}
             <div className="relative w-28 h-20 rounded-[24px] bg-gradient-to-b from-white to-sky-100 border-2 border-white shadow-md flex flex-col items-center justify-center p-2">
-              {/* Torso Screen: Shield Emblem */}
-              <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-200 flex flex-col items-center justify-center gap-1 shadow-inner">
-                <Shield className="w-5 h-5 text-sky-600 fill-sky-200/50" />
-                <div className="flex gap-1">
-                  <span className="w-1 h-1 rounded-full bg-emerald-500 animate-ping" />
-                  <span className="w-1 h-1 rounded-full bg-sky-400" />
-                  <span className="w-1 h-1 rounded-full bg-amber-400" />
-                </div>
+              {/* Torso Screen: SupplyShield Emblem */}
+              <div className="w-12 h-12 rounded-xl bg-sky-500/10 border border-sky-200 flex flex-col items-center justify-center p-1 shadow-inner overflow-hidden">
+                <img src="/logo.webp" alt="SupplyShield Logo" className="w-7 h-7 object-contain" />
               </div>
 
               {/* Arms */}
@@ -463,8 +458,8 @@ export default function HeroAnimation() {
           boxShadow: '0 15px 35px rgba(15, 23, 42, 0.35)',
         }}
       >
-        <div className="w-6 h-6 rounded-full overflow-hidden bg-gradient-to-tr from-sky-400 to-indigo-600 flex items-center justify-center text-white text-[10px] font-bold">
-          AI
+        <div className="w-6 h-6 rounded-full overflow-hidden bg-white flex items-center justify-center p-0.5 shadow-sm">
+          <img src="/logo.webp" alt="SupplyShield AI" className="w-full h-full object-contain" />
         </div>
         <span className="text-xs font-semibold pr-1">Ask SupplyShield…</span>
         <div className="w-5 h-5 rounded-full bg-slate-800 flex items-center justify-center text-slate-400">

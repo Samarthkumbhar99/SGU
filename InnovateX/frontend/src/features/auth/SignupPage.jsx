@@ -151,21 +151,18 @@ export default function SignupPage() {
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '480px', width: '100%' }}>
           {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '48px' }}>
-            <div
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '48px' }}>
+            <img
+              src="/logo.webp"
+              alt="SupplyShield AI Logo"
               style={{
                 width: '48px',
                 height: '48px',
-                borderRadius: '14px',
-                background: 'linear-gradient(135deg, #247bc1, #6ab0e1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 24px rgba(36,123,193,0.4)',
+                borderRadius: '12px',
+                objectFit: 'contain',
+                boxShadow: '0 8px 24px rgba(36,123,193,0.3)',
               }}
-            >
-              <Shield size={26} color="#fff" />
-            </div>
+            />
             <div>
               <div style={{ color: '#fff', fontWeight: 800, fontSize: '20px', lineHeight: 1.1 }}>
                 SupplyShield AI
@@ -193,7 +190,7 @@ export default function SignupPage() {
             intelligence.
           </h1>
 
-          <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '15px', lineHeight: 1.6, marginBottom: '40px' }}>
+          <p style={{ color: 'rgba(47, 44, 44, 0.65)', fontSize: '15px', lineHeight: 1.6, marginBottom: '40px' }}>
             Set up your organization's distribution command center and start optimizing in minutes.
           </p>
 
@@ -216,24 +213,6 @@ export default function SignupPage() {
               </div>
             ))}
           </div>
-
-          <div
-            style={{
-              padding: '12px 16px',
-              background: 'rgba(36,123,193,0.15)',
-              border: '1px solid rgba(36,123,193,0.25)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
-            <Zap size={14} color="#6ab0e1" style={{ flexShrink: 0 }} />
-            <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: '12px', lineHeight: 1.4 }}>
-              <strong style={{ color: '#6ab0e1' }}>No credit card required.</strong>{' '}
-              Free demo access with full optimization capabilities.
-            </span>
-          </div>
         </div>
       </div>
 
@@ -242,9 +221,16 @@ export default function SignupPage() {
         <div className="ss-auth-form-container animate-fade-in">
           {/* Mobile logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px', justifyContent: 'center' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #247bc1, #6ab0e1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Shield size={22} color="#fff" />
-            </div>
+            <img
+              src="/logo.webp"
+              alt="SupplyShield AI Logo"
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                objectFit: 'contain',
+              }}
+            />
             <div>
               <div style={{ fontWeight: 800, fontSize: '18px', color: '#17324d', lineHeight: 1 }}>SupplyShield AI</div>
               <div style={{ fontSize: '11px', color: '#64778b', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Distribution Intelligence</div>

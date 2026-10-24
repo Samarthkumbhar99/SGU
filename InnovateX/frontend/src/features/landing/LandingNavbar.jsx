@@ -25,10 +25,12 @@ export default function LandingNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-sky-400 flex items-center justify-center text-white shadow-md shadow-sky-500/25 group-hover:scale-105 transition-all">
-              <Shield className="w-5 h-5 fill-white/20 stroke-[2.5]" />
-            </div>
+          <Link to="/" className="flex items-center gap-3 group">
+            <img
+              src="/logo.webp"
+              alt="SupplyShield AI Logo"
+              className="w-10 h-10 object-contain rounded-xl shadow-sm group-hover:scale-105 transition-all"
+            />
             <div>
               <span className="text-xl font-extrabold tracking-tight text-slate-900 group-hover:text-sky-600 transition-colors">
                 Supply<span className="text-sky-600">Shield</span>

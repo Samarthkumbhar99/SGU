@@ -64,11 +64,6 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
             {/* Left Content Column */}
             <div className="lg:col-span-6 flex flex-col items-start">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-100/80 border border-sky-200 text-sky-800 text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-                <span className="w-2 h-2 rounded-full bg-sky-600 animate-pulse" />
-                Adaptive Distribution Intelligence
-              </div>
 
               {/* Main Headline (Clean, punchy, RELEX tone) */}
               <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold text-slate-900 tracking-tight leading-[1.12] mb-6">
@@ -271,8 +266,8 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div>
-              <div className="flex items-center gap-2 text-white font-extrabold text-base mb-4">
-                <Shield className="w-5 h-5 text-sky-400" />
+              <div className="flex items-center gap-2.5 text-white font-extrabold text-base mb-4">
+                <img src="/logo.webp" alt="SupplyShield AI Logo" className="w-6 h-6 object-contain rounded" />
                 <span>SupplyShield AI</span>
               </div>
               <p className="text-slate-500 leading-relaxed">
