@@ -119,7 +119,7 @@ sequenceDiagram
 | **P0** | **REQ-04** | **Hard Capacity & Dock Bounds** | Strict adherence: $\sum x \le \text{Stock}$ and $\sum \text{Volume} \le V_{\max}$. |
 | **P0** | **REQ-05** | **Residual Shortage Ledger** | Explicitly quantifies unmet demand when network supply is insufficient. |
 | **P1** | **REQ-06** | **Adaptive Disruption Engine** | Live scenario injection (depot outages, demand spikes +200%, closed lanes). |
-| **P1** | **REQ-07** | **Dynamic FEFO Expiry Rescue** | Enforces $(T_{\text{lead}} + T_p^{\min} < E_b)$; routes aging stock to fast stores. |
+| **P1** | **REQ-07** | **Dynamic FEFO Expiry Rescue** | Enforces $(T_{\text{lead}} + T_p^{\min} \lt E_b)$; routes aging stock to fast stores. |
 | **P1** | **REQ-08** | **Grounded Decision Rationale** | LLM explains decisions strictly citing mathematical solver deltas (temp = 0.0). |
 | **P1** | **REQ-09** | **Side-by-Side KPI Delta View** | Displays Baseline vs. Rescued Plan metrics across Cost, Service %, and Waste. |
 | **P2** | **REQ-10** | **One-Click Dispatch Export** | Exports RFC 4180 CSV / printable PDF dock picking slips. |
@@ -172,33 +172,33 @@ $$
 \min_{\mathbf{x}, \mathbf{u}} \quad \sum_{w,s,p,b} \left( c_{w,s}^{\text{trans}} + c_{w}^{\text{hand}} \right) x_{w,s,p,b} + \sum_{s,p} \rho_p^{\text{short}} u_{s,p} + \sum_{w,p,b} \omega_{p,b}^{\text{waste}} \mathbb{I}_{\text{exp}}(w,b)
 $$
 
-### Core Boundary Constraints:
+### Core Boundary Constraints
 
-1. **Source Stock Conservation (No Phantom Stock):**
-   $$
-   \sum_{s} x_{w,s,p,b} \le \text{Stock}_{w,p,b} \quad \forall w, p, b
-   $$
+#### 1. Source Stock Conservation (No Phantom Stock)
+$$
+\sum_{s} x_{w,s,p,b} \le \text{Stock}_{w,p,b} \quad \forall w, p, b
+$$
 
-2. **Demand Fulfillment & Shortage Reconciliation:**
-   $$
-   \sum_{w,b} x_{w,s,p,b} + u_{s,p} = D_{s,p} \quad \forall s, p
-   $$
+#### 2. Demand Fulfillment & Shortage Reconciliation
+$$
+\sum_{w,b} x_{w,s,p,b} + u_{s,p} = D_{s,p} \quad \forall s, p
+$$
 
-3. **Vehicle & Lane Volumetric Capacity:**
-   $$
-   \sum_{p,b} v_p \cdot x_{w,s,p,b} \le V_{w,s}^{\max} \quad \forall w, s
-   $$
+#### 3. Vehicle & Lane Volumetric Capacity
+$$
+\sum_{p,b} v_p \cdot x_{w,s,p,b} \le V_{w,s}^{\max} \quad \forall w, s
+$$
 
-4. **Dynamic FEFO Usable Shelf-Life Feasibility:**
-   $$
-   x_{w,s,p,b} = 0 \quad \text{if } \left( T_{w,s}^{\text{lead}} + T_p^{\min} \ge E_b \right)
-   $$
-   *(Strictly prevents dispatching inventory that will spoil before or during retail display)*
+#### 4. Dynamic FEFO Usable Shelf-Life Feasibility
+$$
+x_{w,s,p,b} = 0 \quad \text{if } \left( T_{w,s}^{\text{lead}} + T_p^{\min} \ge E_b \right)
+$$
+> *Strictly prevents dispatching inventory that will spoil before or during retail display.*
 
-5. **Disruption Route Invalidation Mask:**
-   $$
-   x_{w, s, p, b} = 0 \quad \forall (w, s) \in \text{DisabledLanes}
-   $$
+#### 5. Disruption Route Invalidation Mask
+$$
+x_{w, s, p, b} = 0 \quad \forall (w, s) \in \text{DisabledLanes}
+$$
 
 ---
 
