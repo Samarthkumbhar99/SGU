@@ -68,22 +68,19 @@ export function Sidebar() {
             gap: '12px',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
-            {/* Logo mark */}
-            <div
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+            {/* SupplyShield Logo from public folder */}
+            <img
+              src="/logo.webp"
+              alt="SupplyShield AI Logo"
               style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #247bc1, #6ab0e1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                width: '38px',
+                height: '38px',
+                borderRadius: '8px',
+                objectFit: 'contain',
                 flexShrink: 0,
               }}
-            >
-              <Shield size={20} color="#fff" />
-            </div>
+            />
 
             {!sidebarCollapsed && (
               <div style={{ minWidth: 0 }}>
@@ -114,40 +111,6 @@ export function Sidebar() {
               </div>
             )}
           </div>
-
-          {/* Mobile close / desktop collapse */}
-          <button
-            id="sidebar-toggle-btn"
-            onClick={() => {
-              if (window.innerWidth < 1024) {
-                setSidebarMobileOpen(false)
-              } else {
-                toggleSidebar()
-              }
-            }}
-            style={{
-              background: 'rgba(255,255,255,0.08)',
-              border: 'none',
-              borderRadius: '8px',
-              color: 'rgba(255,255,255,0.65)',
-              cursor: 'pointer',
-              padding: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.15s',
-              flexShrink: 0,
-            }}
-            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {window.innerWidth < 1024 ? (
-              <X size={16} />
-            ) : sidebarCollapsed ? (
-              <ChevronRight size={16} />
-            ) : (
-              <ChevronLeft size={16} />
-            )}
-          </button>
         </div>
 
         {/* Nav Items */}

@@ -3,6 +3,7 @@ import { useAuthStore } from './store/index.js'
 import LoginPage from './features/auth/LoginPage.jsx'
 import SignupPage from './features/auth/SignupPage.jsx'
 import AuthCallback from './features/auth/AuthCallback.jsx'
+import LandingPage from './features/landing/LandingPage.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
 import InventoryPage from './features/inventory/InventoryPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
@@ -25,13 +26,13 @@ function PublicRoute({ children }) {
   return children
 }
 
-// Root route handler — catches OAuth redirect params (code or token)
+// Root route handler — catches OAuth redirect params (code or token) or renders public landing page
 function RootRoute() {
   const search = window.location.search
   if (search.includes('code=') || search.includes('token=') || search.includes('error=')) {
     return <AuthCallback />
   }
-  return <Navigate to="/dashboard" replace />
+  return <LandingPage />
 }
 
 export default function App() {
@@ -55,6 +56,7 @@ export default function App() {
             </PublicRoute>
           }
         />
+        <Route path="/landing" element={<LandingPage />} />
 
         {/* Protected routes */}
         <Route
