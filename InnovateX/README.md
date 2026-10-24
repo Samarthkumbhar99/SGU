@@ -42,7 +42,7 @@ flowchart LR
 ```
 
 * **Core Guarantee:** Zero phantom inventory, zero vehicle overloads, zero expired dispatches.
-* **Speed:** Full network re-optimization in **$\le 2.8$ seconds**.
+* **Speed:** Full network re-optimization in **≤ 2.8 seconds**.
 
 ---
 
@@ -71,7 +71,7 @@ FMCG mid-market networks (3–5 regional DCs, 10–50 retail stores) bleed margi
 ```
 
 * **Persona A (Distribution Ops Manager - Vikram):** Needs to instantly re-route shipments when a central depot shuts down, preventing store stockouts before the morning retail rush.
-* **Persona B (Inventory & Batch Controller - Rajesh):** Needs automated **First-Expired, First-Out (FEFO)** checks so no batch arrives at a store with $< 7$ days of usable shelf-life.
+* **Persona B (Inventory & Batch Controller - Rajesh):** Needs automated **First-Expired, First-Out (FEFO)** checks so no batch arrives at a store with less than 7 days of usable shelf-life.
 * **Persona C (Supply Chain Analyst - Ananya):** Needs repeatable mathematical trade-off metrics (Cost vs. Service Level vs. Waste) without black-box guessing.
 
 ---
@@ -105,7 +105,7 @@ sequenceDiagram
 
 1. **Clean Baseline Planning:** Daily ingestion $\rightarrow$ 12-rule validation $\rightarrow$ deterministic global cost minimization.
 2. **Adaptive Inventory Rescue:** Shocks injected $\rightarrow$ boundary conditions auto-updated $\rightarrow$ alternate hubs dispatched in $< 3\text{s}$.
-3. **Perishable Batch Rescue:** Detects aging batches $\rightarrow$ shifts units to high-velocity stores where $\text{Transit Time} + \text{Dwell Time} < \text{Expiry}$.
+3. **Perishable Batch Rescue:** Detects aging batches $\rightarrow$ shifts units to high-velocity stores where $(T_{\text{transit}} + T_{\text{dwell}} < T_{\text{expiry}})$.
 
 ---
 
@@ -115,11 +115,11 @@ sequenceDiagram
 | :---: | :--- | :--- | :--- |
 | **P0** | **REQ-01** | **Multi-Source Data Ingestion** | Ingests Warehouses, Stores, SKUs, and Transit Lanes (CSV/JSON). |
 | **P0** | **REQ-02** | **12-Point Data Integrity Gate** | Flags negative inventory, duplicate keys, null shelf-life, and invalid lead times. |
-| **P0** | **REQ-03** | **OR-Tools MILP Optimizer** | Solves $X_{w,s,p}$ minimizing freight + shortages in $\le 2.0\text{s}$ with 0 phantom stock. |
-| **P0** | **REQ-04** | **Hard Capacity & Dock Bounds** | Strict adherence: $\sum X \le \text{Stock}$ and $\sum \text{Volume} \le \text{TruckCapacity}$. |
+| **P0** | **REQ-03** | **OR-Tools MILP Optimizer** | Solves decision variables $x_{w,s,p}$ minimizing freight + shortages in ≤ 2.0s with 0 phantom stock. |
+| **P0** | **REQ-04** | **Hard Capacity & Dock Bounds** | Strict adherence: $\sum x \le \text{Stock}$ and $\sum \text{Volume} \le V_{\max}$. |
 | **P0** | **REQ-05** | **Residual Shortage Ledger** | Explicitly quantifies unmet demand when network supply is insufficient. |
 | **P1** | **REQ-06** | **Adaptive Disruption Engine** | Live scenario injection (depot outages, demand spikes +200%, closed lanes). |
-| **P1** | **REQ-07** | **Dynamic FEFO Expiry Rescue** | Enforces $T_{\text{lead}} + T_{\text{shelf\_min}} < \text{Expiry}$; routes aging stock to fast stores. |
+| **P1** | **REQ-07** | **Dynamic FEFO Expiry Rescue** | Enforces $(T_{\text{lead}} + T_p^{\min} < E_b)$; routes aging stock to fast stores. |
 | **P1** | **REQ-08** | **Grounded Decision Rationale** | LLM explains decisions strictly citing mathematical solver deltas (temp = 0.0). |
 | **P1** | **REQ-09** | **Side-by-Side KPI Delta View** | Displays Baseline vs. Rescued Plan metrics across Cost, Service %, and Waste. |
 | **P2** | **REQ-10** | **One-Click Dispatch Export** | Exports RFC 4180 CSV / printable PDF dock picking slips. |
@@ -166,14 +166,39 @@ graph TD
 
 ## 6. 🧮 Mathematical Optimization Model
 
-$$\min_{\mathbf{x}, \mathbf{u}} \quad \sum_{w,s,p,b} \left( c_{w,s}^{\text{trans}} + c_{w}^{\text{hand}} \right) x_{w,s,p,b} + \sum_{s,p} \rho_p^{\text{short}} u_{s,p} + \sum_{w,p,b} \omega_{p,b}^{\text{waste}} \mathbb{I}_{\text{exp}}(w,b)$$
+### Objective Function: Minimize Total Network Loss
+
+$$
+\min_{\mathbf{x}, \mathbf{u}} \quad \sum_{w,s,p,b} \left( c_{w,s}^{\text{trans}} + c_{w}^{\text{hand}} \right) x_{w,s,p,b} + \sum_{s,p} \rho_p^{\text{short}} u_{s,p} + \sum_{w,p,b} \omega_{p,b}^{\text{waste}} \mathbb{I}_{\text{exp}}(w,b)
+$$
 
 ### Core Boundary Constraints:
-1. **Source Stock Conservation:** $\sum_{s} x_{w,s,p,b} \le \text{Stock}_{w,p,b}$ *(No phantom inventory)*
-2. **Demand Fulfillment:** $\sum_{w,b} x_{w,s,p,b} + u_{s,p} = D_{s,p}$ *(Reconciles demand vs. shortage)*
-3. **Vehicle & Lane Capacity:** $\sum_{p,b} v_p \cdot x_{w,s,p,b} \le V_{w,s}^{\max}$ *(Truck volumetric payload limit)*
-4. **FEFO Shelf-Life Feasibility:** $x_{w,s,p,b} = 0 \quad \text{if } (T_{w,s}^{\text{lead}} + T_p^{\text{min\_shelf}} \ge E_b)$ *(Prevents shipping spoiled goods)*
-5. **Disruption Mask:** $x_{w^*, s, p, b} = 0 \quad \forall (w^*, s) \in \text{DisabledLanes}$ *(Dynamic rerouting)*
+
+1. **Source Stock Conservation (No Phantom Stock):**
+   $$
+   \sum_{s} x_{w,s,p,b} \le \text{Stock}_{w,p,b} \quad \forall w, p, b
+   $$
+
+2. **Demand Fulfillment & Shortage Reconciliation:**
+   $$
+   \sum_{w,b} x_{w,s,p,b} + u_{s,p} = D_{s,p} \quad \forall s, p
+   $$
+
+3. **Vehicle & Lane Volumetric Capacity:**
+   $$
+   \sum_{p,b} v_p \cdot x_{w,s,p,b} \le V_{w,s}^{\max} \quad \forall w, s
+   $$
+
+4. **Dynamic FEFO Usable Shelf-Life Feasibility:**
+   $$
+   x_{w,s,p,b} = 0 \quad \text{if } \left( T_{w,s}^{\text{lead}} + T_p^{\min} \ge E_b \right)
+   $$
+   *(Strictly prevents dispatching inventory that will spoil before or during retail display)*
+
+5. **Disruption Route Invalidation Mask:**
+   $$
+   x_{w, s, p, b} = 0 \quad \forall (w, s) \in \text{DisabledLanes}
+   $$
 
 ---
 
@@ -182,8 +207,8 @@ $$\min_{\mathbf{x}, \mathbf{u}} \quad \sum_{w,s,p,b} \left( c_{w,s}^{\text{trans
 | Feature Dimension | Excel Spreadsheets | Legacy ERP (SAP / Blue Yonder) | Naive LLM Wrappers | 🛡️ SupplyShield AI |
 | :--- | :---: | :---: | :---: | :---: |
 | **Solving Core** | Manual formulas | Nightly Batch MRP | Unreliable text guessing | **OR-Tools MILP Solver** |
-| **Re-Plan Latency** | 3–6 Hours | 12–24 Hours | 15 Seconds | **$\le \mathbf{2.8\text{ Seconds}}$** |
-| **Constraint Guarantee**| ❌ Prone to errors | ✅ Rigorous | ❌ Hallucinates quantities | **✅ $0$ Violations Guarantee** |
+| **Re-Plan Latency** | 3–6 Hours | 12–24 Hours | 15 Seconds | **≤ 2.8 Seconds** |
+| **Constraint Guarantee**| ❌ Prone to errors | ✅ Rigorous | ❌ Hallucinates quantities | **✅ 0 Violations Guarantee** |
 | **Adaptive Disruption** | ❌ Manual re-work | ⚠️ Complex re-runs | ❌ Unfeasible plans | **✅ 1-Click Auto Rescue** |
 | **Expiry Awareness** | ⚠️ Basic FIFO | ⚠️ Static lead times | ❌ Ignores transit days | **✅ Dynamic FEFO Lead-Time** |
 | **Decision Auditing** | ❌ None | ❌ Cryptic error codes | ⚠️ Fabricated claims | **✅ Grounded Evidence Summaries** |
@@ -206,11 +231,11 @@ $$\min_{\mathbf{x}, \mathbf{u}} \quad \sum_{w,s,p,b} \left( c_{w,s}^{\text{trans
 
 | Metric Target | Target Specification | Verification Method |
 | :--- | :--- | :--- |
-| **Feasibility Violation Rate** | **$0.0\%$ (Zero violations)** | 500 automated stress tests verifying stock and capacity limits. |
-| **P95 Re-Plan Latency** | **$\le 3.0$ seconds** | Automated benchmark under simultaneous DC outage and demand surge. |
-| **Mathematical Reproducibility**| **$100.0\%$ Deterministic** | Identical inputs with fixed seed return byte-identical dispatch plans. |
-| **Explanation Grounding** | **$0$ Numerical Hallucinations** | Assertion test comparing LLM claims to solver tensor outputs. |
-| **Freight Cost Reduction** | **$\ge 12.5\%$ savings** | Compared against nearest-warehouse greedy baseline. |
+| **Feasibility Violation Rate** | **0.0% (Zero violations)** | 500 automated stress tests verifying stock and capacity limits. |
+| **P95 Re-Plan Latency** | **≤ 3.0 seconds** | Automated benchmark under simultaneous DC outage and demand surge. |
+| **Mathematical Reproducibility**| **100.0% Deterministic** | Identical inputs with fixed seed return byte-identical dispatch plans. |
+| **Explanation Grounding** | **0 Numerical Hallucinations** | Assertion test comparing LLM claims to solver tensor outputs. |
+| **Freight Cost Reduction** | **≥ 12.5% savings** | Compared against nearest-warehouse greedy baseline. |
 
 ---
 
@@ -235,7 +260,7 @@ gantt
 ### 🎬 3-Minute Live Demo Walkthrough
 1. **00:00 – 00:45 (Baseline):** Ingest data $\rightarrow$ render initial optimal network distribution map.
 2. **00:45 – 01:30 (Crisis):** Trigger disruption: *"Central DC Outage + Store 4 Demand Spike (+150%)"*.
-3. **01:30 – 02:15 (Adaptive Rescue):** 1-Click Rescue $\rightarrow$ OR-Tools re-solves in $1.8\text{s}$, balancing alternate hubs.
+3. **01:30 – 02:15 (Adaptive Rescue):** 1-Click Rescue $\rightarrow$ OR-Tools re-solves in 1.8s, balancing alternate hubs.
 4. **02:15 – 03:00 (Explanation & Export):** Review evidence-grounded rationale $\rightarrow$ Export verified WMS CSV.
 
 ---
