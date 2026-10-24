@@ -1,0 +1,13 @@
+store_id,store_name,region,latitude,longitude,store_capacity_units
+STORE-01,Retail Outlet 01,Central,16.1,73.8,5000
+STORE-02,Retail Outlet 02,North,17.2,74.6,5000
+STORE-03,Retail Outlet 03,South,18.3,75.4,5000
+STORE-04,Retail Outlet 04,West,19.4,76.2,5000
+STORE-05,Retail Outlet 05,Central,20.5,77.0,5000
+STORE-06,Retail Outlet 06,North,21.6,77.8,5000
+STORE-07,Retail Outlet 07,South,22.7,78.6,5000
+STORE-08,Retail Outlet 08,West,23.8,79.4,5000
+STORE-09,Retail Outlet 09,Central,24.9,80.2,5000
+STORE-10,Retail Outlet 10,North,26.0,81.0,5000
+STORE-11,Retail Outlet 11,South,27.1,81.8,5000
+STORE-12,Retail Outlet 12,West,28.2,82.6,5000

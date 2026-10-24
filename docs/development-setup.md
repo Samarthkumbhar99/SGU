@@ -128,10 +128,16 @@ python -m uvicorn src.main:app --host 127.0.0.1 --port 8000 --reload
 
 ### Running ML Service Tests
 ```bash
-python -m pytest tests/test_health.py tests/test_forecasting.py
+# Run complete test suite (61 tests covering health, validation, forecasting, CP-SAT optimization, and scenario simulation)
+python -m pytest tests/test_health.py tests/test_validation.py tests/test_forecasting.py tests/test_optimization.py tests/test_scenario.py tests/test_integration.py
 ```
-Executes all 21 test specifications covering health probes, feature engineering, leakage prevention, baseline forecasters, LightGBM/XGBoost models, model persistence, and chronological holdout evaluation.
+Executes all 61 test specifications covering health probes, feature engineering, leakage prevention, baseline forecasters, LightGBM/XGBoost models, Google OR-Tools CP-SAT mathematical optimization, constraint audits, and disruption resilience simulation.
 
+### Demo Dataset Generation & Verification
+```bash
+# Re-generate synthetic demo benchmark dataset (87,600 rows, 20 SKUs, 12 stores, 3 warehouses)
+python ml-service/generate_demo_data.py
+```
 
 ---
 
@@ -144,3 +150,4 @@ npm run dev
 ```
 - UI URL: `http://localhost:5173`
 - API calls proxy automatically to `http://localhost:5000` via Vite configuration.
+

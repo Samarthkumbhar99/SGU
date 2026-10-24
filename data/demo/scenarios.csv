@@ -1,0 +1,4 @@
+scenario_id,scenario_name,disruption_type,target_id,change_value,description
+SCN-001,North Lane Closure,route_closure,WH-NORTH__STORE-01,unavailable,Closure of northern transport lane to store 01
+SCN-002,South Capacity Reduction,delivery_delay,WH-SOUTH__STORE-04,0.50,50% capacity reduction on southern lane to store 04
+SCN-003,Demand Surge West,demand_spike,STORE-01,0.30,30% demand surge at western store 01

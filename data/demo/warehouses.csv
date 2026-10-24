@@ -1,0 +1,4 @@
+warehouse_id,warehouse_name,region,latitude,longitude,storage_capacity_units
+WH-CENTRAL,Central Hub,Central,19.076,72.877,50000
+WH-NORTH,North Distribution Center,North,28.704,77.102,45000
+WH-SOUTH,South Logistics Terminal,South,13.082,80.27,45000

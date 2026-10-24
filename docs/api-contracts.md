@@ -643,6 +643,194 @@
 
 ---
 
+### Phase 4 Distribution Optimization & Inventory Intelligence
+
+- **`POST /api/v1/optimization/solve`** *(alias: `/api/v1/optimize`)*
+  - **Purpose**: Solves warehouse-to-store/region SKU inventory dispatch using Google OR-Tools CP-SAT with baseline comparison and independent feasibility verification. Persists plan metadata to MongoDB `OptimizationRun`.
+  - **Auth**: Bearer JWT required
+  - **Request Body**:
+    ```json
+    {
+      "horizonDays": 7,
+      "stores": ["STORE-01", "STORE-02"],
+      "products": ["SKU-001", "SKU-002"],
+      "shortagePenaltyPerUnit": 100.0,
+      "transportCostMultiplier": 1.0,
+      "solverTimeLimitSeconds": 10.0
+    }
+    ```
+  - **Response (200 OK)**:
+    ```json
+    {
+      "success": true,
+      "runId": "opt-9f3a18e2",
+      "data": {
+        "run_id": "opt-9f3a18e2",
+        "status": "OPTIMAL",
+        "planning_horizon_days": 7,
+        "forecast_origin": "2025-12-31",
+        "solver_runtime_seconds": 0.045,
+        "optimized_plan": {
+          "total_forecast_demand": 3108,
+          "total_store_inventory_on_hand": 200,
+          "total_effective_store_stock_utilized": 200,
+          "total_surplus_store_stock": 0,
+          "total_gross_requirement": 2908,
+          "total_warehouse_stock_available": 60000,
+          "total_allocated_units": 2908,
+          "total_unmet_demand_units": 0,
+          "total_transport_cost": 290.80,
+          "demand_fulfillment_rate": 100.0,
+          "overall_demand_satisfied_rate": 100.0,
+          "objective_score": 290.80
+        },
+        "baseline_plan": {
+          "total_forecast_demand": 3108,
+          "total_allocated_units": 2908,
+          "total_unmet_demand_units": 0,
+          "total_transport_cost": 348.96,
+          "demand_fulfillment_rate": 100.0,
+          "objective_score": 348.96
+        },
+        "delta_metrics": {
+          "transport_cost_savings_dollars": 58.16,
+          "unmet_demand_delta_units": 0
+        },
+        "allocations": [
+          {
+            "warehouse_id": "WH-CENTRAL",
+            "store_id": "STORE-01",
+            "product_id": "SKU-001",
+            "allocated_units": 727,
+            "unit_transport_cost": 0.10,
+            "total_transport_cost": 72.70,
+            "lead_time_hours": 12.0
+          }
+        ],
+        "feasibility": {
+          "is_feasible": true,
+          "violations_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        "warnings": []
+      }
+    }
+    ```
+
+- **`POST /api/v1/optimization/simulate`** *(alias: `/api/v1/scenario/simulate`)*
+  - **Purpose**: Injects disruption shocks (lane closure, warehouse outage, throughput reduction, demand surge), re-solves using OR-Tools CP-SAT, and returns resilience deltas and recovery recommendations.
+  - **Auth**: Bearer JWT required
+  - **Request Body (Preset Scenario)**:
+    ```json
+    {
+      "presetScenarioId": "SCN-001",
+      "horizonDays": 7,
+      "stores": ["STORE-01", "STORE-02"],
+      "products": ["SKU-001"]
+    }
+    ```
+  - **Request Body (Custom Disruption)**:
+    ```json
+    {
+      "scenarioName": "Central Hub Outage & Western Surge",
+      "disruptions": [
+        { "disruptionType": "warehouse_outage", "targetId": "WH-CENTRAL" },
+        { "disruptionType": "demand_spike", "targetId": "STORE-01", "changeValue": 1.30 }
+      ],
+      "horizonDays": 7
+    }
+    ```
+  - **Response (200 OK)**:
+    ```json
+    {
+      "success": true,
+      "runId": "sim-2e4b78c1",
+      "data": {
+        "run_id": "sim-2e4b78c1",
+        "scenario_name": "North Lane Closure (SCN-001)",
+        "applied_disruptions": [
+          {
+            "disruption_type": "route_closure",
+            "target_id": "WH-NORTH__STORE-01",
+            "change_value": null
+          }
+        ],
+        "affected_entities": {
+          "warehouses": [],
+          "stores": ["STORE-01"],
+          "products": [],
+          "lanes": ["WH-NORTH__STORE-01"]
+        },
+        "baseline_plan": {
+          "total_forecast_demand": 3108,
+          "total_allocated_units": 2908,
+          "total_unmet_demand_units": 0,
+          "total_transport_cost": 290.80,
+          "demand_fulfillment_rate": 100.0
+        },
+        "disrupted_plan": {
+          "total_forecast_demand": 3108,
+          "total_allocated_units": 2908,
+          "total_unmet_demand_units": 0,
+          "total_transport_cost": 348.96,
+          "demand_fulfillment_rate": 100.0
+        },
+        "delta_metrics": {
+          "demand_delta_units": 0,
+          "allocated_units_delta": 0,
+          "unmet_demand_delta_units": 0,
+          "fulfillment_rate_delta_pct": 0.0,
+          "transport_cost_delta_dollars": 58.16,
+          "objective_score_delta": 58.16
+        },
+        "resilience_insights": {
+          "primary_bottleneck": "Transportation route closure on WH-NORTH__STORE-01 forcing rerouting via secondary hubs",
+          "net_additional_unmet_units": 0,
+          "freight_cost_delta_dollars": 58.16,
+          "is_disrupted_plan_feasible": true,
+          "solver_status": "OPTIMAL",
+          "executive_summary": "Network successfully absorbed the disruption without service loss. Shipments rerouted through secondary hubs with $58.16 additional freight cost."
+        }
+      }
+    }
+    ```
+
+- **`GET /api/v1/optimization/runs`**
+  - **Purpose**: Paginated list of historical optimization and simulation runs from MongoDB `OptimizationRun`.
+  - **Auth**: Bearer JWT required
+  - **Query Params**: `runType` ('solve'|'simulate'), `status`, `page`, `limit`
+  - **Response (200 OK)**:
+    ```json
+    {
+      "success": true,
+      "data": [
+        {
+          "runId": "opt-9f3a18e2",
+          "runType": "solve",
+          "scenarioName": "Optimal Allocation Plan",
+          "status": "OPTIMAL",
+          "solverRuntimeSeconds": 0.045,
+          "objectiveScore": 290.80,
+          "metrics": {
+            "baselineTransportCost": 348.96,
+            "optimizedTransportCost": 290.80,
+            "demandFulfillmentRatePct": 100.0
+          },
+          "createdAt": "2026-10-24T18:25:00.000Z"
+        }
+      ],
+      "pagination": { "total": 1, "page": 1, "limit": 20, "pages": 1 }
+    }
+    ```
+
+- **`GET /api/v1/optimization/runs/:runId`**
+  - **Purpose**: Detailed report and allocation breakdown for a specific run ID.
+  - **Auth**: Bearer JWT required
+  - **Response (200 OK)**: Returns full `OptimizationRun` document.
+
+---
+
 ## 2. FastAPI ML Service Endpoints (`http://127.0.0.1:8000`)
 
 ### Health & Readiness
@@ -653,6 +841,8 @@
 - **`POST /api/v1/forecast/train`**: Model training and artifact persistence.
 - **`POST /api/v1/forecast/evaluate`** (and legacy `/api/v1/evaluate-forecast`): Chronological backtest evaluation.
 - **`GET /api/v1/forecast/models`**: Model registry and active version metadata.
-- **`POST /api/v1/optimize`**: Google OR-Tools CP-SAT inventory allocation.
-- **`POST /api/v1/scenario/simulate`**: Disruption simulation.
+- **`POST /api/v1/optimization/solve`** (and legacy `/api/v1/optimize`): Google OR-Tools CP-SAT inventory allocation solver.
+- **`POST /api/v1/optimization/simulate`** (and legacy `/api/v1/scenario/simulate`): Disruption simulation.
+- **`GET /api/v1/optimization/runs`**: In-memory list of recent solver and simulation runs.
+- **`GET /api/v1/optimization/runs/{run_id}`**: Run detail by run identifier.
 

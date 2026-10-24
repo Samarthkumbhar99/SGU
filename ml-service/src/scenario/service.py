@@ -213,13 +213,16 @@ class ScenarioService:
                 }
 
             elif dtype == "route_closure":
-                # Target can be lane_id or W__S format
                 parts = target.split("__")
                 if len(parts) == 2:
                     w, s = parts[0], parts[1]
                 else:
                     raise ValueError(f"Invalid route identifier '{target}'. Expected 'WAREHOUSE__STORE'.")
+                if w not in all_warehouses or s not in all_stores:
+                    raise ValueError(f"Route '{target}' references unknown warehouse or store.")
                 if (w, s) not in base_valid_lanes:
+                    if s not in active_stores:
+                        continue
                     raise ValueError(f"Route '{target}' is not an active lane.")
                 affected_lanes.add(target)
                 disrupted_valid_lanes.discard((w, s))
@@ -230,7 +233,11 @@ class ScenarioService:
                     w, s = parts[0], parts[1]
                 else:
                     raise ValueError(f"Invalid lane identifier '{target}'. Expected 'WAREHOUSE__STORE'.")
+                if w not in all_warehouses or s not in all_stores:
+                    raise ValueError(f"Lane '{target}' references unknown warehouse or store.")
                 if (w, s) not in base_valid_lanes:
+                    if s not in active_stores:
+                        continue
                     raise ValueError(f"Lane '{target}' is not an active lane.")
                 factor = item.change_value if item.change_value is not None else 0.50
                 if factor < 0.0 or factor > 1.0:
@@ -253,12 +260,15 @@ class ScenarioService:
                 if target not in all_stores:
                     raise ValueError(f"Unknown store '{target}' for demand_spike.")
                 mult = item.change_value if item.change_value is not None else 1.50
+                if 0.0 < mult < 1.0:
+                    mult = 1.0 + mult
                 if mult < 1.0 or mult > 5.0:
                     raise ValueError(f"Demand spike multiplier {mult} must be between 1.0 and 5.0.")
-                affected_stores.add(target)
-                for p in active_products:
-                    old_dem = disrupted_forecast_demand.get((target, p), 0)
-                    disrupted_forecast_demand[(target, p)] = int(round(old_dem * mult))
+                if target in active_stores:
+                    affected_stores.add(target)
+                    for p in active_products:
+                        old_dem = disrupted_forecast_demand.get((target, p), 0)
+                        disrupted_forecast_demand[(target, p)] = int(round(old_dem * mult))
 
         # 8. Re-solve Optimizer on Disrupted Inputs
         disrupted_optimizer = AllocationOptimizer(
