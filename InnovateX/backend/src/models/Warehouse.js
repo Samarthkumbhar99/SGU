@@ -72,13 +72,12 @@ const warehouseSchema = new mongoose.Schema(
   }
 )
 
-warehouseSchema.pre('save', function (next) {
+warehouseSchema.pre('save', function () {
   if (!this.code) {
     const cityPrefix = (this.location?.city || 'DC').substring(0, 3).toUpperCase()
     const rand = Math.floor(1000 + Math.random() * 9000)
     this.code = `DC-${cityPrefix}-${rand}`
   }
-  next()
 })
 
 const Warehouse = mongoose.model('Warehouse', warehouseSchema)

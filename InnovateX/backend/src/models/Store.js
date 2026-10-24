@@ -77,13 +77,12 @@ const storeSchema = new mongoose.Schema(
 )
 
 // Auto-generate store code if not provided
-storeSchema.pre('save', function (next) {
+storeSchema.pre('save', function () {
   if (!this.code) {
     const cityPrefix = (this.location?.city || 'STR').substring(0, 3).toUpperCase()
     const rand = Math.floor(1000 + Math.random() * 9000)
     this.code = `STR-${cityPrefix}-${rand}`
   }
-  next()
 })
 
 const Store = mongoose.model('Store', storeSchema)
