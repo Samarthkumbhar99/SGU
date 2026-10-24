@@ -501,8 +501,10 @@ export default function DashboardPage() {
           changeLabel="vs last week"
           color="blue"
           loading={loading}
-          provenanceType="historical"
-          provenanceTooltip="Aggregated from 91,250 historical rows in supply_chain_dataset1.csv via /api/v1/analytics/overview"
+          provenanceType={overviewData?.summary?.totalInventoryUnits ? 'historical' : 'demo'}
+          provenanceTooltip={overviewData?.summary?.totalInventoryUnits
+            ? 'Aggregated from live MongoDB Inventory collection via /api/v1/analytics/overview'
+            : 'Demo benchmark fallback value (active while Atlas inventory collection is unpopulated)'}
         />
         <KPICard
           id="kpi-inventory-valuation"
@@ -514,8 +516,10 @@ export default function DashboardPage() {
           changeLabel="valuation"
           color="success"
           loading={loading}
-          provenanceType="historical"
-          provenanceTooltip="Calculated dynamically: Sum of (Inventory Level × Unit Cost) across all SKUs"
+          provenanceType={overviewData?.summary?.totalInventoryValuation ? 'historical' : 'demo'}
+          provenanceTooltip={overviewData?.summary?.totalInventoryValuation
+            ? 'Calculated dynamically: Sum of (Inventory Level × Unit Cost) across all SKUs'
+            : 'Demo benchmark valuation fallback (active while Atlas inventory collection is unpopulated)'}
         />
         <KPICard
           id="kpi-stores-at-risk"
@@ -527,8 +531,10 @@ export default function DashboardPage() {
           changeLabel="vs reorder point"
           color="critical"
           loading={loading}
-          provenanceType="historical"
-          provenanceTooltip="SKU-Facility combinations currently below safety reorder threshold"
+          provenanceType={overviewData?.summary?.lowStockCombinations !== undefined ? 'historical' : 'demo'}
+          provenanceTooltip={overviewData?.summary?.lowStockCombinations !== undefined
+            ? 'SKU-Facility combinations currently below safety reorder threshold'
+            : 'Demo benchmark stockout risk count'}
         />
         <KPICard
           id="kpi-days-of-supply"
@@ -540,8 +546,10 @@ export default function DashboardPage() {
           changeLabel="7d burn rate"
           color="warning"
           loading={loading}
-          provenanceType="historical"
-          provenanceTooltip="Inventory Level divided by 7-day average daily sales velocity"
+          provenanceType={overviewData?.summary?.avgDaysOfSupply ? 'historical' : 'demo'}
+          provenanceTooltip={overviewData?.summary?.avgDaysOfSupply
+            ? 'Inventory Level divided by 7-day average daily sales velocity'
+            : 'Demo benchmark 14-day supply average'}
         />
         <KPICard
           id="kpi-solver-status"
