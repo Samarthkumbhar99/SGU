@@ -1,21 +1,21 @@
 product_id,sku,product_name,category,unit_of_measure,unit_cost,unit_price,pack_size,shelf_life_days
-SKU-001,SKU-001,Consumer Good 01,Dairy,unit,2.75,4.12,1,35
-SKU-002,SKU-002,Consumer Good 02,Bakery,unit,3.5,5.25,1,40
-SKU-003,SKU-003,Consumer Good 03,Beverages,unit,4.25,6.38,1,45
-SKU-004,SKU-004,Consumer Good 04,Produce,unit,5.0,7.5,1,50
-SKU-005,SKU-005,Consumer Good 05,Snacks,unit,5.75,8.62,1,55
-SKU-006,SKU-006,Consumer Good 06,Dairy,unit,6.5,9.75,1,60
-SKU-007,SKU-007,Consumer Good 07,Bakery,unit,7.25,10.88,1,65
-SKU-008,SKU-008,Consumer Good 08,Beverages,unit,8.0,12.0,1,70
-SKU-009,SKU-009,Consumer Good 09,Produce,unit,8.75,13.12,1,75
-SKU-010,SKU-010,Consumer Good 10,Snacks,unit,9.5,14.25,1,80
-SKU-011,SKU-011,Consumer Good 11,Dairy,unit,10.25,15.38,1,85
-SKU-012,SKU-012,Consumer Good 12,Bakery,unit,11.0,16.5,1,90
-SKU-013,SKU-013,Consumer Good 13,Beverages,unit,11.75,17.62,1,95
-SKU-014,SKU-014,Consumer Good 14,Produce,unit,12.5,18.75,1,100
-SKU-015,SKU-015,Consumer Good 15,Snacks,unit,13.25,19.88,1,105
-SKU-016,SKU-016,Consumer Good 16,Dairy,unit,14.0,21.0,1,110
-SKU-017,SKU-017,Consumer Good 17,Bakery,unit,14.75,22.12,1,115
-SKU-018,SKU-018,Consumer Good 18,Beverages,unit,15.5,23.25,1,120
-SKU-019,SKU-019,Consumer Good 19,Produce,unit,16.25,24.38,1,125
-SKU-020,SKU-020,Consumer Good 20,Snacks,unit,17.0,25.5,1,130
+SKU-001,SKU-001,Consumer Good 01 (Synthetic),Dairy,unit,2.75,4.12,1,35
+SKU-002,SKU-002,Consumer Good 02 (Synthetic),Bakery,unit,3.5,5.25,1,40
+SKU-003,SKU-003,Consumer Good 03 (Synthetic),Beverages,unit,4.25,6.38,1,45
+SKU-004,SKU-004,Consumer Good 04 (Synthetic),Produce,unit,5.0,7.5,1,50
+SKU-005,SKU-005,Consumer Good 05 (Synthetic),Snacks,unit,5.75,8.62,1,55
+SKU-006,SKU-006,Consumer Good 06 (Synthetic),Dairy,unit,6.5,9.75,1,60
+SKU-007,SKU-007,Consumer Good 07 (Synthetic),Bakery,unit,7.25,10.88,1,65
+SKU-008,SKU-008,Consumer Good 08 (Synthetic),Beverages,unit,8.0,12.0,1,70
+SKU-009,SKU-009,Consumer Good 09 (Synthetic),Produce,unit,8.75,13.12,1,75
+SKU-010,SKU-010,Consumer Good 10 (Synthetic),Snacks,unit,9.5,14.25,1,80
+SKU-011,SKU-011,Consumer Good 11 (Synthetic),Dairy,unit,10.25,15.38,1,85
+SKU-012,SKU-012,Consumer Good 12 (Synthetic),Bakery,unit,11.0,16.5,1,90
+SKU-013,SKU-013,Consumer Good 13 (Synthetic),Beverages,unit,11.75,17.62,1,95
+SKU-014,SKU-014,Consumer Good 14 (Synthetic),Produce,unit,12.5,18.75,1,100
+SKU-015,SKU-015,Consumer Good 15 (Synthetic),Snacks,unit,13.25,19.88,1,105
+SKU-016,SKU-016,Consumer Good 16 (Synthetic),Dairy,unit,14.0,21.0,1,110
+SKU-017,SKU-017,Consumer Good 17 (Synthetic),Bakery,unit,14.75,22.12,1,115
+SKU-018,SKU-018,Consumer Good 18 (Synthetic),Beverages,unit,15.5,23.25,1,120
+SKU-019,SKU-019,Consumer Good 19 (Synthetic),Produce,unit,16.25,24.38,1,125
+SKU-020,SKU-020,Consumer Good 20 (Synthetic),Snacks,unit,17.0,25.5,1,130

@@ -1,0 +1,166 @@
+{
+  "dataset_metadata": {
+    "source_file": "data\\supply_chain_dataset1.csv.bak",
+    "file_size_bytes": 6552486,
+    "row_count": 91250,
+    "column_count": 15,
+    "columns": [
+      "Date",
+      "SKU_ID",
+      "Warehouse_ID",
+      "Supplier_ID",
+      "Region",
+      "Units_Sold",
+      "Inventory_Level",
+      "Supplier_Lead_Time_Days",
+      "Reorder_Point",
+      "Order_Quantity",
+      "Unit_Cost",
+      "Unit_Price",
+      "Promotion_Flag",
+      "Stockout_Flag",
+      "Demand_Forecast"
+    ]
+  },
+  "integrity_metrics": {
+    "null_counts": {
+      "Date": 0,
+      "SKU_ID": 0,
+      "Warehouse_ID": 0,
+      "Supplier_ID": 0,
+      "Region": 0,
+      "Units_Sold": 0,
+      "Inventory_Level": 0,
+      "Supplier_Lead_Time_Days": 0,
+      "Reorder_Point": 0,
+      "Order_Quantity": 0,
+      "Unit_Cost": 0,
+      "Unit_Price": 0,
+      "Promotion_Flag": 0,
+      "Stockout_Flag": 0,
+      "Demand_Forecast": 0
+    },
+    "total_nulls": 0,
+    "exact_duplicate_rows": 0,
+    "business_key_duplicates": 0,
+    "business_key": [
+      "Date",
+      "SKU_ID",
+      "Warehouse_ID"
+    ]
+  },
+  "temporal_metrics": {
+    "min_date": "2024-01-01",
+    "max_date": "2024-12-30",
+    "calendar_days_spanned": 365,
+    "missing_date_366_omitted": "2024-12-31 omitted from leap year 2024",
+    "entity_series_completeness_pct": 100.0
+  },
+  "cardinalities": {
+    "sku_count": 50,
+    "warehouse_count": 5,
+    "supplier_count": 10,
+    "region_count": 4,
+    "warehouse_sku_combinations": 250
+  },
+  "numeric_health": {
+    "ranges": {
+      "Units_Sold": {
+        "min": 0.0,
+        "max": 59.0,
+        "mean": 20.0546,
+        "std": 9.0686
+      },
+      "Inventory_Level": {
+        "min": 168.0,
+        "max": 990.0,
+        "mean": 471.5223,
+        "std": 133.488
+      },
+      "Supplier_Lead_Time_Days": {
+        "min": 2.0,
+        "max": 14.0,
+        "mean": 7.984,
+        "std": 3.9079
+      },
+      "Reorder_Point": {
+        "min": 201.0,
+        "max": 398.0,
+        "mean": 300.068,
+        "std": 54.8799
+      },
+      "Order_Quantity": {
+        "min": 0.0,
+        "max": 499.0,
+        "mean": 19.2725,
+        "std": 82.3408
+      },
+      "Unit_Cost": {
+        "min": 5.02,
+        "max": 19.76,
+        "mean": 12.2033,
+        "std": 4.575
+      },
+      "Unit_Price": {
+        "min": 6.95,
+        "max": 35.1,
+        "mean": 18.2618,
+        "std": 7.1211
+      },
+      "Promotion_Flag": {
+        "min": 0.0,
+        "max": 1.0,
+        "mean": 0.1016,
+        "std": 0.3021
+      },
+      "Stockout_Flag": {
+        "min": 0.0,
+        "max": 0.0,
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "Demand_Forecast": {
+        "min": 0.0,
+        "max": 61.42,
+        "mean": 20.082,
+        "std": 9.504
+      }
+    },
+    "negative_value_counts": {
+      "Units_Sold": 0,
+      "Inventory_Level": 0,
+      "Supplier_Lead_Time_Days": 0,
+      "Reorder_Point": 0,
+      "Order_Quantity": 0,
+      "Unit_Cost": 0,
+      "Unit_Price": 0,
+      "Promotion_Flag": 0,
+      "Stockout_Flag": 0,
+      "Demand_Forecast": 0
+    },
+    "negative_margin_count": 0
+  },
+  "critical_anomalies_and_findings": {
+    "constant_columns": [
+      {
+        "column": "Stockout_Flag",
+        "unique_values": 1,
+        "value": "0"
+      }
+    ],
+    "stockout_flag_is_all_zeros": true,
+    "region_dynamics": "Region is not fixed to Warehouse; each warehouse serves North, South, East, West daily.",
+    "inventory_conservation": {
+      "formula": "Inventory_t = Inventory_{t-1} + Order_Quantity_t - Units_Sold_t",
+      "conservation_matches": 91000,
+      "total_transitions": 91000,
+      "conservation_pass_rate_pct": 100.0
+    },
+    "demand_forecast_leakage": {
+      "contemporaneous_correlation": 0.9493,
+      "lag1_correlation": 0.6065,
+      "mae_to_actuals": 2.3798,
+      "diagnosis": "Demand_Forecast contains contemporaneous target leakage (~Units_Sold + Normal(0, 3)). Must NOT be used as a predictive feature for same-day sales."
+    }
+  }
+}

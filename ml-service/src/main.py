@@ -40,6 +40,10 @@ def create_app() -> FastAPI:
     from src.api.routes_data import router as data_router
     app.include_router(data_router, prefix=settings.api_prefix)
 
+    # Inventory routes (/api/v1/inventory/plan, /api/v1/inventory/health)
+    from src.api.routes_inventory import router as inventory_router
+    app.include_router(inventory_router, prefix=settings.api_prefix)
+
     # Forecasting routes (/api/v1/forecast, /api/v1/evaluate-forecast, and root aliases)
     from src.api.routes_forecasting import router as forecasting_router
     app.include_router(forecasting_router, prefix=settings.api_prefix)
