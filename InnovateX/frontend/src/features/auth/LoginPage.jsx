@@ -28,6 +28,7 @@ const FEATURES = [
 ]
 
 import { useGoogleAuth } from './useGoogleAuth.js'
+import AuthVideoHero from './AuthVideoHero.jsx'
 
 export default function LoginPage() {
   const [showPass, setShowPass] = useState(false)
@@ -71,158 +72,9 @@ export default function LoginPage() {
 
   return (
     <div className="ss-auth-layout">
-      {/* Left Hero Panel */}
-      <div className="ss-auth-hero">
-        {/* Background blobs */}
-        <div
-          className="ss-geo-blob"
-          style={{
-            top: '8%',
-            right: '-60px',
-            width: '280px',
-            height: '280px',
-            background: 'radial-gradient(circle, rgba(36,123,193,0.3) 0%, transparent 70%)',
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="ss-geo-blob"
-          style={{
-            bottom: '10%',
-            left: '-40px',
-            width: '220px',
-            height: '220px',
-            background: 'radial-gradient(circle, rgba(106,176,225,0.2) 0%, transparent 70%)',
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="ss-geo-blob"
-          style={{
-            top: '45%',
-            left: '20%',
-            width: '160px',
-            height: '160px',
-            background: 'radial-gradient(circle, rgba(36,123,193,0.15) 0%, transparent 70%)',
-          }}
-          aria-hidden="true"
-        />
-
-        {/* Content */}
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '480px', width: '100%' }}>
-          {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '48px' }}>
-            <img
-              src="/logo.webp"
-              alt="SupplyShield AI Logo"
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '12px',
-                objectFit: 'contain',
-                boxShadow: '0 8px 24px rgba(36,123,193,0.3)',
-              }}
-            />
-            <div>
-              <div style={{ color: '#fff', fontWeight: 800, fontSize: '20px', lineHeight: 1.1 }}>
-                SupplyShield AI
-              </div>
-              <div
-                style={{
-                  color: 'rgba(255,255,255,0.45)',
-                  fontSize: '12px',
-                  fontWeight: 500,
-                  letterSpacing: '0.06em',
-                  textTransform: 'uppercase',
-                }}
-              >
-                Distribution Intelligence
-              </div>
-            </div>
-          </div>
-
-          {/* Headline */}
-          <h1
-            style={{
-              color: '#ffffff',
-              fontSize: '36px',
-              fontWeight: 800,
-              lineHeight: 1.15,
-              marginBottom: '16px',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Detect. Replan.{' '}
-            <span
-              style={{
-                background: 'linear-gradient(135deg, #6ab0e1, #a8d1f0)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Protect.
-            </span>
-          </h1>
-          <p
-            style={{
-              color: 'rgba(255,255,255,0.65)',
-              fontSize: '15px',
-              lineHeight: 1.6,
-              marginBottom: '40px',
-            }}
-          >
-            From sudden supply-chain disruption to an optimal, explainable recovery plan in under 3 seconds.
-          </p>
-
-          {/* Stats */}
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '16px',
-              marginBottom: '40px',
-            }}
-          >
-            {HERO_STATS.map((stat) => (
-              <div
-                key={stat.value}
-                style={{
-                  background: 'rgba(255,255,255,0.07)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '10px',
-                  padding: '16px 12px',
-                  textAlign: 'center',
-                }}
-              >
-                <div
-                  style={{
-                    color: '#6ab0e1',
-                    fontWeight: 800,
-                    fontSize: '22px',
-                    marginBottom: '4px',
-                    fontVariantNumeric: 'tabular-nums',
-                  }}
-                >
-                  {stat.value}
-                </div>
-                <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', lineHeight: 1.4 }}>
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Features */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {FEATURES.map((feat) => (
-              <div key={feat} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <CheckCircle size={15} color="#208567" style={{ flexShrink: 0 }} />
-                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>{feat}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Left Hero Panel: Static video animation loop with light bluish shade and mute button */}
+      <div className="ss-auth-hero" style={{ padding: 0, overflow: 'hidden', background: '#f0f7ff' }}>
+        <AuthVideoHero />
       </div>
 
       {/* Right Form Panel */}
