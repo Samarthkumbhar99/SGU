@@ -66,6 +66,8 @@ export const productsAPI = {
 // Inventory
 export const inventoryAPI = {
   getAll: (params) => api.get('/inventory', { params }),
+  getSummary: () => api.get('/inventory/summary'),
+  createBatch: (data) => api.post('/inventory', data),
 }
 
 // Routes
