@@ -338,8 +338,11 @@ export default function DashboardPage() {
         if (overviewRes.status === 'fulfilled' && overviewRes.value?.data?.data) {
           setOverviewData(overviewRes.value.data.data)
         }
-        if (runsRes.status === 'fulfilled' && runsRes.value?.data?.data?.runs?.[0]) {
-          setLatestRun(runsRes.value.data.data.runs[0])
+        const runList = Array.isArray(runsRes.value?.data?.data)
+          ? runsRes.value.data.data
+          : (Array.isArray(runsRes.value?.data?.runs) ? runsRes.value.data.runs : [])
+        if (runList.length > 0) {
+          setLatestRun(runList[0])
         }
       } catch {
         // Fall back to demo data when backend is unavailable
@@ -544,11 +547,13 @@ export default function DashboardPage() {
           id="kpi-solver-status"
           icon={TrendingUp}
           label="Latest Solver Status"
-          value={latestRun ? latestRun.solverStatus : 'OPTIMAL'}
-          unit={latestRun ? `${latestRun.solverTimeMs}ms` : '38ms'}
-          change={latestRun ? Number(latestRun.costDeltaPercent?.toFixed(1)) : -18.4}
+          value={latestRun?.status || latestRun?.solverStatus || 'OPTIMAL'}
+          unit={latestRun?.solverRuntimeSeconds !== undefined ? `${Math.round(latestRun.solverRuntimeSeconds * 1000)}ms` : (latestRun?.solverTimeMs ? `${latestRun.solverTimeMs}ms` : '38ms')}
+          change={latestRun?.metrics?.baselineTransportCost && latestRun?.metrics?.optimizedTransportCost
+            ? Number((((latestRun.metrics.optimizedTransportCost - latestRun.metrics.baselineTransportCost) / Math.max(1, latestRun.metrics.baselineTransportCost)) * 100).toFixed(1))
+            : (latestRun?.costDeltaPercent ? Number(latestRun.costDeltaPercent.toFixed(1)) : -18.4)}
           changeLabel="vs greedy cost"
-          color="success"
+          color={(latestRun?.status === 'INFEASIBLE' || latestRun?.status === 'FAILED') ? 'critical' : 'success'}
           loading={loading}
           provenanceType="optimizer"
           provenanceTooltip="Verified Google OR-Tools CP-SAT discrete solver status from MongoDB OptimizationRun ledger"
@@ -557,9 +562,11 @@ export default function DashboardPage() {
           id="kpi-freight-cost"
           icon={DollarSign}
           label="Optimized Freight Cost"
-          value={latestRun ? Math.round(latestRun.totalOptimizedCost) : s.distributionCost}
+          value={latestRun?.metrics?.optimizedTransportCost ?? (latestRun?.totalOptimizedCost ?? s.distributionCost)}
           unit="₹"
-          change={latestRun ? Number(latestRun.costDeltaPercent?.toFixed(1)) : s.costChange}
+          change={latestRun?.metrics?.baselineTransportCost && latestRun?.metrics?.optimizedTransportCost
+            ? Number((((latestRun.metrics.optimizedTransportCost - latestRun.metrics.baselineTransportCost) / Math.max(1, latestRun.metrics.baselineTransportCost)) * 100).toFixed(1))
+            : (latestRun?.costDeltaPercent ? Number(latestRun.costDeltaPercent.toFixed(1)) : s.costChange)}
           changeLabel="vs greedy baseline"
           color="success"
           loading={loading}
@@ -570,7 +577,7 @@ export default function DashboardPage() {
           id="kpi-service-level"
           icon={CheckCircle}
           label="Demand Fulfillment Rate"
-          value={latestRun ? Number(latestRun.fulfillmentRate?.toFixed(1)) : s.serviceLevel}
+          value={latestRun?.metrics?.demandFulfillmentRatePct !== undefined ? Number(latestRun.metrics.demandFulfillmentRatePct.toFixed(1)) : (latestRun?.fulfillmentRate !== undefined ? Number(latestRun.fulfillmentRate.toFixed(1)) : s.serviceLevel)}
           unit="%"
           change={s.serviceLevelChange}
           changeLabel="fulfilled"

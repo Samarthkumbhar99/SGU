@@ -192,11 +192,11 @@ export default function DisruptionSimulatorPage() {
                   <DollarSign className="w-4 h-4 text-rose-500" />
                 </div>
                 <div className="mt-2 text-xl font-bold text-rose-600 dark:text-rose-400">
-                  +${simulationResult.delta_metrics.transport_cost_delta_dollars.toFixed(2)}
+                  +₹{simulationResult.delta_metrics.transport_cost_delta_dollars.toFixed(2)}
                 </div>
                 <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400">
-                  <span>Baseline: ${simulationResult.baseline_plan.total_transport_cost.toFixed(2)}</span>
-                  <span>Disrupted: ${simulationResult.disrupted_plan.total_transport_cost.toFixed(2)}</span>
+                  <span>Baseline: ₹{simulationResult.baseline_plan.total_transport_cost.toFixed(2)}</span>
+                  <span>Disrupted: ₹{simulationResult.disrupted_plan.total_transport_cost.toFixed(2)}</span>
                 </div>
               </div>
 

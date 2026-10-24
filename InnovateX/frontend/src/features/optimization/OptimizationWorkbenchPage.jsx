@@ -187,7 +187,7 @@ export default function OptimizationWorkbenchPage() {
             {/* Shortage Penalty */}
             <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Shortage Penalty ($ / unit)
+                Shortage Penalty (₹ / unit)
               </label>
               <input
                 type="number"
@@ -197,7 +197,7 @@ export default function OptimizationWorkbenchPage() {
                 onChange={(e) => setShortagePenalty(parseFloat(e.target.value) || 100.0)}
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-medium focus:ring-1 focus:ring-blue-500"
               />
-              <span className="text-[10px] text-slate-400">Default: $100.00 / unmet unit</span>
+              <span className="text-[10px] text-slate-400">Default: ₹100.00 / unmet unit</span>
             </div>
 
             {/* Freight Multiplier */}
@@ -278,10 +278,10 @@ export default function OptimizationWorkbenchPage() {
                 <DollarSign className="w-4 h-4 text-blue-500" />
               </div>
               <div className="mt-2 text-xl font-bold text-slate-900 dark:text-white">
-                ${result.optimized_plan.total_transport_cost.toFixed(2)}
+                ₹{result.optimized_plan.total_transport_cost.toFixed(2)}
               </div>
               <div className="mt-1 flex items-center justify-between text-[11px]">
-                <span className="text-slate-400">Baseline: ${result.baseline_plan.total_transport_cost.toFixed(2)}</span>
+                <span className="text-slate-400">Baseline: ₹{result.baseline_plan.total_transport_cost.toFixed(2)}</span>
                 <span className="text-emerald-600 font-bold">-{savingsPct}% savings</span>
               </div>
             </div>
@@ -344,7 +344,7 @@ export default function OptimizationWorkbenchPage() {
             </div>
             <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
               Google OR-Tools CP-SAT evaluated the complete combinatorial dispatch graph across 3 warehouses and 12 destination outlets over the {result.planning_horizon_days}-day horizon.
-              Compared to the greedy heuristic baseline (${result.baseline_plan.total_transport_cost.toFixed(2)} freight), the optimal solver schedule delivers an identical 100% fulfillment rate while saving <strong className="text-emerald-600">${(result.baseline_plan.total_transport_cost - result.optimized_plan.total_transport_cost).toFixed(2)} ({savingsPct}%)</strong> in aggregate transportation freight costs by bundling shipments along high-capacity, low-cost freight corridors.
+              Compared to the greedy heuristic baseline (₹{result.baseline_plan.total_transport_cost.toFixed(2)} freight), the optimal solver schedule delivers an identical 100% fulfillment rate while saving <strong className="text-emerald-600">₹{(result.baseline_plan.total_transport_cost - result.optimized_plan.total_transport_cost).toFixed(2)} ({savingsPct}%)</strong> in aggregate transportation freight costs by bundling shipments along high-capacity, low-cost freight corridors.
             </p>
           </div>
         )}
@@ -462,11 +462,11 @@ export default function OptimizationWorkbenchPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Freight Rate:</span>
-                  <span>${selectedAllocation.unit_transport_cost.toFixed(2)} / unit</span>
+                  <span>₹{selectedAllocation.unit_transport_cost.toFixed(2)} / unit</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-500">Total Lane Cost:</span>
-                  <span className="font-bold">${selectedAllocation.total_transport_cost.toFixed(2)}</span>
+                  <span className="font-bold">₹{selectedAllocation.total_transport_cost.toFixed(2)}</span>
                 </div>
               </div>
 

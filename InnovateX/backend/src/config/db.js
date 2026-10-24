@@ -25,7 +25,10 @@ export const connectDB = async (options = {}) => {
     return mongoose.connection
   }
 
-  const uri = options.uri || env.MONGODB_URI
+  const uri =
+    options.uri ||
+    process.env.TEST_MONGODB_URI ||
+    (process.env.NODE_ENV === 'test' ? 'mongodb://127.0.0.1:27017/supplyshield' : env.MONGODB_URI)
 
   if (!uri) {
     if (env.ALLOW_MEMORY_FALLBACK) {

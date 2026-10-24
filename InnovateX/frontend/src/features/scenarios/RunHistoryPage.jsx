@@ -192,7 +192,7 @@ export default function RunHistoryPage() {
                           {(r.solverRuntimeSeconds || 0).toFixed(3)}s
                         </td>
                         <td className="py-2.5 px-4 text-right font-bold text-slate-900 dark:text-white font-mono">
-                          ${cost.toFixed(2)}
+                          ₹{cost.toFixed(2)}
                         </td>
                         <td className="py-2.5 px-4 text-right font-bold text-emerald-600 font-mono">
                           {fulfill.toFixed(1)}%
@@ -283,7 +283,7 @@ export default function RunHistoryPage() {
                 <div className="flex justify-between">
                   <span className="text-slate-500">Optimized Freight Cost:</span>
                   <span className="font-bold text-slate-900 dark:text-white font-mono">
-                    ${(selectedRun.metrics?.optimizedTransportCost || 0).toFixed(2)}
+                    ₹{(selectedRun.metrics?.optimizedTransportCost || 0).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex justify-between">

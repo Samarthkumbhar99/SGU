@@ -402,7 +402,7 @@ export default function NetworkExplorerPage() {
                       </div>
                       <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
                         <span className="text-slate-500">Unit Freight Cost:</span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">${selectedElement.data.cost.toFixed(2)} / unit</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">₹{selectedElement.data.cost.toFixed(2)} / unit</span>
                       </div>
                       <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
                         <span className="text-slate-500">Transit Lead Time:</span>
