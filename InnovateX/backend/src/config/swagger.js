@@ -336,6 +336,74 @@ export const swaggerSpec = {
         },
       },
     },
+    '/api/v1/analytics/overview': {
+      get: {
+        summary: 'Network-wide inventory health and demand overview KPIs',
+        tags: ['Analytics'],
+        parameters: [
+          { name: 'warehouseId', in: 'query', schema: { type: 'string' } },
+          { name: 'skuId', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: {
+          200: { description: 'Overview KPI summary' },
+        },
+      },
+    },
+    '/api/v1/analytics/inventory': {
+      get: {
+        summary: 'Item-by-item inventory intelligence, valuation, and days of supply',
+        tags: ['Analytics'],
+        parameters: [
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+          { name: 'skuId', in: 'query', schema: { type: 'string' } },
+          { name: 'warehouseId', in: 'query', schema: { type: 'string' } },
+          { name: 'lowStock', in: 'query', schema: { type: 'boolean' } },
+        ],
+        responses: {
+          200: { description: 'Inventory analytics positions' },
+        },
+      },
+    },
+    '/api/v1/analytics/demand': {
+      get: {
+        summary: 'Demand trend aggregation, volatility metrics (stdDev, CV), and promotion comparison',
+        tags: ['Analytics'],
+        parameters: [
+          { name: 'skuId', in: 'query', schema: { type: 'string' } },
+          { name: 'warehouseId', in: 'query', schema: { type: 'string' } },
+          { name: 'region', in: 'query', schema: { type: 'string' } },
+          { name: 'granularity', in: 'query', schema: { type: 'string', enum: ['daily', 'weekly', 'monthly'] } },
+          { name: 'startDate', in: 'query', schema: { type: 'string' } },
+          { name: 'endDate', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: {
+          200: { description: 'Aggregated demand series' },
+        },
+      },
+    },
+    '/api/v1/analytics/suppliers': {
+      get: {
+        summary: 'Supplier lead-time summaries and inventory exposure',
+        tags: ['Analytics'],
+        responses: {
+          200: { description: 'Supplier analytics profiles' },
+        },
+      },
+    },
+    '/api/v1/recommendations': {
+      get: {
+        summary: 'Deterministic rule-based replenishment and risk recommendations',
+        tags: ['Recommendations'],
+        parameters: [
+          { name: 'warehouseId', in: 'query', schema: { type: 'string' } },
+          { name: 'skuId', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: {
+          200: { description: 'Prioritized recommendations list' },
+        },
+      },
+    },
   },
 }
 

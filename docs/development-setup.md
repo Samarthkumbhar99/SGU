@@ -50,7 +50,7 @@ npm run dev
 ```bash
 npm test
 ```
-Executes all 26 test specifications covering health probes, ML client integration, CSV ingestion validation, duplicate rejection, and read endpoints with pagination.
+Executes all 41 test specifications across 5 test suites covering health probes, ML client integration, CSV ingestion validation, duplicate rejection, paginated read endpoints, Phase 2 supply-chain analytics calculations, and deterministic recommendation triggers.
 
 ---
 
