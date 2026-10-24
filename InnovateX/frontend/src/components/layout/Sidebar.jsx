@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -10,6 +11,7 @@ import {
   Settings,
   Sparkles,
   LogOut,
+  X,
 } from 'lucide-react'
 import { useUIStore, useAuthStore } from '../../store/index.js'
 import BranchedMenu from '../ui/BranchedMenu.jsx'
@@ -50,11 +52,53 @@ export function Sidebar() {
   const { user, logout } = useAuthStore()
   const location = useLocation()
   const navigate = useNavigate()
+  const sidebarRef = useRef(null)
 
   const handleLogout = () => {
+    setSidebarMobileOpen(false)
     logout()
     navigate('/login')
   }
+
+  // 1. Auto-close sidebar whenever route changes
+  useEffect(() => {
+    setSidebarMobileOpen(false)
+  }, [location.pathname, setSidebarMobileOpen])
+
+  // 2. Close sidebar when clicking anywhere on screen outside the sidebar
+  useEffect(() => {
+    if (!sidebarMobileOpen) return
+
+    const handleClickOutside = (e) => {
+      // If click was inside sidebar, do nothing
+      if (sidebarRef.current && sidebarRef.current.contains(e.target)) {
+        return
+      }
+      // If click was on mobile hamburger toggle button, ignore to avoid conflict
+      const mobileBtn = document.getElementById('mobile-menu-btn')
+      if (mobileBtn && mobileBtn.contains(e.target)) {
+        return
+      }
+      setSidebarMobileOpen(false)
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSidebarMobileOpen(false)
+      }
+    }
+
+    // Add mousedown, touchstart and escape key listener
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [sidebarMobileOpen, setSidebarMobileOpen])
 
   // Find which branch index contains the current route so it is open by default
   const activeSectionIndex = SIDEBAR_BRANCHED_ITEMS.findIndex((section) =>
@@ -64,7 +108,7 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile backdrop overlay — clicking it closes sidebar */}
       {sidebarMobileOpen && (
         <div
           className="ss-sidebar-overlay"
@@ -75,6 +119,7 @@ export function Sidebar() {
 
       {/* Main Sidebar Container (Light Theme) */}
       <nav
+        ref={sidebarRef}
         className={`ss-sidebar ${sidebarCollapsed ? 'ss-sidebar-collapsed' : ''}`}
         style={{
           transform: sidebarMobileOpen ? 'translateX(0)' : undefined,
@@ -85,16 +130,16 @@ export function Sidebar() {
         {/* Brand Header */}
         <div
           style={{
-            padding: '16px 16px 14px',
+            padding: '16px 14px 14px 16px',
             borderBottom: '1px solid #e2e8f0',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: '12px',
+            gap: '8px',
             background: '#ffffff',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1 }}>
             <img
               src="/logo.webp"
               alt="SupplyShield AI Logo"
@@ -111,7 +156,7 @@ export function Sidebar() {
             />
 
             {!sidebarCollapsed && (
-              <div style={{ minWidth: 0 }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
                 <div
                   style={{
                     color: '#0f172a',
@@ -151,6 +196,17 @@ export function Sidebar() {
               </div>
             )}
           </div>
+
+          {/* Cross (close) button for mobile view */}
+          <button
+            type="button"
+            onClick={() => setSidebarMobileOpen(false)}
+            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center shrink-0"
+            title="Close navigation"
+            aria-label="Close sidebar"
+          >
+            <X size={20} />
+          </button>
         </div>
 
         {/* Branched Navigation Area */}
@@ -172,7 +228,10 @@ export function Sidebar() {
                   <button
                     key={item.value}
                     type="button"
-                    onClick={() => navigate(item.value)}
+                    onClick={() => {
+                      navigate(item.value)
+                      setSidebarMobileOpen(false)
+                    }}
                     title={item.label}
                     className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
                       isActive

@@ -386,12 +386,25 @@ body {
   width: 72px;
 }
 
+@media (max-width: 1024px) {
+  .ss-sidebar {
+    transform: translateX(-100%);
+    box-shadow: 4px 0 28px rgba(15, 23, 42, 0.18);
+  }
+
+  .ss-sidebar[data-mobile-open="true"] {
+    transform: translateX(0) !important;
+  }
+}
+
 .ss-sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.35);
+  background: rgba(15, 23, 42, 0.45);
   z-index: 49;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
+  cursor: pointer;
+  animation: fadeIn 0.2s ease;
 }
 
 /* Sidebar nav item */
