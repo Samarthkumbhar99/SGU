@@ -68,7 +68,7 @@ export default function LandingPage() {
               {/* Main Headline (Clean, punchy, RELEX tone) */}
               <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold text-slate-900 tracking-tight leading-[1.12] mb-6">
                 An AI-native platform for{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-blue-700">
+                <span className="font-cursive text-sky-600 font-semibold italic text-[1.12em] px-1.5">
                   zero-stockout
                 </span>{' '}
                 distribution planning
@@ -188,15 +188,20 @@ export default function LandingPage() {
       {/* ======================================================== */}
       {/* FAQ ACCORDION                                            */}
       {/* ======================================================== */}
-      <section className="py-24 bg-slate-50 border-t border-slate-200/80">
+      {/* FAQ ACCORDION                                            */}
+      {/* ======================================================== */}
+      <section className="py-24 bg-slate-50/70 border-t border-slate-200/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-800 text-xs font-bold uppercase tracking-wider mb-4">
               <HelpCircle className="w-3.5 h-3.5 text-sky-600" />
               Frequently Asked Questions
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Everything you need to know about SupplyShield
+            <h2 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-slate-900 tracking-tight leading-tight">
+              Everything you need to know about{' '}
+              <span className="font-cursive text-sky-600 font-semibold italic text-[1.08em] px-1">
+                SupplyShield
+              </span>
             </h2>
           </div>
 
@@ -206,7 +211,7 @@ export default function LandingPage() {
               return (
                 <div
                   key={idx}
-                  className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all"
+                  className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden transition-all"
                 >
                   <button
                     type="button"
@@ -231,27 +236,35 @@ export default function LandingPage() {
       </section>
 
       {/* ======================================================== */}
-      {/* CALL TO ACTION BANNER                                    */}
+      {/* CALL TO ACTION BANNER (Refined Enterprise Design)        */}
       {/* ======================================================== */}
-      <section className="py-20 bg-gradient-to-r from-sky-600 via-sky-500 to-blue-700 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.2),transparent_70%)]" />
+      <section className="py-24 bg-slate-900 text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(2,132,199,0.25),transparent_70%)] pointer-events-none" />
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-6">
-            Ready to stop bleeding margins on stockouts & expiry?
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-sky-500/20 border border-sky-400/30 text-sky-300 text-xs font-bold uppercase tracking-wider mb-6">
+            <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+            Deterministic Global Optimality · Zero Phantom Inventory
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-6 leading-tight">
+            Ready to stop bleeding margins on{' '}
+            <span className="font-cursive text-sky-400 font-semibold italic text-[1.08em] px-1">
+              stockouts & expiry
+            </span>
+            ?
           </h2>
-          <p className="text-base sm:text-xl text-sky-100 max-w-2xl mx-auto mb-8 font-normal">
-            Launch the SupplyShield AI distribution intelligence engine now and get optimal dispatch manifests in seconds.
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-10 font-normal leading-relaxed">
+            Launch the SupplyShield AI distribution intelligence engine now and generate mathematically optimal dispatch manifests in seconds.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/dashboard"
-              className="px-8 py-4 rounded-full bg-white text-sky-700 hover:bg-sky-50 text-sm font-extrabold shadow-xl transition-all hover:scale-105"
+              className="px-8 py-4 rounded-full bg-sky-500 hover:bg-sky-400 text-white text-sm font-extrabold shadow-lg shadow-sky-500/30 transition-all hover:scale-105"
             >
               Launch Live Application
             </Link>
             <Link
               to="/login"
-              className="px-8 py-4 rounded-full bg-sky-700/60 hover:bg-sky-700 text-white text-sm font-extrabold border border-white/20 transition-all"
+              className="px-8 py-4 rounded-full bg-white/10 hover:bg-white/15 text-white text-sm font-extrabold border border-white/20 transition-all backdrop-blur-sm"
             >
               Sign In to Your Workspace
             </Link>

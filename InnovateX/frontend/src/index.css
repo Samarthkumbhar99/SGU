@@ -4,6 +4,19 @@
    SupplyShield AI Design System
    ============================================================ */
 
+.font-cursive {
+  font-family: 'Newsreader', 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.font-script {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
 @theme {
   /* Color Palette */
   --color-navy-950: #071b30;

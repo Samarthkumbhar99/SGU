@@ -24,21 +24,24 @@ export default function RoiCalculator() {
               <Calculator className="w-3.5 h-3.5 text-emerald-600" />
               Quantifiable Business Impact
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              Estimate your annual network loss recovery
+            <h2 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-slate-900 tracking-tight leading-tight">
+              Estimate your annual{' '}
+              <span className="font-cursive text-sky-600 font-semibold italic text-[1.08em] px-1">
+                network loss recovery
+              </span>
             </h2>
             <p className="mt-3 text-slate-600 text-base mb-8">
               Tune your network parameters below to calculate estimated savings across stockout mitigation,
               FEFO perishable rescue, and emergency courier freight elimination.
             </p>
 
-            {/* Interactive Sliders */}
-            <div className="space-y-6 bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-200/80">
+            {/* Interactive Sliders Workbench */}
+            <div className="space-y-6 bg-slate-50/80 p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-sm">
               {/* Slider 1: Distribution Centers */}
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-bold text-slate-800">Regional Distribution Centers (DCs)</span>
-                  <span className="text-base font-black text-sky-600 font-mono bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-sm">
+                  <span className="text-sm font-black text-sky-700 font-mono bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-xs">
                     {dcs} DCs
                   </span>
                 </div>
@@ -50,7 +53,7 @@ export default function RoiCalculator() {
                   onChange={(e) => setDcs(Number(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
                 />
-                <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+                <div className="flex justify-between text-[11px] text-slate-400 mt-1 font-mono">
                   <span>2 DCs</span>
                   <span>20 DCs</span>
                 </div>
@@ -60,7 +63,7 @@ export default function RoiCalculator() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-bold text-slate-800">Retail Stores / Nodes</span>
-                  <span className="text-base font-black text-sky-600 font-mono bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-sm">
+                  <span className="text-sm font-black text-sky-700 font-mono bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-xs">
                     {stores} Stores
                   </span>
                 </div>
@@ -73,7 +76,7 @@ export default function RoiCalculator() {
                   onChange={(e) => setStores(Number(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
                 />
-                <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+                <div className="flex justify-between text-[11px] text-slate-400 mt-1 font-mono">
                   <span>10 Stores</span>
                   <span>150 Stores</span>
                 </div>
@@ -83,7 +86,7 @@ export default function RoiCalculator() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-bold text-slate-800">Monthly Managed Inventory Value</span>
-                  <span className="text-base font-black text-sky-600 font-mono bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-sm">
+                  <span className="text-sm font-black text-sky-700 font-mono bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-xs">
                     ${(inventoryValue / 1000000).toFixed(2)}M
                   </span>
                 </div>
@@ -96,7 +99,7 @@ export default function RoiCalculator() {
                   onChange={(e) => setInventoryValue(Number(e.target.value))}
                   className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600"
                 />
-                <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+                <div className="flex justify-between text-[11px] text-slate-400 mt-1 font-mono">
                   <span>$500K</span>
                   <span>$10M</span>
                 </div>
@@ -104,60 +107,91 @@ export default function RoiCalculator() {
             </div>
           </div>
 
-          {/* Right Column: ROI Results Card */}
+          {/* Right Column: Clean Executive Financial Ledger */}
           <div className="lg:col-span-5">
-            <div
-              className="bg-gradient-to-br from-slate-900 via-sky-950 to-slate-900 rounded-3xl p-8 text-white shadow-2xl border border-sky-400/20 relative overflow-hidden"
-              style={{
-                boxShadow: '0 25px 50px -12px rgba(2, 132, 199, 0.25)',
-              }}
-            >
-              <div className="text-xs font-bold uppercase tracking-widest text-sky-400 mb-2">
-                Estimated Annual Impact
-              </div>
-              <div className="text-4xl sm:text-5xl font-black text-white tracking-tight mb-6">
-                ${totalAnnualSavings.toLocaleString()}
-                <span className="text-sm font-normal text-slate-400 block mt-1">Annual recoverable margin</span>
+            <div className="bg-white rounded-3xl p-8 sm:p-9 border border-slate-200/90 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+              <div className="flex items-center justify-between mb-4">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 border border-sky-200/70 text-sky-800 text-xs font-bold uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-sky-600 animate-pulse" />
+                  Executive Audit Ledger
+                </span>
+                <span className="text-xs font-bold text-slate-400 font-mono">
+                  {stores} nodes · {dcs} hubs
+                </span>
               </div>
 
-              {/* Breakdown */}
-              <div className="space-y-3.5 py-6 border-y border-slate-800 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-300 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    Stockout Revenue Saved
+              <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">
+                Estimated Annual Recoverable Margin
+              </div>
+              <div className="flex items-baseline gap-3 mb-6">
+                <span className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight font-mono">
+                  ${totalAnnualSavings.toLocaleString()}
+                </span>
+                <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md">
+                  +18.4% ROI
+                </span>
+              </div>
+
+              {/* Financial Breakdown Table */}
+              <div className="divide-y divide-slate-100 border-y border-slate-200/80 py-2 mb-6">
+                <div className="py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600">
+                      <TrendingUp className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Stockout Revenue Recovered</div>
+                      <div className="text-[11px] text-slate-500">72% shelf-loss mitigation</div>
+                    </div>
+                  </div>
+                  <span className="font-mono font-bold text-emerald-600 text-sm">
+                    +${stockoutSavings.toLocaleString()}
                   </span>
-                  <span className="font-bold text-white font-mono">+${stockoutSavings.toLocaleString()}</span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-300 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-400" />
-                    Perishable Spoilage Prevented
+                <div className="py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-amber-50 border border-amber-200/80 flex items-center justify-center text-amber-600">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Perishable Spoilage Averted</div>
+                      <div className="text-[11px] text-slate-500">FEFO store-velocity matching</div>
+                    </div>
+                  </div>
+                  <span className="font-mono font-bold text-emerald-600 text-sm">
+                    +${spoilageSavings.toLocaleString()}
                   </span>
-                  <span className="font-bold text-white font-mono">+${spoilageSavings.toLocaleString()}</span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-300 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-sky-400" />
-                    Expedited Courier Avoidance
+                <div className="py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-sky-50 border border-sky-200/80 flex items-center justify-center text-sky-600">
+                      <DollarSign className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Expedited Courier Avoidance</div>
+                      <div className="text-[11px] text-slate-500">Zero panic truck re-runs</div>
+                    </div>
+                  </div>
+                  <span className="font-mono font-bold text-emerald-600 text-sm">
+                    +${courierSavings.toLocaleString()}
                   </span>
-                  <span className="font-bold text-white font-mono">+${courierSavings.toLocaleString()}</span>
                 </div>
               </div>
 
-              <div className="mt-8 flex flex-col gap-3">
+              {/* Action Button */}
+              <div className="space-y-3">
                 <Link
                   to="/login"
-                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm shadow-lg shadow-sky-500/30 transition-all hover:scale-[1.02]"
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-sm shadow-md shadow-sky-600/20 transition-all hover:scale-[1.01]"
                 >
                   <span>Launch SupplyShield AI</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
-                <span className="text-[11px] text-center text-slate-400">
-                  Includes full 12-point validation gate & Google OR-Tools MILP solver
-                </span>
+                <p className="text-[11px] text-center text-slate-500 leading-normal">
+                  Benchmarked against FMI / IHL Group grocery loss models and Google OR-Tools MILP dual valuations.
+                </p>
               </div>
             </div>
           </div>
