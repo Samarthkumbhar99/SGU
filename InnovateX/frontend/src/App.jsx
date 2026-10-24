@@ -4,6 +4,7 @@ import LoginPage from './features/auth/LoginPage.jsx'
 import SignupPage from './features/auth/SignupPage.jsx'
 import AuthCallback from './features/auth/AuthCallback.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
+import InventoryPage from './features/inventory/InventoryPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 
 // Protected route wrapper
@@ -80,11 +81,7 @@ export default function App() {
           path="/inventory"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Inventory Management"
-                breadcrumbs={['Dashboard', 'Inventory']}
-                description="Searchable, filterable inventory table with expiry tracking, batch management, CSV import/export, and validated create/edit forms. Coming in Phase 4."
-              />
+              <InventoryPage />
             </ProtectedRoute>
           }
         />

@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 
 const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
+const inventoryRoutes = require('./routes/inventoryRoutes')
 const { errorHandler, notFound } = require('./middleware/errorHandler')
 
 const app = express()
@@ -59,6 +60,7 @@ app.get('/api/v1/health', (req, res) => {
 // ——— API Routes ———
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/dashboard', dashboardRoutes)
+app.use('/api/v1/inventory', inventoryRoutes)
 
 // ——— 404 & Error handling ———
 app.use(notFound)
