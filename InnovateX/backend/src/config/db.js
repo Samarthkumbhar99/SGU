@@ -12,27 +12,68 @@ try {
 
 let isConnected = false
 
-export const connectDB = async () => {
-  if (isConnected) return mongoose.connection
+/**
+ * Redact username:password credentials from database connection URI for safe logging
+ */
+export const sanitizeMongoUri = (uri) => {
+  if (!uri) return 'undefined'
+  return uri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:***@')
+}
 
-  if (!env.MONGODB_URI) {
-    logger.warn('⚠️  MONGODB_URI is not defined in environment.')
-    logger.warn('ℹ️  Running in offline/mock mode for endpoints that do not require MongoDB.')
-    return null
+export const connectDB = async (options = {}) => {
+  if (isConnected && mongoose.connection.readyState === 1) {
+    return mongoose.connection
+  }
+
+  const uri = options.uri || env.MONGODB_URI
+
+  if (!uri) {
+    if (env.ALLOW_MEMORY_FALLBACK) {
+      logger.warn('⚠️  MONGODB_URI is not set. Operating in explicit test/in-memory fallback mode.')
+      return null
+    }
+    const errorMsg = '❌ MONGODB_URI is required but not configured. Set MONGODB_URI in .env.'
+    logger.fatal(errorMsg)
+    throw new Error(errorMsg)
+  }
+
+  if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
+    const errorMsg = `❌ Invalid MONGODB_URI protocol: ${sanitizeMongoUri(uri)}. Must start with mongodb:// or mongodb+srv://`
+    logger.fatal(errorMsg)
+    throw new Error(errorMsg)
   }
 
   try {
-    const conn = await mongoose.connect(env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 8000,
+    const sanitizedUri = sanitizeMongoUri(uri)
+    logger.info(`Connecting to MongoDB at: ${sanitizedUri}`)
+
+    const conn = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: options.timeoutMS || 6000,
+      autoIndex: true, // Build indexes defined in schemas
     })
+
     isConnected = true
-    logger.info(`✅ MongoDB connected: ${conn.connection.host}`)
+    logger.info(`✅ MongoDB connected successfully to database: '${conn.connection.name}' on host: '${conn.connection.host}'`)
     return conn
   } catch (err) {
     isConnected = false
-    logger.warn(`⚠️  MongoDB connection failed: ${err.message}`)
-    logger.warn('ℹ️  Running in offline/mock mode for endpoints that do not require MongoDB.')
+    const sanitizedUri = sanitizeMongoUri(uri)
+    logger.error({ err: err.message, target: sanitizedUri }, '❌ MongoDB connection error')
+
+    if (!env.ALLOW_MEMORY_FALLBACK) {
+      throw new Error(`Failed to connect to MongoDB at ${sanitizedUri}: ${err.message}`)
+    }
+
+    logger.warn('ℹ️  ALLOW_MEMORY_FALLBACK is enabled. Running with fallback for tests.')
     return null
+  }
+}
+
+export const disconnectDB = async () => {
+  if (mongoose.connection.readyState !== 0) {
+    await mongoose.disconnect()
+    isConnected = false
+    logger.info('MongoDB disconnected.')
   }
 }
 
@@ -44,10 +85,17 @@ export const getDbStatus = () => {
     3: 'disconnecting',
   }
   const state = mongoose.connection.readyState
+  const connected = state === 1
   return {
-    connected: state === 1,
+    connected,
     status: readyStateMap[state] || 'unknown',
-    host: isConnected ? mongoose.connection.host : null,
+    databaseName: connected ? mongoose.connection.name : null,
+    host: connected ? mongoose.connection.host : null,
+    mode: connected
+      ? 'mongodb-persistent'
+      : env.ALLOW_MEMORY_FALLBACK
+      ? 'in-memory-fallback'
+      : 'unavailable',
   }
 }
 

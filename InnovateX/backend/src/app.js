@@ -12,6 +12,7 @@ import setupSwagger from './config/swagger.js'
 import healthRoutes from './routes/healthRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
+import dataRoutes from './routes/dataRoutes.js'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
 
 const app = express()
@@ -96,6 +97,7 @@ setupSwagger(app)
 app.use('/api/v1/health', healthRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/dashboard', dashboardRoutes)
+app.use('/api/v1', dataRoutes)
 
 // ——— 404 & Centralized Error handling ———
 app.use(notFound)

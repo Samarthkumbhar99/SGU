@@ -13,7 +13,26 @@ const envSchema = z.object({
       message: 'PORT must be a valid port number between 1 and 65535',
     }),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  MONGODB_URI: z.string().optional(),
+  MONGODB_URI: z
+    .string()
+    .refine(
+      (val) => !val || val.startsWith('mongodb://') || val.startsWith('mongodb+srv://'),
+      {
+        message: 'MONGODB_URI must be a valid connection string starting with mongodb:// or mongodb+srv://',
+      }
+    )
+    .optional(),
+  ALLOW_MEMORY_FALLBACK: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (val === 'true') return true
+      if (val === 'false') return false
+      return process.env.NODE_ENV === 'test'
+    }),
+  DATASET_PATH: z
+    .string()
+    .default('e:/Hackathons/Triwizathon/data/supply_chain_dataset1.csv'),
   JWT_SECRET: z
     .string()
     .default(
@@ -53,7 +72,6 @@ try {
   if (process.env.NODE_ENV === 'production') {
     process.exit(1)
   } else {
-    // Provide safe defaults for development if validation failed
     console.warn('⚠️  Falling back to development environment defaults.')
     env = envSchema.parse({
       ...process.env,

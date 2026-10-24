@@ -27,6 +27,15 @@ export const swaggerSpec = {
       },
     },
     schemas: {
+      PaginationMeta: {
+        type: 'object',
+        properties: {
+          page: { type: 'integer', example: 1 },
+          limit: { type: 'integer', example: 20 },
+          total: { type: 'integer', example: 50 },
+          totalPages: { type: 'integer', example: 3 },
+        },
+      },
       HealthResponse: {
         type: 'object',
         properties: {
@@ -69,21 +78,85 @@ export const swaggerSpec = {
           },
         },
       },
+      Product: {
+        type: 'object',
+        properties: {
+          skuId: { type: 'string', example: 'SKU_1' },
+          productName: { type: 'string', example: 'Product SKU_1' },
+          category: { type: 'string', example: 'General FMCG' },
+          unitCost: { type: 'number', example: 13.95 },
+          unitPrice: { type: 'number', example: 20.48 },
+          supplierId: { type: 'string', example: 'SUP_8' },
+          leadTimeDays: { type: 'number', example: 14 },
+          reorderPoint: { type: 'number', example: 379 },
+        },
+      },
+      Warehouse: {
+        type: 'object',
+        properties: {
+          warehouseId: { type: 'string', example: 'WH_1' },
+          warehouseName: { type: 'string', example: 'Warehouse WH_1' },
+          regionsServed: { type: 'array', items: { type: 'string' }, example: ['West', 'North', 'South', 'East'] },
+          storageCapacityUnits: { type: 'number', example: 15000 },
+        },
+      },
+      Supplier: {
+        type: 'object',
+        properties: {
+          supplierId: { type: 'string', example: 'SUP_8' },
+          supplierName: { type: 'string', example: 'Supplier SUP_8' },
+          defaultLeadTimeDays: { type: 'number', example: 14 },
+          regions: { type: 'array', items: { type: 'string' } },
+        },
+      },
+      InventoryItem: {
+        type: 'object',
+        properties: {
+          skuId: { type: 'string', example: 'SKU_1' },
+          warehouseId: { type: 'string', example: 'WH_1' },
+          inventoryLevel: { type: 'number', example: 410 },
+          reorderPoint: { type: 'number', example: 379 },
+          orderQuantity: { type: 'number', example: 0 },
+          unitCost: { type: 'number', example: 13.95 },
+          unitPrice: { type: 'number', example: 20.48 },
+          isLowStock: { type: 'boolean', example: false },
+        },
+      },
+      DemandHistoryRecord: {
+        type: 'object',
+        properties: {
+          dateString: { type: 'string', example: '2024-01-01' },
+          skuId: { type: 'string', example: 'SKU_1' },
+          warehouseId: { type: 'string', example: 'WH_1' },
+          region: { type: 'string', example: 'West' },
+          unitsSold: { type: 'number', example: 10 },
+          inventoryLevel: { type: 'number', example: 592 },
+          demandForecast: { type: 'number', example: 8.52 },
+          promotionFlag: { type: 'integer', example: 0 },
+          stockoutFlag: { type: 'integer', example: 0 },
+        },
+      },
+      DataQualitySummary: {
+        type: 'object',
+        properties: {
+          success: { type: 'boolean', example: true },
+          data: {
+            type: 'object',
+            properties: {
+              datasetStatus: { type: 'string', example: 'ingested' },
+              recordCounts: { type: 'object' },
+              dataIntegrity: { type: 'object' },
+              lastImportRun: { type: 'object' },
+            },
+          },
+        },
+      },
       AuthResponse: {
         type: 'object',
         properties: {
           success: { type: 'boolean', example: true },
           token: { type: 'string', example: 'eyJhbGciOiJIUzI1Ni...' },
-          user: {
-            type: 'object',
-            properties: {
-              id: { type: 'string' },
-              name: { type: 'string' },
-              email: { type: 'string' },
-              role: { type: 'string' },
-              company: { type: 'string' },
-            },
-          },
+          user: { type: 'object' },
         },
       },
       ErrorResponse: {
@@ -103,11 +176,7 @@ export const swaggerSpec = {
         responses: {
           200: {
             description: 'Backend is healthy and operational',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/HealthResponse' },
-              },
-            },
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/HealthResponse' } } },
           },
         },
       },
@@ -119,11 +188,7 @@ export const swaggerSpec = {
         responses: {
           200: {
             description: 'Health of MongoDB and ML Service',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/DependencyHealthResponse' },
-              },
-            },
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/DependencyHealthResponse' } } },
           },
         },
       },
@@ -132,91 +197,142 @@ export const swaggerSpec = {
       post: {
         summary: 'Register a new user',
         tags: ['Auth'],
-        requestBody: {
-          required: true,
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                required: ['name', 'email', 'password'],
-                properties: {
-                  name: { type: 'string', example: 'Vikram Malhotra' },
-                  email: { type: 'string', example: 'vikram@supplyshield.io' },
-                  password: { type: 'string', example: 'Password123' },
-                  company: { type: 'string', example: 'InnovateX' },
-                  role: { type: 'string', example: 'Distribution Manager' },
-                },
-              },
-            },
-          },
-        },
-        responses: {
-          201: {
-            description: 'User registered successfully',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/AuthResponse' },
-              },
-            },
-          },
-        },
+        responses: { 201: { description: 'User registered successfully' } },
       },
     },
     '/api/v1/auth/login': {
       post: {
         summary: 'User login',
         tags: ['Auth'],
+        responses: { 200: { description: 'Login successful' } },
+      },
+    },
+    '/api/v1/products': {
+      get: {
+        summary: 'Get paginated product catalog',
+        tags: ['Master Data'],
+        parameters: [
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+          { name: 'skuId', in: 'query', schema: { type: 'string' } },
+          { name: 'supplierId', in: 'query', schema: { type: 'string' } },
+          { name: 'search', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: {
+          200: { description: 'Product list' },
+        },
+      },
+    },
+    '/api/v1/warehouses': {
+      get: {
+        summary: 'Get paginated warehouse list',
+        tags: ['Master Data'],
+        parameters: [
+          { name: 'page', in: 'query', schema: { type: 'integer', default: 1 } },
+          { name: 'limit', in: 'query', schema: { type: 'integer', default: 20 } },
+          { name: 'warehouseId', in: 'query', schema: { type: 'string' } },
+          { name: 'region', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: {
+          200: { description: 'Warehouse list' },
+        },
+      },
+    },
+    '/api/v1/stores': {
+      get: {
+        summary: 'Get retail stores (optional)',
+        tags: ['Master Data'],
+        responses: {
+          200: { description: 'Store list' },
+        },
+      },
+    },
+    '/api/v1/suppliers': {
+      get: {
+        summary: 'Get suppliers catalog',
+        tags: ['Master Data'],
+        parameters: [
+          { name: 'supplierId', in: 'query', schema: { type: 'string' } },
+          { name: 'region', in: 'query', schema: { type: 'string' } },
+        ],
+        responses: {
+          200: { description: 'Supplier list' },
+        },
+      },
+    },
+    '/api/v1/inventory': {
+      get: {
+        summary: 'Get current inventory snapshot',
+        tags: ['Operational Data'],
+        parameters: [
+          { name: 'skuId', in: 'query', schema: { type: 'string' } },
+          { name: 'warehouseId', in: 'query', schema: { type: 'string' } },
+          { name: 'lowStock', in: 'query', schema: { type: 'boolean' } },
+        ],
+        responses: {
+          200: { description: 'Inventory list' },
+        },
+      },
+    },
+    '/api/v1/demand/history': {
+      get: {
+        summary: 'Get historical daily demand observations',
+        tags: ['Operational Data'],
+        parameters: [
+          { name: 'skuId', in: 'query', schema: { type: 'string' } },
+          { name: 'warehouseId', in: 'query', schema: { type: 'string' } },
+          { name: 'region', in: 'query', schema: { type: 'string' } },
+          { name: 'startDate', in: 'query', schema: { type: 'string', example: '2024-01-01' } },
+          { name: 'endDate', in: 'query', schema: { type: 'string', example: '2024-12-30' } },
+          { name: 'promotionOnly', in: 'query', schema: { type: 'boolean' } },
+        ],
+        responses: {
+          200: { description: 'Demand history series' },
+        },
+      },
+    },
+    '/api/v1/data-quality/summary': {
+      get: {
+        summary: 'Inspect dataset quality, missing data vs zero values, and import audit metrics',
+        tags: ['Data Engineering'],
+        responses: {
+          200: {
+            description: 'Comprehensive data quality summary',
+            content: { 'application/json': { schema: { $ref: '#/components/schemas/DataQualitySummary' } } },
+          },
+        },
+      },
+    },
+    '/api/v1/data-imports': {
+      get: {
+        summary: 'Audit log of CSV dataset ingestion runs',
+        tags: ['Data Engineering'],
+        responses: {
+          200: { description: 'List of import runs' },
+        },
+      },
+    },
+    '/api/v1/data-imports/trigger': {
+      post: {
+        summary: 'Trigger CSV data ingestion or dry-run validation',
+        tags: ['Data Engineering'],
+        security: [{ BearerAuth: [] }],
         requestBody: {
-          required: true,
           content: {
             'application/json': {
               schema: {
                 type: 'object',
-                required: ['email', 'password'],
                 properties: {
-                  email: { type: 'string', example: 'vikram@supplyshield.io' },
-                  password: { type: 'string', example: 'Password123' },
+                  dryRun: { type: 'boolean', default: false },
+                  filePath: { type: 'string' },
                 },
               },
             },
           },
         },
         responses: {
-          200: {
-            description: 'Login successful',
-            content: {
-              'application/json': {
-                schema: { $ref: '#/components/schemas/AuthResponse' },
-              },
-            },
-          },
-        },
-      },
-    },
-    '/api/v1/auth/me': {
-      get: {
-        summary: 'Get current user profile',
-        tags: ['Auth'],
-        security: [{ BearerAuth: [] }],
-        responses: {
-          200: {
-            description: 'User profile retrieved',
-          },
-          401: {
-            description: 'Unauthorized',
-          },
-        },
-      },
-    },
-    '/api/v1/dashboard/summary': {
-      get: {
-        summary: 'Retrieve distribution network summary KPIs',
-        tags: ['Dashboard'],
-        security: [{ BearerAuth: [] }],
-        responses: {
-          200: {
-            description: 'Aggregated KPI metrics',
-          },
+          200: { description: 'Ingestion initiated or completed' },
+          401: { description: 'Authentication required' },
         },
       },
     },
