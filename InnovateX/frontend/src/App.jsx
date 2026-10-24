@@ -9,6 +9,7 @@ import NetworkExplorerPage from './features/network/NetworkExplorerPage.jsx'
 import OptimizationWorkbenchPage from './features/optimization/OptimizationWorkbenchPage.jsx'
 import DisruptionSimulatorPage from './features/scenarios/DisruptionSimulatorPage.jsx'
 import RunHistoryPage from './features/scenarios/RunHistoryPage.jsx'
+import DemandForecastingPage from './features/forecasting/DemandForecastingPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
 
@@ -107,11 +108,7 @@ export default function App() {
           path="/forecasting"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Demand Forecasting"
-                breadcrumbs={['Dashboard', 'Forecasting']}
-                description="Moving Average, LightGBM, and XGBoost demand forecasting with evaluation and model comparison."
-              />
+              <DemandForecastingPage />
             </ProtectedRoute>
           }
         />

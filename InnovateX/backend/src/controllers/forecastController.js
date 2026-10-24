@@ -6,10 +6,29 @@ import logger from '../utils/logger.js'
  */
 export const predictForecast = async (req, res, next) => {
   try {
-    const { skuId, warehouseId, productId, storeId, horizonDays, modelType, modelVersion, windowDays, roundingPolicy } = req.body
+    const {
+      skuId,
+      sku_id,
+      productId,
+      product_id,
+      warehouseId,
+      warehouse_id,
+      storeId,
+      store_id,
+      horizonDays,
+      horizon_days,
+      modelType,
+      model_type,
+      modelVersion,
+      model_version,
+      windowDays,
+      window_days,
+      roundingPolicy,
+      rounding_policy,
+    } = req.body
 
-    const effectiveSku = skuId || productId
-    const effectiveWarehouse = warehouseId || storeId
+    const effectiveSku = skuId || sku_id || productId || product_id
+    const effectiveWarehouse = warehouseId || warehouse_id || storeId || store_id
 
     if (!effectiveSku || !effectiveWarehouse) {
       return res.status(400).json({
