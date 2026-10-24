@@ -1,34 +1,33 @@
 import { isValidElement, useLayoutEffect, useRef, useState } from 'react';
-import { HugeiconsIcon } from '@hugeicons/react';
 import {
-  CursorPointer01Icon,
-  Download04Icon,
-  Layers01Icon,
-  Notification03Icon,
-  PaintBoardIcon,
-  Rocket01Icon,
-  Settings02Icon,
-  TextFontIcon
-} from '@hugeicons/core-free-icons';
+  Download,
+  Rocket,
+  Settings,
+  Palette,
+  MousePointer,
+  Type,
+  Layers,
+  Bell,
+} from 'lucide-react';
 import './BranchedMenu.css';
 
 const DEFAULT_ITEMS = [
   {
     label: 'Getting started',
     children: [
-      { value: 'install', label: 'Installation', icon: Download04Icon },
-      { value: 'quick', label: 'Quick start', icon: Rocket01Icon },
-      { value: 'config', label: 'Configuration', icon: Settings02Icon },
-      { value: 'theming', label: 'Theming', icon: PaintBoardIcon }
+      { value: 'install', label: 'Installation', icon: Download },
+      { value: 'quick', label: 'Quick start', icon: Rocket },
+      { value: 'config', label: 'Configuration', icon: Settings },
+      { value: 'theming', label: 'Theming', icon: Palette }
     ]
   },
   {
     label: 'Components',
     children: [
-      { value: 'buttons', label: 'Buttons', icon: CursorPointer01Icon },
-      { value: 'typography', label: 'Typography', icon: TextFontIcon },
-      { value: 'overlays', label: 'Overlays', icon: Layers01Icon },
-      { value: 'toasts', label: 'Toasts', icon: Notification03Icon }
+      { value: 'buttons', label: 'Buttons', icon: MousePointer },
+      { value: 'typography', label: 'Typography', icon: Type },
+      { value: 'overlays', label: 'Overlays', icon: Layers },
+      { value: 'toasts', label: 'Toasts', icon: Bell }
     ]
   }
 ];
@@ -38,16 +37,12 @@ const MARK = 16;
 const renderIcon = (icon) => {
   if (!icon) return null;
   if (isValidElement(icon)) return icon;
-  // If Hugeicons icon object
-  if (typeof icon === 'object' && icon !== null && !icon.$$typeof) {
-    return <HugeiconsIcon icon={icon} size={16} strokeWidth={1.8} />;
-  }
-  // If React component (e.g. Lucide Icon)
-  if (typeof icon === 'function' || (typeof icon === 'object' && icon.$$typeof)) {
+  // If functional / class component (like Lucide React icon)
+  if (typeof icon === 'function' || (typeof icon === 'object' && icon !== null && icon.$$typeof)) {
     const IconComp = icon;
     return <IconComp size={16} strokeWidth={1.8} />;
   }
-  return <HugeiconsIcon icon={icon} size={16} strokeWidth={1.8} />;
+  return null;
 };
 
 const toSet = open => new Set(Array.isArray(open) ? open : open >= 0 ? [open] : []);
