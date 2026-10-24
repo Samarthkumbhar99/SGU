@@ -164,9 +164,17 @@ export class MlClient {
    * Request optimization solve
    */
   async optimize(payload, options = {}) {
-    return this.request('/api/v1/optimize', {
+    return this.solveOptimization(payload, options)
+  }
+
+  /**
+   * Request optimization solve via /api/v1/optimization/solve
+   */
+  async solveOptimization(payload = {}, options = {}) {
+    return this.request('/api/v1/optimization/solve', {
       method: 'POST',
       body: payload,
+      timeoutMs: options.timeoutMs || 20000,
       ...options,
     })
   }
@@ -175,9 +183,37 @@ export class MlClient {
    * Run scenario simulation
    */
   async simulateScenario(payload, options = {}) {
-    return this.request('/api/v1/scenario/simulate', {
+    return this.simulateOptimization(payload, options)
+  }
+
+  /**
+   * Run scenario simulation via /api/v1/optimization/simulate
+   */
+  async simulateOptimization(payload = {}, options = {}) {
+    return this.request('/api/v1/optimization/simulate', {
       method: 'POST',
       body: payload,
+      timeoutMs: options.timeoutMs || 30000,
+      ...options,
+    })
+  }
+
+  /**
+   * List optimization runs from ML service
+   */
+  async getOptimizationRuns(options = {}) {
+    return this.request('/api/v1/optimization/runs', {
+      method: 'GET',
+      ...options,
+    })
+  }
+
+  /**
+   * Get specific optimization run from ML service
+   */
+  async getOptimizationRunById(runId, options = {}) {
+    return this.request(`/api/v1/optimization/runs/${runId}`, {
+      method: 'GET',
       ...options,
     })
   }
