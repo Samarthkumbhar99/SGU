@@ -6,6 +6,7 @@ import AuthCallback from './features/auth/AuthCallback.jsx'
 import LandingPage from './features/landing/LandingPage.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
 import InventoryPage from './features/inventory/InventoryPage.jsx'
+import NetworkMapPage from './features/map/NetworkMapPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 
 // Protected route wrapper
@@ -71,11 +72,7 @@ export default function App() {
           path="/network-map"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Network Map"
-                breadcrumbs={['Dashboard', 'Network Map']}
-                description="Interactive Leaflet map with warehouse markers, store markers, route lines, risk overlays, and post-optimization shipment quantities. Coming in Phase 4."
-              />
+              <NetworkMapPage />
             </ProtectedRoute>
           }
         />

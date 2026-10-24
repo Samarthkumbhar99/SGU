@@ -1,0 +1,1082 @@
+[
+  {
+    "id": "STORE-01-core",
+    "storeId": "STORE-01",
+    "name": "Store S-01 (South Delhi)",
+    "region": "North",
+    "coordinates": [
+      77.215,
+      28.5244
+    ],
+    "demand": 3563,
+    "sales": 3556,
+    "weight": 3.56,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-01-cluster-1",
+    "storeId": "STORE-01",
+    "name": "Store S-01 (South Delhi) Zone 1",
+    "region": "North",
+    "coordinates": [
+      77.21293,
+      28.53185
+    ],
+    "demand": 845,
+    "sales": 828,
+    "weight": 0.84,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-01-cluster-2",
+    "storeId": "STORE-01",
+    "name": "Store S-01 (South Delhi) Zone 2",
+    "region": "North",
+    "coordinates": [
+      77.21978,
+      28.50772
+    ],
+    "demand": 516,
+    "sales": 506,
+    "weight": 0.52,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-01-cluster-3",
+    "storeId": "STORE-01",
+    "name": "Store S-01 (South Delhi) Zone 3",
+    "region": "North",
+    "coordinates": [
+      77.22651,
+      28.54809
+    ],
+    "demand": 439,
+    "sales": 430,
+    "weight": 0.44,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-01-cluster-4",
+    "storeId": "STORE-01",
+    "name": "Store S-01 (South Delhi) Zone 4",
+    "region": "North",
+    "coordinates": [
+      77.20712,
+      28.51569
+    ],
+    "demand": 532,
+    "sales": 521,
+    "weight": 0.53,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-01-cluster-5",
+    "storeId": "STORE-01",
+    "name": "Store S-01 (South Delhi) Zone 5",
+    "region": "North",
+    "coordinates": [
+      77.1863,
+      28.52803
+    ],
+    "demand": 674,
+    "sales": 661,
+    "weight": 0.67,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-02-core",
+    "storeId": "STORE-02",
+    "name": "Store S-02 (West Mumbai)",
+    "region": "Central",
+    "coordinates": [
+      72.8295,
+      19.0596
+    ],
+    "demand": 3277,
+    "sales": 3269,
+    "weight": 3.28,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-02-cluster-1",
+    "storeId": "STORE-02",
+    "name": "Store S-02 (West Mumbai) Zone 1",
+    "region": "Central",
+    "coordinates": [
+      72.80664,
+      19.07185
+    ],
+    "demand": 466,
+    "sales": 457,
+    "weight": 0.47,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-02-cluster-2",
+    "storeId": "STORE-02",
+    "name": "Store S-02 (West Mumbai) Zone 2",
+    "region": "Central",
+    "coordinates": [
+      72.80832,
+      19.04598
+    ],
+    "demand": 632,
+    "sales": 619,
+    "weight": 0.63,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-02-cluster-3",
+    "storeId": "STORE-02",
+    "name": "Store S-02 (West Mumbai) Zone 3",
+    "region": "Central",
+    "coordinates": [
+      72.83847,
+      19.05016
+    ],
+    "demand": 663,
+    "sales": 650,
+    "weight": 0.66,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-02-cluster-4",
+    "storeId": "STORE-02",
+    "name": "Store S-02 (West Mumbai) Zone 4",
+    "region": "Central",
+    "coordinates": [
+      72.83116,
+      19.05143
+    ],
+    "demand": 712,
+    "sales": 698,
+    "weight": 0.71,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-02-cluster-5",
+    "storeId": "STORE-02",
+    "name": "Store S-02 (West Mumbai) Zone 5",
+    "region": "Central",
+    "coordinates": [
+      72.84371,
+      19.0506
+    ],
+    "demand": 444,
+    "sales": 435,
+    "weight": 0.44,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-03-core",
+    "storeId": "STORE-03",
+    "name": "Store S-03 (Indiranagar)",
+    "region": "South",
+    "coordinates": [
+      77.6412,
+      12.9719
+    ],
+    "demand": 3134,
+    "sales": 3127,
+    "weight": 3.13,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-03-cluster-1",
+    "storeId": "STORE-03",
+    "name": "Store S-03 (Indiranagar) Zone 1",
+    "region": "South",
+    "coordinates": [
+      77.66898,
+      12.96287
+    ],
+    "demand": 437,
+    "sales": 428,
+    "weight": 0.44,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-03-cluster-2",
+    "storeId": "STORE-03",
+    "name": "Store S-03 (Indiranagar) Zone 2",
+    "region": "South",
+    "coordinates": [
+      77.64112,
+      12.9639
+    ],
+    "demand": 832,
+    "sales": 815,
+    "weight": 0.83,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-03-cluster-3",
+    "storeId": "STORE-03",
+    "name": "Store S-03 (Indiranagar) Zone 3",
+    "region": "South",
+    "coordinates": [
+      77.62289,
+      12.98424
+    ],
+    "demand": 532,
+    "sales": 521,
+    "weight": 0.53,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-03-cluster-4",
+    "storeId": "STORE-03",
+    "name": "Store S-03 (Indiranagar) Zone 4",
+    "region": "South",
+    "coordinates": [
+      77.6591,
+      13.01357
+    ],
+    "demand": 469,
+    "sales": 460,
+    "weight": 0.47,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-03-cluster-5",
+    "storeId": "STORE-03",
+    "name": "Store S-03 (Indiranagar) Zone 5",
+    "region": "South",
+    "coordinates": [
+      77.64377,
+      12.98298
+    ],
+    "demand": 420,
+    "sales": 412,
+    "weight": 0.42,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-04-core",
+    "storeId": "STORE-04",
+    "name": "Store S-04 (Navi Mumbai)",
+    "region": "Central",
+    "coordinates": [
+      72.8697,
+      19.1136
+    ],
+    "demand": 2993,
+    "sales": 2985,
+    "weight": 2.99,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-04-cluster-1",
+    "storeId": "STORE-04",
+    "name": "Store S-04 (Navi Mumbai) Zone 1",
+    "region": "Central",
+    "coordinates": [
+      72.84595,
+      19.09846
+    ],
+    "demand": 489,
+    "sales": 479,
+    "weight": 0.49,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-04-cluster-2",
+    "storeId": "STORE-04",
+    "name": "Store S-04 (Navi Mumbai) Zone 2",
+    "region": "Central",
+    "coordinates": [
+      72.88556,
+      19.10669
+    ],
+    "demand": 494,
+    "sales": 484,
+    "weight": 0.49,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-04-cluster-3",
+    "storeId": "STORE-04",
+    "name": "Store S-04 (Navi Mumbai) Zone 3",
+    "region": "Central",
+    "coordinates": [
+      72.87172,
+      19.09664
+    ],
+    "demand": 743,
+    "sales": 728,
+    "weight": 0.74,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-04-cluster-4",
+    "storeId": "STORE-04",
+    "name": "Store S-04 (Navi Mumbai) Zone 4",
+    "region": "Central",
+    "coordinates": [
+      72.87888,
+      19.10345
+    ],
+    "demand": 362,
+    "sales": 355,
+    "weight": 0.36,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-04-cluster-5",
+    "storeId": "STORE-04",
+    "name": "Store S-04 (Navi Mumbai) Zone 5",
+    "region": "Central",
+    "coordinates": [
+      72.88302,
+      19.12233
+    ],
+    "demand": 708,
+    "sales": 694,
+    "weight": 0.71,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-05-core",
+    "storeId": "STORE-05",
+    "name": "Store S-05 (Koramangala)",
+    "region": "South",
+    "coordinates": [
+      77.6221,
+      12.9352
+    ],
+    "demand": 2849,
+    "sales": 2842,
+    "weight": 2.85,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-05-cluster-1",
+    "storeId": "STORE-05",
+    "name": "Store S-05 (Koramangala) Zone 1",
+    "region": "South",
+    "coordinates": [
+      77.61746,
+      12.92261
+    ],
+    "demand": 735,
+    "sales": 720,
+    "weight": 0.73,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-05-cluster-2",
+    "storeId": "STORE-05",
+    "name": "Store S-05 (Koramangala) Zone 2",
+    "region": "South",
+    "coordinates": [
+      77.63859,
+      12.91258
+    ],
+    "demand": 371,
+    "sales": 364,
+    "weight": 0.37,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-05-cluster-3",
+    "storeId": "STORE-05",
+    "name": "Store S-05 (Koramangala) Zone 3",
+    "region": "South",
+    "coordinates": [
+      77.60416,
+      12.9186
+    ],
+    "demand": 674,
+    "sales": 661,
+    "weight": 0.67,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-05-cluster-4",
+    "storeId": "STORE-05",
+    "name": "Store S-05 (Koramangala) Zone 4",
+    "region": "South",
+    "coordinates": [
+      77.62655,
+      12.94772
+    ],
+    "demand": 557,
+    "sales": 546,
+    "weight": 0.56,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-05-cluster-5",
+    "storeId": "STORE-05",
+    "name": "Store S-05 (Koramangala) Zone 5",
+    "region": "South",
+    "coordinates": [
+      77.61242,
+      12.94062
+    ],
+    "demand": 689,
+    "sales": 675,
+    "weight": 0.69,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-06-core",
+    "storeId": "STORE-06",
+    "name": "Store S-06 (Connaught Place)",
+    "region": "North",
+    "coordinates": [
+      77.2167,
+      28.6328
+    ],
+    "demand": 2707,
+    "sales": 2701,
+    "weight": 2.71,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-06-cluster-1",
+    "storeId": "STORE-06",
+    "name": "Store S-06 (Connaught Place) Zone 1",
+    "region": "North",
+    "coordinates": [
+      77.22177,
+      28.65523
+    ],
+    "demand": 539,
+    "sales": 528,
+    "weight": 0.54,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-06-cluster-2",
+    "storeId": "STORE-06",
+    "name": "Store S-06 (Connaught Place) Zone 2",
+    "region": "North",
+    "coordinates": [
+      77.22903,
+      28.5935
+    ],
+    "demand": 336,
+    "sales": 329,
+    "weight": 0.34,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-06-cluster-3",
+    "storeId": "STORE-06",
+    "name": "Store S-06 (Connaught Place) Zone 3",
+    "region": "North",
+    "coordinates": [
+      77.23234,
+      28.61152
+    ],
+    "demand": 545,
+    "sales": 534,
+    "weight": 0.55,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-06-cluster-4",
+    "storeId": "STORE-06",
+    "name": "Store S-06 (Connaught Place) Zone 4",
+    "region": "North",
+    "coordinates": [
+      77.22206,
+      28.6295
+    ],
+    "demand": 503,
+    "sales": 493,
+    "weight": 0.5,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-06-cluster-5",
+    "storeId": "STORE-06",
+    "name": "Store S-06 (Connaught Place) Zone 5",
+    "region": "North",
+    "coordinates": [
+      77.22786,
+      28.62096
+    ],
+    "demand": 358,
+    "sales": 351,
+    "weight": 0.36,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-07-core",
+    "storeId": "STORE-07",
+    "name": "Store S-07 (Whitefield)",
+    "region": "South",
+    "coordinates": [
+      77.7499,
+      12.9698
+    ],
+    "demand": 2566,
+    "sales": 2559,
+    "weight": 2.57,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-07-cluster-1",
+    "storeId": "STORE-07",
+    "name": "Store S-07 (Whitefield) Zone 1",
+    "region": "South",
+    "coordinates": [
+      77.74237,
+      12.95767
+    ],
+    "demand": 690,
+    "sales": 676,
+    "weight": 0.69,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-07-cluster-2",
+    "storeId": "STORE-07",
+    "name": "Store S-07 (Whitefield) Zone 2",
+    "region": "South",
+    "coordinates": [
+      77.76727,
+      12.97732
+    ],
+    "demand": 666,
+    "sales": 653,
+    "weight": 0.67,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-07-cluster-3",
+    "storeId": "STORE-07",
+    "name": "Store S-07 (Whitefield) Zone 3",
+    "region": "South",
+    "coordinates": [
+      77.7576,
+      12.96185
+    ],
+    "demand": 674,
+    "sales": 661,
+    "weight": 0.67,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-07-cluster-4",
+    "storeId": "STORE-07",
+    "name": "Store S-07 (Whitefield) Zone 4",
+    "region": "South",
+    "coordinates": [
+      77.75253,
+      12.99038
+    ],
+    "demand": 676,
+    "sales": 662,
+    "weight": 0.68,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-07-cluster-5",
+    "storeId": "STORE-07",
+    "name": "Store S-07 (Whitefield) Zone 5",
+    "region": "South",
+    "coordinates": [
+      77.74499,
+      12.95927
+    ],
+    "demand": 402,
+    "sales": 394,
+    "weight": 0.4,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-08-core",
+    "storeId": "STORE-08",
+    "name": "Store S-08 (Powai)",
+    "region": "Central",
+    "coordinates": [
+      72.9051,
+      19.1176
+    ],
+    "demand": 2423,
+    "sales": 2415,
+    "weight": 2.42,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-08-cluster-1",
+    "storeId": "STORE-08",
+    "name": "Store S-08 (Powai) Zone 1",
+    "region": "Central",
+    "coordinates": [
+      72.90072,
+      19.13671
+    ],
+    "demand": 624,
+    "sales": 612,
+    "weight": 0.62,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-08-cluster-2",
+    "storeId": "STORE-08",
+    "name": "Store S-08 (Powai) Zone 2",
+    "region": "Central",
+    "coordinates": [
+      72.90158,
+      19.11768
+    ],
+    "demand": 453,
+    "sales": 444,
+    "weight": 0.45,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-08-cluster-3",
+    "storeId": "STORE-08",
+    "name": "Store S-08 (Powai) Zone 3",
+    "region": "Central",
+    "coordinates": [
+      72.90076,
+      19.11167
+    ],
+    "demand": 422,
+    "sales": 414,
+    "weight": 0.42,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-08-cluster-4",
+    "storeId": "STORE-08",
+    "name": "Store S-08 (Powai) Zone 4",
+    "region": "Central",
+    "coordinates": [
+      72.91116,
+      19.11518
+    ],
+    "demand": 492,
+    "sales": 482,
+    "weight": 0.49,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-08-cluster-5",
+    "storeId": "STORE-08",
+    "name": "Store S-08 (Powai) Zone 5",
+    "region": "Central",
+    "coordinates": [
+      72.92616,
+      19.10345
+    ],
+    "demand": 668,
+    "sales": 655,
+    "weight": 0.67,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-09-core",
+    "storeId": "STORE-09",
+    "name": "Store S-09 (Noida Sec-18)",
+    "region": "North",
+    "coordinates": [
+      77.321,
+      28.5708
+    ],
+    "demand": 2337,
+    "sales": 2331,
+    "weight": 2.34,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-09-cluster-1",
+    "storeId": "STORE-09",
+    "name": "Store S-09 (Noida Sec-18) Zone 1",
+    "region": "North",
+    "coordinates": [
+      77.3206,
+      28.54202
+    ],
+    "demand": 387,
+    "sales": 379,
+    "weight": 0.39,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-09-cluster-2",
+    "storeId": "STORE-09",
+    "name": "Store S-09 (Noida Sec-18) Zone 2",
+    "region": "North",
+    "coordinates": [
+      77.31451,
+      28.57234
+    ],
+    "demand": 468,
+    "sales": 459,
+    "weight": 0.47,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-09-cluster-3",
+    "storeId": "STORE-09",
+    "name": "Store S-09 (Noida Sec-18) Zone 3",
+    "region": "North",
+    "coordinates": [
+      77.32552,
+      28.56791
+    ],
+    "demand": 335,
+    "sales": 328,
+    "weight": 0.34,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-09-cluster-4",
+    "storeId": "STORE-09",
+    "name": "Store S-09 (Noida Sec-18) Zone 4",
+    "region": "North",
+    "coordinates": [
+      77.32089,
+      28.5759
+    ],
+    "demand": 371,
+    "sales": 364,
+    "weight": 0.37,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-09-cluster-5",
+    "storeId": "STORE-09",
+    "name": "Store S-09 (Noida Sec-18) Zone 5",
+    "region": "North",
+    "coordinates": [
+      77.33228,
+      28.58794
+    ],
+    "demand": 369,
+    "sales": 362,
+    "weight": 0.37,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-10-core",
+    "storeId": "STORE-10",
+    "name": "Store S-10 (Thane West)",
+    "region": "Central",
+    "coordinates": [
+      72.9781,
+      19.2183
+    ],
+    "demand": 2283,
+    "sales": 2277,
+    "weight": 2.28,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-10-cluster-1",
+    "storeId": "STORE-10",
+    "name": "Store S-10 (Thane West) Zone 1",
+    "region": "Central",
+    "coordinates": [
+      72.99886,
+      19.20627
+    ],
+    "demand": 505,
+    "sales": 495,
+    "weight": 0.51,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-10-cluster-2",
+    "storeId": "STORE-10",
+    "name": "Store S-10 (Thane West) Zone 2",
+    "region": "Central",
+    "coordinates": [
+      73.01096,
+      19.2271
+    ],
+    "demand": 307,
+    "sales": 301,
+    "weight": 0.31,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-10-cluster-3",
+    "storeId": "STORE-10",
+    "name": "Store S-10 (Thane West) Zone 3",
+    "region": "Central",
+    "coordinates": [
+      72.99195,
+      19.2109
+    ],
+    "demand": 342,
+    "sales": 335,
+    "weight": 0.34,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-10-cluster-4",
+    "storeId": "STORE-10",
+    "name": "Store S-10 (Thane West) Zone 4",
+    "region": "Central",
+    "coordinates": [
+      72.97055,
+      19.21979
+    ],
+    "demand": 521,
+    "sales": 511,
+    "weight": 0.52,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-10-cluster-5",
+    "storeId": "STORE-10",
+    "name": "Store S-10 (Thane West) Zone 5",
+    "region": "Central",
+    "coordinates": [
+      72.97262,
+      19.21844
+    ],
+    "demand": 357,
+    "sales": 350,
+    "weight": 0.36,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-11-core",
+    "storeId": "STORE-11",
+    "name": "Store S-11 (Gurgaon CyberHub)",
+    "region": "North",
+    "coordinates": [
+      77.089,
+      28.495
+    ],
+    "demand": 2566,
+    "sales": 2559,
+    "weight": 2.57,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-11-cluster-1",
+    "storeId": "STORE-11",
+    "name": "Store S-11 (Gurgaon CyberHub) Zone 1",
+    "region": "North",
+    "coordinates": [
+      77.0961,
+      28.47907
+    ],
+    "demand": 592,
+    "sales": 580,
+    "weight": 0.59,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-11-cluster-2",
+    "storeId": "STORE-11",
+    "name": "Store S-11 (Gurgaon CyberHub) Zone 2",
+    "region": "North",
+    "coordinates": [
+      77.08659,
+      28.50431
+    ],
+    "demand": 364,
+    "sales": 357,
+    "weight": 0.36,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-11-cluster-3",
+    "storeId": "STORE-11",
+    "name": "Store S-11 (Gurgaon CyberHub) Zone 3",
+    "region": "North",
+    "coordinates": [
+      77.08417,
+      28.48325
+    ],
+    "demand": 688,
+    "sales": 674,
+    "weight": 0.69,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-11-cluster-4",
+    "storeId": "STORE-11",
+    "name": "Store S-11 (Gurgaon CyberHub) Zone 4",
+    "region": "North",
+    "coordinates": [
+      77.09734,
+      28.48965
+    ],
+    "demand": 579,
+    "sales": 567,
+    "weight": 0.58,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-11-cluster-5",
+    "storeId": "STORE-11",
+    "name": "Store S-11 (Gurgaon CyberHub) Zone 5",
+    "region": "North",
+    "coordinates": [
+      77.10861,
+      28.49841
+    ],
+    "demand": 525,
+    "sales": 514,
+    "weight": 0.53,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-12-core",
+    "storeId": "STORE-12",
+    "name": "Store S-12 (Jayanagar)",
+    "region": "South",
+    "coordinates": [
+      77.5938,
+      12.925
+    ],
+    "demand": 2423,
+    "sales": 2417,
+    "weight": 2.42,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-12-cluster-1",
+    "storeId": "STORE-12",
+    "name": "Store S-12 (Jayanagar) Zone 1",
+    "region": "South",
+    "coordinates": [
+      77.59071,
+      12.92013
+    ],
+    "demand": 639,
+    "sales": 626,
+    "weight": 0.64,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-12-cluster-2",
+    "storeId": "STORE-12",
+    "name": "Store S-12 (Jayanagar) Zone 2",
+    "region": "South",
+    "coordinates": [
+      77.60553,
+      12.9289
+    ],
+    "demand": 422,
+    "sales": 414,
+    "weight": 0.42,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-12-cluster-3",
+    "storeId": "STORE-12",
+    "name": "Store S-12 (Jayanagar) Zone 3",
+    "region": "South",
+    "coordinates": [
+      77.58079,
+      12.94449
+    ],
+    "demand": 639,
+    "sales": 626,
+    "weight": 0.64,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-12-cluster-4",
+    "storeId": "STORE-12",
+    "name": "Store S-12 (Jayanagar) Zone 4",
+    "region": "South",
+    "coordinates": [
+      77.599,
+      12.92876
+    ],
+    "demand": 540,
+    "sales": 529,
+    "weight": 0.54,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  },
+  {
+    "id": "STORE-12-cluster-5",
+    "storeId": "STORE-12",
+    "name": "Store S-12 (Jayanagar) Zone 5",
+    "region": "South",
+    "coordinates": [
+      77.60651,
+      12.92839
+    ],
+    "demand": 294,
+    "sales": 288,
+    "weight": 0.29,
+    "metric": "synthetic_weekly_demand",
+    "dataSource": "synthetic_demo"
+  }
+]
