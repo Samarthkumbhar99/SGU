@@ -97,7 +97,7 @@ export default function SignupPage() {
       })
       login(res.data.user, res.data.token)
       toast.success('Account created! Welcome to SupplyShield AI.', 'Account created')
-      navigate('/dashboard')
+      navigate(res.data.user?.isOnboarded === false ? '/onboarding' : '/dashboard')
     } catch (err) {
       const msg = err.response?.data?.message || 'Sign up failed. Please try again.'
       toast.error(msg, 'Registration failed')

@@ -55,8 +55,8 @@ export default function LoginPage() {
     try {
       const res = await authAPI.login(data)
       login(res.data.user, res.data.token)
-      toast.success('Welcome back! Redirecting to dashboard…', 'Signed in')
-      navigate('/dashboard')
+      toast.success('Welcome back! Redirecting to workspace…', 'Signed in')
+      navigate(res.data.user?.isOnboarded === false ? '/onboarding' : '/dashboard')
     } catch (err) {
       const msg = err.response?.data?.message || 'Invalid credentials. Please try again.'
       toast.error(msg, 'Sign in failed')

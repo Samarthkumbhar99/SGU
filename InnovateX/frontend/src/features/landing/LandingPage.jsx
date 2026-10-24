@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import LandingNavbar from './LandingNavbar.jsx'
 import HeroAnimation from './HeroAnimation.jsx'
@@ -6,6 +6,7 @@ import DisruptionSimulator from './DisruptionSimulator.jsx'
 import FeatureShowcase from './FeatureShowcase.jsx'
 import RoiCalculator from './RoiCalculator.jsx'
 import PersonaSection from './PersonaSection.jsx'
+import VariableProximity from '../../components/ui/VariableProximity.jsx'
 import {
   Shield,
   ArrowRight,
@@ -43,6 +44,7 @@ const FAQS = [
 
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState(null)
+  const heroTitleRef = useRef(null)
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans antialiased overflow-x-hidden selection:bg-sky-500 selection:text-white">
@@ -65,13 +67,42 @@ export default function LandingPage() {
             {/* Left Content Column */}
             <div className="lg:col-span-6 flex flex-col items-start">
 
-              {/* Main Headline (Clean, punchy, RELEX tone) */}
-              <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-extrabold text-slate-900 tracking-tight leading-[1.12] mb-6">
-                An AI-native platform for{' '}
-                <span className="font-cursive text-sky-600 font-semibold italic text-[1.12em] px-1.5">
-                  zero-stockout
-                </span>{' '}
-                distribution planning
+              {/* Main Headline with VariableProximity & Proper Cursive Accent */}
+              <h1
+                ref={heroTitleRef}
+                className="text-4xl sm:text-5xl lg:text-[3.35rem] font-extrabold text-slate-900 tracking-tight leading-[1.14] mb-6 select-none"
+                style={{ position: 'relative' }}
+              >
+                <VariableProximity
+                  label="An AI-native platform for"
+                  className="text-slate-900 inline"
+                  fromFontVariationSettings="'wght' 700, 'opsz' 32"
+                  toFontVariationSettings="'wght' 1000, 'opsz' 40"
+                  containerRef={heroTitleRef}
+                  radius={110}
+                  falloff="linear"
+                  smoothing={0.2}
+                />{' '}
+                <VariableProximity
+                  label="zero-stockout"
+                  className="font-proper-cursive text-sky-600 inline text-[1.18em] px-1"
+                  fromFontVariationSettings="'wght' 500"
+                  toFontVariationSettings="'wght' 700"
+                  containerRef={heroTitleRef}
+                  radius={110}
+                  falloff="linear"
+                  smoothing={0.2}
+                />{' '}
+                <VariableProximity
+                  label="distribution planning"
+                  className="text-slate-900 inline"
+                  fromFontVariationSettings="'wght' 700, 'opsz' 32"
+                  toFontVariationSettings="'wght' 1000, 'opsz' 40"
+                  containerRef={heroTitleRef}
+                  radius={110}
+                  falloff="linear"
+                  smoothing={0.2}
+                />
               </h1>
 
               {/* Sub-copy */}
