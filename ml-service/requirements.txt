@@ -1,0 +1,19 @@
+# Core Web & API Framework
+fastapi==0.162.0
+uvicorn[standard]==0.54.0
+pydantic==2.14.1
+pydantic-core==2.50.1
+
+# Numerical, Time Series & Machine Learning
+numpy==2.5.4
+pandas==3.1.0
+scipy==1.18.1
+statsmodels==0.15.0
+scikit-learn==1.9.1
+
+# Operations Research & Optimization
+ortools==9.15.6755
+
+# Testing & Client Tools
+pytest==9.1.1
+httpx==0.28.1
