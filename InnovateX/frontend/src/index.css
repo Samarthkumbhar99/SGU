@@ -552,15 +552,39 @@ body {
 .ss-topbar {
   position: sticky;
   top: 0;
-  height: 64px;
-  background: rgba(255, 255, 255, 0.92);
+  height: 60px;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid #d7e6f5;
+  border-bottom: 1px solid #e2e8f0;
   z-index: 40;
   display: flex;
   align-items: center;
-  padding: 0 24px;
-  gap: 16px;
+  padding: 0 20px;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .ss-topbar {
+    height: 54px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .ss-topbar-breadcrumbs {
+    display: none !important;
+  }
+
+  .ss-topbar-user-name,
+  .ss-topbar-user-chevron {
+    display: none !important;
+  }
+
+  .ss-topbar-user-btn {
+    padding: 2px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    background: transparent !important;
+  }
 }
 
 .ss-page-content {
