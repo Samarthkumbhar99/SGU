@@ -136,7 +136,7 @@ class ScenarioService:
                 base_lane_capacities[lane_key] = int(row["capacity_units_per_day"])
 
         # 5. Base Forecast Demand
-        forecasting_service = ForecastingService(self.dataset_dir)
+        forecasting_service = ForecastingService(self.dataset_dir, daily_demand=bundle.daily_demand)
         base_forecast_demand: Dict[Tuple[str, str], int] = {}
 
         for s in active_stores:

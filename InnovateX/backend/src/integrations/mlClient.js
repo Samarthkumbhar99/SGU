@@ -171,11 +171,12 @@ export class MlClient {
    * Request optimization solve via /api/v1/optimization/solve
    */
   async solveOptimization(payload = {}, options = {}) {
+    const { timeoutMs, ...restOptions } = options
     return this.request('/api/v1/optimization/solve', {
       method: 'POST',
       body: payload,
-      timeoutMs: options.timeoutMs || 20000,
-      ...options,
+      timeoutMs: timeoutMs || 60000,
+      ...restOptions,
     })
   }
 
@@ -190,11 +191,12 @@ export class MlClient {
    * Run scenario simulation via /api/v1/optimization/simulate
    */
   async simulateOptimization(payload = {}, options = {}) {
+    const { timeoutMs, ...restOptions } = options
     return this.request('/api/v1/optimization/simulate', {
       method: 'POST',
       body: payload,
-      timeoutMs: options.timeoutMs || 30000,
-      ...options,
+      timeoutMs: timeoutMs || 60000,
+      ...restOptions,
     })
   }
 
