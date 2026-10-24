@@ -109,12 +109,53 @@ export class MlClient {
   }
 
   /**
-   * Request demand forecast
+   * Request demand forecast (predict)
    */
   async forecast(payload, options = {}) {
-    return this.request('/api/v1/forecast', {
+    return this.predictForecast(payload, options)
+  }
+
+  /**
+   * Request demand forecast prediction
+   */
+  async predictForecast(payload, options = {}) {
+    return this.request('/api/v1/forecast/predict', {
       method: 'POST',
       body: payload,
+      ...options,
+    })
+  }
+
+  /**
+   * Trigger model training
+   */
+  async trainForecast(payload = {}, options = {}) {
+    return this.request('/api/v1/forecast/train', {
+      method: 'POST',
+      body: payload,
+      timeoutMs: options.timeoutMs || 120000,
+      ...options,
+    })
+  }
+
+  /**
+   * Run holdout backtest evaluation
+   */
+  async evaluateForecast(payload = {}, options = {}) {
+    return this.request('/api/v1/forecast/evaluate', {
+      method: 'POST',
+      body: payload,
+      timeoutMs: options.timeoutMs || 60000,
+      ...options,
+    })
+  }
+
+  /**
+   * List registered forecaster models
+   */
+  async getForecastModels(options = {}) {
+    return this.request('/api/v1/forecast/models', {
+      method: 'GET',
       ...options,
     })
   }

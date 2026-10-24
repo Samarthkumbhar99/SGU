@@ -21,15 +21,32 @@ class Settings(BaseModel):
     api_prefix: str = "/api/v1"
 
     # Dataset path resolution
-    # By default, navigates from ml-service/src/config.py -> ml-service -> SGU -> data/demo
+    # Defaults to repository data directory
     dataset_dir: Path = Field(
         default_factory=lambda: Path(
             os.getenv(
                 "DATASET_DIR",
-                str(Path(__file__).resolve().parent.parent.parent / "data" / "demo"),
+                str(Path(__file__).resolve().parent.parent.parent / "data"),
+            )
+        )
+    )
+    dataset_csv_path: Path = Field(
+        default_factory=lambda: Path(
+            os.getenv(
+                "DATASET_CSV_PATH",
+                str(Path(__file__).resolve().parent.parent.parent / "data" / "supply_chain_dataset1.csv"),
+            )
+        )
+    )
+    models_dir: Path = Field(
+        default_factory=lambda: Path(
+            os.getenv(
+                "MODELS_DIR",
+                str(Path(__file__).resolve().parent.parent / "models"),
             )
         )
     )
 
 
 settings = Settings()
+

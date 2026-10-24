@@ -50,7 +50,7 @@ npm run dev
 ```bash
 npm test
 ```
-Executes all 41 test specifications across 5 test suites covering health probes, ML client integration, CSV ingestion validation, duplicate rejection, paginated read endpoints, Phase 2 supply-chain analytics calculations, and deterministic recommendation triggers.
+Executes all 51 test specifications across 6 test suites covering health probes, ML client integration, CSV ingestion validation, duplicate rejection, paginated read endpoints, Phase 2 supply-chain analytics calculations, deterministic recommendation triggers, and Phase 3 demand forecasting endpoints.
 
 ---
 
@@ -128,8 +128,10 @@ python -m uvicorn src.main:app --host 127.0.0.1 --port 8000 --reload
 
 ### Running ML Service Tests
 ```bash
-python -m pytest tests/test_health.py
+python -m pytest tests/test_health.py tests/test_forecasting.py
 ```
+Executes all 21 test specifications covering health probes, feature engineering, leakage prevention, baseline forecasters, LightGBM/XGBoost models, model persistence, and chronological holdout evaluation.
+
 
 ---
 

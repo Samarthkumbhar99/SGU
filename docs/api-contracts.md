@@ -480,12 +480,179 @@
 
 ---
 
+### Phase 3: Demand Forecasting Engine
+
+#### Methodology & Leakage-Safe Validation
+- **Target**: `Units_Sold` (observed demand units).
+- **Provenance & Target Leakage Investigation of `Demand_Forecast`**:
+  - Statistical inspection revealed that the `Demand_Forecast` column in `data/supply_chain_dataset1.csv` was generated synthetically on the exact same date as `Units_Sold + Normal(0, 3)` ($r = 0.9493$, mean diff $0.027$, std diff $2.987$).
+  - **Decision & Rationale**: Using `Demand_Forecast` as an input feature for predicting `Units_Sold` on day $t$ constitutes severe contemporaneous target leakage. Furthermore, future third-party forecast values would be circular or unavailable at inference time. **`Demand_Forecast` is strictly excluded from all feature engineering**.
+- **Stockout Flag Caveat**:
+  - `Stockout_Flag` is 0 across all 91,250 observations in the dataset. Models are trained on observed sales (`Units_Sold`). During real-world stockouts, true unconstrained demand may be higher.
+- **Leakage Prevention**:
+  - Lags ($1, 7, 14, 28$) are calculated strictly per `(SKU_ID, Warehouse_ID)` series using past observations only.
+  - Rolling statistics (means $7, 14, 28$ and stdDevs $7, 28$) are shifted by 1 day (`shift(1)`) so that target day demand is never included in its own rolling window.
+  - Initial 28-day warm-up observations where lag 28 is unavailable are excluded from training with explicit accounting.
+- **Chronological Split Boundaries**:
+  - **Train Period**: `2024-01-29` to `2024-11-04` (70,250 observations after dropping 7,000 warm-up rows).
+  - **Validation Period**: `2024-11-05` to `2024-12-02` (7,000 observations) used for model selection and comparison.
+  - **Holdout Test Period**: `2024-12-03` to `2024-12-30` (7,000 observations) final untouched backtest across all 250 SKU-Warehouse series.
+- **Evaluation Metric Formulas**:
+  $$\text{MAE} = \frac{1}{N}\sum |y - \hat{y}|, \quad \text{RMSE} = \sqrt{\frac{1}{N}\sum (y - \hat{y})^2}$$
+  $$\text{WAPE} = \frac{\sum |y - \hat{y}|}{\sum y} \quad (\text{returns null if } \sum y = 0), \quad \text{Signed Bias} = \frac{1}{N}\sum (\hat{y} - y)$$
+  $$\text{Relative Improvement} = \frac{\text{WAPE}_{\text{baseline}} - \text{WAPE}_{\text{candidate}}}{\text{WAPE}_{\text{baseline}}} \times 100\%$$
+- **Integer Ordering Rounding Policy**:
+  - Point forecasts are computed as continuous floats ($\ge 0$). When integer replenishment orders are produced, `order_quantity_round` is derived via standard round (`round(val)`) or conservative safety buffer (`ceil(val)`).
+
+---
+
+#### Forecasting Application Endpoints (Express & FastAPI)
+
+- **`POST /api/v1/forecast/predict`**
+  - **Purpose**: Generates multi-day demand predictions for a given SKU and Warehouse using the active model or requested baseline.
+  - **Auth**: Bearer JWT required (Express)
+  - **Request Body**:
+    ```json
+    {
+      "skuId": "SKU_1",
+      "warehouseId": "WH_1",
+      "horizonDays": 14,
+      "modelType": "auto",
+      "roundingPolicy": "round"
+    }
+    ```
+  - **Response (200 OK)**:
+    ```json
+    {
+      "success": true,
+      "data": {
+        "sku_id": "SKU_1",
+        "warehouse_id": "WH_1",
+        "forecast_origin": "2024-12-30",
+        "horizon_days": 14,
+        "model_applied": "lightgbm",
+        "model_version": "v_20261024_163137",
+        "selection_metric": "Chronological holdout MAE",
+        "selection_score": 7.2042,
+        "forecasts": [
+          { "date": "2024-12-31", "predicted_demand": 10.69, "order_quantity_round": 11 },
+          { "date": "2025-01-01", "predicted_demand": 24.46, "order_quantity_round": 24 }
+        ],
+        "validation_metadata": { "mae": 7.2042, "wape": 0.4053 },
+        "warnings": [
+          "Stockout_Flag is 0 in source dataset; Units_Sold reflects observed sales rather than unconstrained demand."
+        ]
+      }
+    }
+    ```
+
+- **`POST /api/v1/forecast/train`**
+  - **Purpose**: Trains LightGBM or XGBoost on historical train split, validates on validation and holdout splits, and persists versioned artifact to disk.
+  - **Auth**: Bearer JWT required (Admin / Manager)
+  - **Request Body**:
+    ```json
+    {
+      "modelType": "lightgbm",
+      "forceRetrain": true,
+      "setActive": true
+    }
+    ```
+  - **Response (200 OK)**:
+    ```json
+    {
+      "success": true,
+      "data": {
+        "model_name": "lightgbm",
+        "model_version": "v_20261024_163137",
+        "training_cutoff_date": "2024-11-04",
+        "train_observations": 70250,
+        "validation_metrics": { "mae": 4.5705, "rmse": 5.7434, "wape": 0.3401, "bias": -2.0943 },
+        "holdout_metrics": { "mae": 7.2042, "rmse": 8.5955, "wape": 0.4053, "bias": -6.7042 },
+        "artifact_path": "ml-service/models/lightgbm_v_20261024_163137/model.joblib",
+        "is_active": true
+      }
+    }
+    ```
+
+- **`POST /api/v1/forecast/evaluate`**
+  - **Purpose**: Executes leakage-safe chronological holdout backtest comparing Baselines, LightGBM, and XGBoost.
+  - **Auth**: Bearer JWT required
+  - **Request Body**:
+    ```json
+    {
+      "includeMlModels": true,
+      "testStartDate": "2024-12-03",
+      "testEndDate": "2024-12-30"
+    }
+    ```
+  - **Response (200 OK)**:
+    ```json
+    {
+      "success": true,
+      "data": {
+        "target_evaluated": "Units_Sold (observed demand)",
+        "is_synthetic_benchmark": false,
+        "split_boundaries": {
+          "train_end_date": "2024-11-04",
+          "test_start_date": "2024-12-03",
+          "test_end_date": "2024-12-30"
+        },
+        "holdout_dates": "2024-12-03 to 2024-12-30",
+        "series_evaluated": 250,
+        "total_test_observations": 7000,
+        "method_metrics": [
+          { "method": "seasonal_naive_7d", "mae": 6.0291, "rmse": 7.6122, "wape": 0.3392, "bias": -1.2040, "relative_improvement_pct": 0.0 },
+          { "method": "moving_average_7d", "mae": 4.5026, "rmse": 5.7160, "wape": 0.2533, "bias": -0.6827, "relative_improvement_pct": 25.32 },
+          { "method": "moving_average_14d", "mae": 4.6734, "rmse": 5.8641, "wape": 0.2629, "bias": -0.8124, "relative_improvement_pct": 22.49 },
+          { "method": "lightgbm", "mae": 7.2042, "rmse": 8.5955, "wape": 0.4053, "bias": -6.7042, "relative_improvement_pct": -19.49 },
+          { "method": "xgboost", "mae": 7.8325, "rmse": 9.2484, "wape": 0.4407, "bias": -7.4352, "relative_improvement_pct": -29.92 }
+        ],
+        "best_method": "moving_average_7d",
+        "warnings": [
+          "Evaluated on observed Units_Sold. Unconstrained true demand during stockout periods is unobservable in this dataset.",
+          "Demand_Forecast was excluded from model features due to contemporaneous synthetic target leakage."
+        ]
+      }
+    }
+    ```
+
+- **`GET /api/v1/forecast/models`**
+  - **Purpose**: Lists registered forecaster model versions, training cutoffs, and active pointers.
+  - **Auth**: Bearer JWT required
+  - **Response (200 OK)**:
+    ```json
+    {
+      "success": true,
+      "data": {
+        "success": true,
+        "active_version": "v_20261024_163137",
+        "models": [
+          {
+            "model_name": "lightgbm",
+            "model_version": "v_20261024_163137",
+            "created_at": "2026-10-24T16:31:37.328421Z",
+            "training_cutoff_date": "2024-11-04",
+            "training_data_range": "2024-01-29 to 2024-11-04",
+            "is_active": true,
+            "holdout_metrics": { "mae": 7.2042, "rmse": 8.5955, "wape": 0.4053, "bias": -6.7042 }
+          }
+        ]
+      }
+    }
+    ```
+
+---
+
 ## 2. FastAPI ML Service Endpoints (`http://127.0.0.1:8000`)
 
 ### Health & Readiness
 - **`GET /health`** (and alias `/api/v1/health`): Liveness probe.
 - **`GET /health/ready`** (and alias `/api/v1/health/ready`): Readiness probe with component audit.
 - **`GET /api/v1/data/validate`**: Validates schema and referential integrity of CSV datasets.
-- **`POST /api/v1/forecast`**: Demand forecasting.
+- **`POST /api/v1/forecast/predict`** (and legacy `/api/v1/forecast`): Point prediction.
+- **`POST /api/v1/forecast/train`**: Model training and artifact persistence.
+- **`POST /api/v1/forecast/evaluate`** (and legacy `/api/v1/evaluate-forecast`): Chronological backtest evaluation.
+- **`GET /api/v1/forecast/models`**: Model registry and active version metadata.
 - **`POST /api/v1/optimize`**: Google OR-Tools CP-SAT inventory allocation.
 - **`POST /api/v1/scenario/simulate`**: Disruption simulation.
+

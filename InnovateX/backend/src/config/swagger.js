@@ -404,6 +404,93 @@ export const swaggerSpec = {
         },
       },
     },
+    '/api/v1/forecast/predict': {
+      post: {
+        summary: 'Generate multi-day demand predictions using trained forecaster or baseline',
+        tags: ['Demand Forecasting'],
+        security: [{ BearerAuth: [] }],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                required: ['skuId', 'warehouseId'],
+                properties: {
+                  skuId: { type: 'string', example: 'SKU_1' },
+                  warehouseId: { type: 'string', example: 'WH_1' },
+                  horizonDays: { type: 'integer', example: 14 },
+                  modelType: { type: 'string', enum: ['auto', 'lightgbm', 'xgboost', 'seasonal_naive', 'moving_average'], example: 'auto' },
+                  roundingPolicy: { type: 'string', enum: ['round', 'ceil'], example: 'round' },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: 'Forecast predictions array with metadata' },
+          400: { description: 'Invalid identifiers or horizon' },
+        },
+      },
+    },
+    '/api/v1/forecast/train': {
+      post: {
+        summary: 'Train and persist versioned LightGBM or XGBoost forecaster',
+        tags: ['Demand Forecasting'],
+        security: [{ BearerAuth: [] }],
+        requestBody: {
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  modelType: { type: 'string', enum: ['lightgbm', 'xgboost'], example: 'lightgbm' },
+                  forceRetrain: { type: 'boolean', example: false },
+                  setActive: { type: 'boolean', example: true },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: 'Training completion metrics and artifact metadata' },
+        },
+      },
+    },
+    '/api/v1/forecast/evaluate': {
+      post: {
+        summary: 'Run chronological holdout evaluation across models and series',
+        tags: ['Demand Forecasting'],
+        security: [{ BearerAuth: [] }],
+        requestBody: {
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  skuId: { type: 'string', example: 'SKU_1' },
+                  warehouseId: { type: 'string', example: 'WH_1' },
+                  includeMlModels: { type: 'boolean', example: true },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: 'Comparative evaluation metrics (MAE, RMSE, WAPE, Bias, Improvement %)' },
+        },
+      },
+    },
+    '/api/v1/forecast/models': {
+      get: {
+        summary: 'List persisted forecaster models and active version pointer',
+        tags: ['Demand Forecasting'],
+        security: [{ BearerAuth: [] }],
+        responses: {
+          200: { description: 'Registered model versions array' },
+        },
+      },
+    },
   },
 }
 

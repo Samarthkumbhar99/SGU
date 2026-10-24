@@ -40,3 +40,18 @@ def calculate_metrics(y_true: List[float], y_pred: List[float]) -> Dict[str, Opt
         "wape": round(wape, 4) if wape is not None else None,
         "bias": round(bias, 4),
     }
+
+
+def calculate_relative_improvement(
+    baseline_wape: Optional[float],
+    candidate_wape: Optional[float],
+) -> Optional[float]:
+    """Calculate percentage improvement in WAPE relative to baseline model.
+
+    Formula: ((baseline_wape - candidate_wape) / baseline_wape) * 100%
+    Positive value indicates candidate is better than baseline.
+    """
+    if baseline_wape is None or candidate_wape is None or baseline_wape <= 0.0:
+        return None
+    return round(((baseline_wape - candidate_wape) / baseline_wape) * 100.0, 2)
+
