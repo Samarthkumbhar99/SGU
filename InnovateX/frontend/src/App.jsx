@@ -7,6 +7,7 @@ import LandingPage from './features/landing/LandingPage.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
+import UserProfilePage from './features/profile/UserProfilePage.jsx'
 
 // Protected route wrapper
 function ProtectedRoute({ children, allowUnonboarded = false }) {
@@ -160,6 +161,14 @@ export default function App() {
                 breadcrumbs={['Dashboard', 'Settings']}
                 description="User profile, warehouse/store management, product catalog, transport lanes, demo dataset reset, and service health. Coming in Phase 8."
               />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <UserProfilePage />
             </ProtectedRoute>
           }
         />

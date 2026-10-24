@@ -75,10 +75,14 @@ export const useEntityStore = create((set, get) => ({
 export const useUIStore = create((set) => ({
   sidebarCollapsed: false,
   sidebarMobileOpen: false,
+  searchModalOpen: false,
+  profileModalOpen: false,
   toasts: [],
 
   toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
   setSidebarMobileOpen: (open) => set({ sidebarMobileOpen: open }),
+  setSearchModalOpen: (open) => set({ searchModalOpen: open }),
+  setProfileModalOpen: (open) => set({ profileModalOpen: open }),
 
   addToast: (toast) => {
     const id = Date.now()
@@ -90,6 +94,8 @@ export const useUIStore = create((set) => ({
 
   removeToast: (id) => set((s) => ({ toasts: s.toasts.filter((t) => t.id !== id) })),
 }))
+
+export { useNotificationStore } from './notificationStore.js'
 
 export const toast = {
   success: (message, title) => useUIStore.getState().addToast({ type: 'success', message, title }),

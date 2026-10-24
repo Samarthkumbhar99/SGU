@@ -1,11 +1,15 @@
 import { Menu, Bell, Search, ChevronDown } from 'lucide-react'
-import { useUIStore, useAuthStore } from '../../store/index.js'
-import { useState } from 'react'
+import { useUIStore, useAuthStore, useNotificationStore } from '../../store/index.js'
+import { useState, useEffect } from 'react'
 
 export function Topbar({ pageTitle, breadcrumbs = [] }) {
-  const { toggleSidebar, setSidebarMobileOpen } = useUIStore()
+  const { toggleSidebar, setSidebarMobileOpen, setSearchModalOpen, setProfileModalOpen } = useUIStore()
   const { user } = useAuthStore()
-  const [notifOpen, setNotifOpen] = useState(false)
+  const { unreadCount, openDrawer, initSocket } = useNotificationStore()
+
+  useEffect(() => {
+    initSocket()
+  }, [initSocket])
 
   return (
     <header className="ss-topbar" role="banner">
@@ -80,8 +84,17 @@ export function Topbar({ pageTitle, breadcrumbs = [] }) {
         <button
           id="global-search-btn"
           className="ss-btn-ghost"
-          style={{ padding: '7px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }}
-          aria-label="Search"
+          style={{
+            padding: '7px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '8px',
+            position: 'relative',
+          }}
+          onClick={() => setSearchModalOpen(true)}
+          aria-label="Search pages and components (Ctrl+K)"
+          title="Search (Ctrl+K)"
         >
           <Search size={18} />
         </button>
@@ -99,147 +112,48 @@ export function Topbar({ pageTitle, breadcrumbs = [] }) {
               justifyContent: 'center',
               borderRadius: '8px',
             }}
-            onClick={() => setNotifOpen(!notifOpen)}
-            aria-label="Notifications"
-            aria-expanded={notifOpen}
+            onClick={openDrawer}
+            aria-label="View all notifications"
+            title="Real-time Notifications"
           >
             <Bell size={18} />
-            {/* Unread badge dot */}
-            <span
-              style={{
-                position: 'absolute',
-                top: '5px',
-                right: '5px',
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                background: '#ef4444',
-                border: '2px solid white',
-              }}
-              aria-hidden="true"
-            />
-          </button>
-
-          {notifOpen && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '100%',
-                right: 0,
-                marginTop: '8px',
-                width: 'min(320px, calc(100vw - 20px))',
-                background: '#fff',
-                border: '1px solid #e2e8f0',
-                borderRadius: '12px',
-                boxShadow: '0 10px 40px rgba(15, 23, 42, 0.12)',
-                overflow: 'hidden',
-                zIndex: 100,
-                animation: 'fade-in-scale 0.2s ease',
-              }}
-              role="dialog"
-              aria-label="Notifications"
-            >
-              <div
+            {/* Unread badge count: Removed to 0 when opening drawer */}
+            {unreadCount > 0 && (
+              <span
+                id="unread-notif-badge"
                 style={{
-                  padding: '14px 18px',
-                  borderBottom: '1px solid #e2e8f0',
+                  position: 'absolute',
+                  top: '-3px',
+                  right: '-3px',
+                  minWidth: '17px',
+                  height: '17px',
+                  padding: '0 4px',
+                  borderRadius: '9999px',
+                  background: '#ef4444',
+                  border: '2px solid white',
+                  color: '#ffffff',
+                  fontSize: '10px',
+                  fontWeight: 800,
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'space-between',
+                  justifyContent: 'center',
+                  lineHeight: 1,
+                  boxShadow: '0 1px 4px rgba(239, 68, 68, 0.45)',
+                  animation: 'pulse 2s infinite',
                 }}
+                aria-label={`${unreadCount} unread notifications`}
               >
-                <span style={{ fontWeight: 700, fontSize: '14px', color: '#0f172a' }}>
-                  Notifications
-                </span>
-                <span className="ss-badge ss-badge-critical">3 new</span>
-              </div>
-
-              {[
-                {
-                  title: 'Stock Alert',
-                  body: 'Store S-04 (Mumbai South) is at 8% stock level for SKU-MILK-001',
-                  time: '5m ago',
-                  type: 'critical',
-                },
-                {
-                  title: 'Route Disruption',
-                  body: 'Highway NH-48 partially blocked affecting 3 routes',
-                  time: '22m ago',
-                  type: 'warning',
-                },
-                {
-                  title: 'Optimization Complete',
-                  body: 'Scenario SC-2024-07 resolved. Plan ready for review.',
-                  time: '1h ago',
-                  type: 'success',
-                },
-              ].map((n, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: '12px 18px',
-                    borderBottom: i < 2 ? '1px solid #f1f5f9' : 'none',
-                    cursor: 'pointer',
-                    transition: 'background 0.15s',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = '#f8fafc')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      justifyContent: 'space-between',
-                      gap: '8px',
-                    }}
-                  >
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 600,
-                          fontSize: '13px',
-                          color: '#0f172a',
-                          marginBottom: '3px',
-                        }}
-                      >
-                        {n.title}
-                      </div>
-                      <div style={{ fontSize: '12px', color: '#64748b', lineHeight: 1.4 }}>
-                        {n.body}
-                      </div>
-                    </div>
-                    <span
-                      className={`ss-badge ss-badge-${n.type}`}
-                      style={{ flexShrink: 0, marginTop: '2px' }}
-                    >
-                      {n.time}
-                    </span>
-                  </div>
-                </div>
-              ))}
-
-              <div
-                style={{
-                  padding: '10px 18px',
-                  textAlign: 'center',
-                  borderTop: '1px solid #f1f5f9',
-                }}
-              >
-                <button
-                  className="ss-btn-ghost"
-                  style={{ fontSize: '12px', color: '#0284c7', fontWeight: 600 }}
-                  onClick={() => setNotifOpen(false)}
-                >
-                  View all notifications
-                </button>
-              </div>
-            </div>
-          )}
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+          </button>
         </div>
 
-        {/* User Profile — On Mobile displays ONLY avatar icon without text */}
+        {/* User Profile — Clickable to open detailed profile modal */}
         <div
+          id="topbar-user-profile-btn"
           className="ss-topbar-user-btn"
+          onClick={() => setProfileModalOpen(true)}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -252,7 +166,9 @@ export function Topbar({ pageTitle, breadcrumbs = [] }) {
           }}
           onMouseEnter={(e) => (e.currentTarget.style.background = '#f8fafc')}
           onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
-          title={user?.name || user?.email || 'User profile'}
+          title="Click to view detailed user profile & assets"
+          role="button"
+          tabIndex={0}
         >
           <div
             style={{

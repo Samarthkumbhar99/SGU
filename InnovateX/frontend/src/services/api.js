@@ -87,3 +87,23 @@ export const plansAPI = {
   approve: (id, data) => api.post(`/optimization-plans/${id}/approve`, data),
   reject: (id, data) => api.post(`/optimization-plans/${id}/reject`, data),
 }
+
+// Entities & FMCG Network
+export const entityAPI = {
+  getMyNetwork: () => api.get('/entities/my-network'),
+  createStore: (data) => api.post('/entities/stores', data),
+  updateStore: (id, data) => api.put(`/entities/stores/${id}`, data),
+  createWarehouse: (data) => api.post('/entities/warehouses', data),
+  updateWarehouse: (id, data) => api.put(`/entities/warehouses/${id}`, data),
+  search: (q, type) => api.get('/entities/search', { params: { q, type } }),
+  requestAccess: (data) => api.post('/entities/access-requests', data),
+  reviewAccess: (id, data) => api.patch(`/entities/access-requests/${id}/review`, data),
+  updateLiveLocation: (data) => api.post('/entities/location', data),
+}
+
+// Notifications
+export const notificationAPI = {
+  getAll: () => api.get('/notifications'),
+  simulate: (data) => api.post('/notifications/simulate', data),
+}
+

@@ -48,7 +48,7 @@ const SIDEBAR_BRANCHED_ITEMS = [
 const ALL_LEAF_ITEMS = SIDEBAR_BRANCHED_ITEMS.flatMap((section) => section.children || [])
 
 export function Sidebar() {
-  const { sidebarCollapsed, sidebarMobileOpen, setSidebarMobileOpen } = useUIStore()
+  const { sidebarCollapsed, sidebarMobileOpen, setSidebarMobileOpen, setProfileModalOpen } = useUIStore()
   const { user, logout } = useAuthStore()
   const location = useLocation()
   const navigate = useNavigate()
@@ -278,6 +278,11 @@ export function Sidebar() {
         >
           {!sidebarCollapsed && user && (
             <div
+              id="sidebar-user-profile-btn"
+              onClick={() => {
+                setProfileModalOpen(true)
+                if (sidebarMobileOpen) setSidebarMobileOpen(false)
+              }}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -287,7 +292,13 @@ export function Sidebar() {
                 marginBottom: '6px',
                 background: '#ffffff',
                 border: '1px solid #e2e8f0',
+                cursor: 'pointer',
+                transition: 'all 0.15s',
               }}
+              className="hover:border-sky-300 hover:bg-sky-50/40"
+              title="Click to view full user profile & managed assets"
+              role="button"
+              tabIndex={0}
             >
               <div
                 style={{

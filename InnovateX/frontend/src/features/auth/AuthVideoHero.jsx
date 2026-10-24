@@ -22,7 +22,7 @@ export default function AuthVideoHero() {
 
   return (
     <div
-      className="relative flex flex-col justify-between overflow-hidden p-6 sm:p-8 lg:p-36 select-none h-full min-h-[500px]"
+      className="relative flex flex-col justify-between overflow-hidden p-6 sm:p-8 lg:p-10 select-none h-full min-h-[500px]"
       style={{
         background: 'linear-gradient(150deg, #f0f7ff 0%, #e0f2fe 45%, #dbeafe 100%)',
       }}
@@ -44,7 +44,7 @@ export default function AuthVideoHero() {
           <img
             src="/logo.webp"
             alt="SupplyShield AI Logo"
-            className="w-15 h-15 rounded-xl object-contain shadow-xs bg-white p-1 border border-sky-100"
+            className="w-12 h-12 rounded-xl object-contain shadow-xs bg-white p-1 border border-sky-100"
           />
           <div>
             <div className="text-base font-extrabold text-slate-900 leading-tight tracking-tight">
@@ -67,9 +67,9 @@ export default function AuthVideoHero() {
         </button>
       </div>
 
-      {/* Center Video Container: Auto-playing endless loop, no controls */}
-      <div className="relative z-10 flex-1 flex items-center justify-center my-auto w-full">
-        <div className="w-full max-w-lg aspect-square sm:aspect-[5/3] rounded-3xl overflow-hidden shadow-xl shadow-sky-900/10 border border-white/80 bg-white/40 backdrop-blur-xs relative flex items-center justify-center">
+      {/* Center Video Container: Auto-playing endless loop, no controls, no card background, full width without side clipping */}
+      <div className="relative z-10 flex-1 flex items-center justify-center my-auto w-full py-2">
+        <div className="w-full max-w-[560px] relative flex items-center justify-center">
           <video
             ref={videoRef}
             src="/Intro.webm"
@@ -77,12 +77,9 @@ export default function AuthVideoHero() {
             loop
             muted
             playsInline
-            className="w-full h-full object-cover pointer-events-none"
+            className="w-full h-auto max-h-[460px] object-contain pointer-events-none rounded-2xl"
             style={{ pointerEvents: 'none' }}
           />
-
-          {/* Subtle light reflection overlay */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none" />
         </div>
       </div>
 

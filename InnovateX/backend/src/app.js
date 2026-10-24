@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
 const entityRoutes = require('./routes/entityRoutes')
 const onboardingRoutes = require('./routes/onboardingRoutes')
+const notificationRoutes = require('./routes/notificationRoutes')
 const { errorHandler, notFound } = require('./middleware/errorHandler')
 
 const app = express()
@@ -63,6 +64,7 @@ app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/dashboard', dashboardRoutes)
 app.use('/api/v1/entities', entityRoutes)
 app.use('/api/v1/onboarding', onboardingRoutes)
+app.use('/api/v1/notifications', notificationRoutes)
 
 // ——— 404 & Error handling ———
 app.use(notFound)
