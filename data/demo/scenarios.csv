@@ -1,0 +1,5 @@
+scenario_id,scenario_name,disruption_type,target_id,change_value,description
+SCN-001,NH-48 Corridor Highway Disruption,route_closure,WH-NORTH__STORE-01,0,Simulates freight route closure between Delhi Hub and South Delhi retail.
+SCN-002,Western Hub Capacity Reduction,warehouse_stock_reduction,WH-CENTRAL,0.50,Simulates 50% stock reduction at Western Regional Hub in Mumbai MMR.
+SCN-003,Festive FMCG Demand Surge,demand_spike,STORE-01,1.50,50% demand surge across key FMCG SKUs during festival season.
+SCN-004,Southern Interstate Capacity Reduction,lane_capacity_reduction,WH-SOUTH__STORE-01,0.50,50% capacity reduction on interstate transit lane.

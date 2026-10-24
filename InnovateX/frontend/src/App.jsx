@@ -5,6 +5,8 @@ import SignupPage from './features/auth/SignupPage.jsx'
 import AuthCallback from './features/auth/AuthCallback.jsx'
 import LandingPage from './features/landing/LandingPage.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
+import InventoryPage from './features/inventory/InventoryPage.jsx'
+import NetworkMapPage from './features/map/NetworkMapPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
 
@@ -83,11 +85,7 @@ export default function App() {
           path="/network-map"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Network Map"
-                breadcrumbs={['Dashboard', 'Network Map']}
-                description="Interactive Leaflet map with warehouse markers, store markers, route lines, risk overlays, and post-optimization shipment quantities. Coming in Phase 4."
-              />
+              <NetworkMapPage />
             </ProtectedRoute>
           }
         />
@@ -95,11 +93,7 @@ export default function App() {
           path="/inventory"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Inventory Management"
-                breadcrumbs={['Dashboard', 'Inventory']}
-                description="Searchable, filterable inventory table with expiry tracking, batch management, CSV import/export, and validated create/edit forms. Coming in Phase 4."
-              />
+              <InventoryPage />
             </ProtectedRoute>
           }
         />

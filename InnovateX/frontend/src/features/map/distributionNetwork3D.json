@@ -1,0 +1,1032 @@
+{
+  "nodes": [
+    {
+      "id": "WH-Delhi",
+      "code": "WH-NORTH",
+      "name": "Delhi Central DC (WH-Delhi)",
+      "shortCode": "WH-Delhi",
+      "type": "Warehouse",
+      "region": "North",
+      "coordinates": [
+        77.1025,
+        28.7041
+      ],
+      "stockOnHand": 67400,
+      "capacity": 85000,
+      "weeklyDemand": 14200,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 33.1,
+      "address": "Okhla Industrial Area, Phase-III, New Delhi",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-Mumbai",
+      "code": "WH-CENTRAL",
+      "name": "Mumbai Regional DC (WH-Mumbai)",
+      "shortCode": "WH-Mumbai",
+      "type": "Warehouse",
+      "region": "Central",
+      "coordinates": [
+        72.8777,
+        19.076
+      ],
+      "stockOnHand": 58900,
+      "capacity": 70000,
+      "weeklyDemand": 14200,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 33.1,
+      "address": "Bhiwandi Logistics Hub, Thane, Mumbai",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-Bangalore",
+      "code": "WH-SOUTH",
+      "name": "Bangalore Regional DC (WH-Bangalore)",
+      "shortCode": "WH-Bangalore",
+      "type": "Warehouse",
+      "region": "South",
+      "coordinates": [
+        77.5946,
+        12.9716
+      ],
+      "stockOnHand": 49200,
+      "capacity": 65000,
+      "weeklyDemand": 14200,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 33.1,
+      "address": "Peenya Industrial Estate, Bengaluru",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-01 (South Delhi)",
+      "code": "STORE-01",
+      "name": "Store S-01 (South Delhi)",
+      "shortCode": "Store S-01",
+      "type": "Store",
+      "region": "North",
+      "coordinates": [
+        77.215,
+        28.5244
+      ],
+      "stockOnHand": 420,
+      "capacity": 600,
+      "weeklyDemand": 3563,
+      "riskLevel": "Warning",
+      "status": "Low Stock",
+      "daysOfSupply": 2.8,
+      "address": "Saket District Centre, New Delhi",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-02 (West Mumbai)",
+      "code": "STORE-02",
+      "name": "Store S-02 (West Mumbai)",
+      "shortCode": "Store S-02",
+      "type": "Store",
+      "region": "Central",
+      "coordinates": [
+        72.8295,
+        19.0596
+      ],
+      "stockOnHand": 310,
+      "capacity": 500,
+      "weeklyDemand": 3277,
+      "riskLevel": "Warning",
+      "status": "Low Stock",
+      "daysOfSupply": 2.5,
+      "address": "Linking Road, Bandra West, Mumbai",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-03 (Indiranagar)",
+      "code": "STORE-03",
+      "name": "Store S-03 (Indiranagar)",
+      "shortCode": "Store S-03",
+      "type": "Store",
+      "region": "South",
+      "coordinates": [
+        77.6412,
+        12.9719
+      ],
+      "stockOnHand": 1250,
+      "capacity": 1800,
+      "weeklyDemand": 3134,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 14.2,
+      "address": "100ft Road, Indiranagar, Bengaluru",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-04 (Navi Mumbai)",
+      "code": "STORE-04",
+      "name": "Store S-04 (Navi Mumbai)",
+      "shortCode": "Store S-04",
+      "type": "Store",
+      "region": "Central",
+      "coordinates": [
+        72.8697,
+        19.1136
+      ],
+      "stockOnHand": 180,
+      "capacity": 450,
+      "weeklyDemand": 2993,
+      "riskLevel": "Critical",
+      "status": "Critical Stockout",
+      "daysOfSupply": 1.2,
+      "address": "Sector 17, Vashi, Navi Mumbai",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-05 (Koramangala)",
+      "code": "STORE-05",
+      "name": "Store S-05 (Koramangala)",
+      "shortCode": "Store S-05",
+      "type": "Store",
+      "region": "South",
+      "coordinates": [
+        77.6221,
+        12.9352
+      ],
+      "stockOnHand": 980,
+      "capacity": 1500,
+      "weeklyDemand": 2849,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 11.5,
+      "address": "80ft Road, 4th Block, Koramangala",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-06 (Connaught Place)",
+      "code": "STORE-06",
+      "name": "Store S-06 (Connaught Place)",
+      "shortCode": "Store S-06",
+      "type": "Store",
+      "region": "North",
+      "coordinates": [
+        77.2167,
+        28.6328
+      ],
+      "stockOnHand": 520,
+      "capacity": 800,
+      "weeklyDemand": 2707,
+      "riskLevel": "Warning",
+      "status": "Low Stock",
+      "daysOfSupply": 3.8,
+      "address": "Inner Circle, Connaught Place, New Delhi",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-07 (Whitefield)",
+      "code": "STORE-07",
+      "name": "Store S-07 (Whitefield)",
+      "shortCode": "Store S-07",
+      "type": "Store",
+      "region": "South",
+      "coordinates": [
+        77.7499,
+        12.9698
+      ],
+      "stockOnHand": 620,
+      "capacity": 800,
+      "weeklyDemand": 2566,
+      "riskLevel": "Warning",
+      "status": "Low Stock",
+      "daysOfSupply": 4.1,
+      "address": "ITPB Main Road, Whitefield, Bengaluru",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-08 (Powai)",
+      "code": "STORE-08",
+      "name": "Store S-08 (Powai)",
+      "shortCode": "Store S-08",
+      "type": "Store",
+      "region": "Central",
+      "coordinates": [
+        72.9051,
+        19.1176
+      ],
+      "stockOnHand": 1100,
+      "capacity": 1600,
+      "weeklyDemand": 2423,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 13.0,
+      "address": "Central Avenue, Hiranandani, Powai",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-09 (Noida Sec-18)",
+      "code": "STORE-09",
+      "name": "Store S-09 (Noida Sec-18)",
+      "shortCode": "Store S-09",
+      "type": "Store",
+      "region": "North",
+      "coordinates": [
+        77.321,
+        28.5708
+      ],
+      "stockOnHand": 890,
+      "capacity": 1400,
+      "weeklyDemand": 2337,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 11.2,
+      "address": "Sector 18 Commercial Hub, Noida",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-10 (Thane West)",
+      "code": "STORE-10",
+      "name": "Store S-10 (Thane West)",
+      "shortCode": "Store S-10",
+      "type": "Store",
+      "region": "Central",
+      "coordinates": [
+        72.9781,
+        19.2183
+      ],
+      "stockOnHand": 140,
+      "capacity": 500,
+      "weeklyDemand": 2283,
+      "riskLevel": "Critical",
+      "status": "Critical Stockout",
+      "daysOfSupply": 0.9,
+      "address": "Gokhale Road, Naupada, Thane West",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-11 (Gurgaon CyberHub)",
+      "code": "STORE-11",
+      "name": "Store S-11 (Gurgaon CyberHub)",
+      "shortCode": "Store S-11",
+      "type": "Store",
+      "region": "North",
+      "coordinates": [
+        77.089,
+        28.495
+      ],
+      "stockOnHand": 1050,
+      "capacity": 1500,
+      "weeklyDemand": 2566,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 12.8,
+      "address": "DLF CyberHub, Phase 2, Gurugram",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "Store S-12 (Jayanagar)",
+      "code": "STORE-12",
+      "name": "Store S-12 (Jayanagar)",
+      "shortCode": "Store S-12",
+      "type": "Store",
+      "region": "South",
+      "coordinates": [
+        77.5938,
+        12.925
+      ],
+      "stockOnHand": 920,
+      "capacity": 1400,
+      "weeklyDemand": 2423,
+      "riskLevel": "Healthy",
+      "status": "Adequate",
+      "daysOfSupply": 11.0,
+      "address": "4th Block Commercial Complex, Jayanagar",
+      "dataSource": "synthetic_demo"
+    }
+  ],
+  "lanes": [
+    {
+      "id": "WH-NORTH__STORE-01",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-01",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        77.215,
+        28.5244
+      ],
+      "distanceKm": 22.6,
+      "transportCost": 0.0218,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "disrupted",
+      "statusLabel": "Route Disruption (NH-48)",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-02",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-02",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        72.8295,
+        19.0596
+      ],
+      "distanceKm": 1144.9,
+      "transportCost": 0.1116,
+      "leadTimeHours": 28.6,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-03",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-03",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        77.6412,
+        12.9719
+      ],
+      "distanceKm": 1747.0,
+      "transportCost": 0.1598,
+      "leadTimeHours": 43.7,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-04",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-04",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        72.8697,
+        19.1136
+      ],
+      "distanceKm": 1138.0,
+      "transportCost": 0.111,
+      "leadTimeHours": 28.4,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-05",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-05",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        77.6221,
+        12.9352
+      ],
+      "distanceKm": 1751.0,
+      "transportCost": 0.1601,
+      "leadTimeHours": 43.8,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-06",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-06",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        77.2167,
+        28.6328
+      ],
+      "distanceKm": 13.4,
+      "transportCost": 0.0211,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-07",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-07",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        77.7499,
+        12.9698
+      ],
+      "distanceKm": 1747.6,
+      "transportCost": 0.1598,
+      "leadTimeHours": 43.7,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-08",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-08",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        72.9051,
+        19.1176
+      ],
+      "distanceKm": 1136.4,
+      "transportCost": 0.1109,
+      "leadTimeHours": 28.4,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-09",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-09",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        77.321,
+        28.5708
+      ],
+      "distanceKm": 25.5,
+      "transportCost": 0.022,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-10",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-10",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        72.9781,
+        19.2183
+      ],
+      "distanceKm": 1123.5,
+      "transportCost": 0.1099,
+      "leadTimeHours": 28.1,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-11",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-11",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        77.089,
+        28.495
+      ],
+      "distanceKm": 23.2,
+      "transportCost": 0.0219,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-NORTH__STORE-12",
+      "sourceId": "WH-NORTH",
+      "targetId": "STORE-12",
+      "sourceCoordinates": [
+        77.1025,
+        28.7041
+      ],
+      "targetCoordinates": [
+        77.5938,
+        12.925
+      ],
+      "distanceKm": 1752.1,
+      "transportCost": 0.1602,
+      "leadTimeHours": 43.8,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-01",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-01",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        77.215,
+        28.5244
+      ],
+      "distanceKm": 1126.8,
+      "transportCost": 0.1101,
+      "leadTimeHours": 28.2,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-02",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-02",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        72.8295,
+        19.0596
+      ],
+      "distanceKm": 4.9,
+      "transportCost": 0.0204,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-03",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-03",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        77.6412,
+        12.9719
+      ],
+      "distanceKm": 814.8,
+      "transportCost": 0.0852,
+      "leadTimeHours": 20.4,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-04",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-04",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        72.8697,
+        19.1136
+      ],
+      "distanceKm": 4.2,
+      "transportCost": 0.0203,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-05",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-05",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        77.6221,
+        12.9352
+      ],
+      "distanceKm": 817.2,
+      "transportCost": 0.0854,
+      "leadTimeHours": 20.4,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-06",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-06",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        77.2167,
+        28.6328
+      ],
+      "distanceKm": 1138.1,
+      "transportCost": 0.111,
+      "leadTimeHours": 28.5,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-07",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-07",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        77.7499,
+        12.9698
+      ],
+      "distanceKm": 820.8,
+      "transportCost": 0.0857,
+      "leadTimeHours": 20.5,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-08",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-08",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        72.9051,
+        19.1176
+      ],
+      "distanceKm": 5.3,
+      "transportCost": 0.0204,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-09",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-09",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        77.321,
+        28.5708
+      ],
+      "distanceKm": 1135.3,
+      "transportCost": 0.1108,
+      "leadTimeHours": 28.4,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-10",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-10",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        72.9781,
+        19.2183
+      ],
+      "distanceKm": 18.5,
+      "transportCost": 0.0215,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-11",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-11",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        77.089,
+        28.495
+      ],
+      "distanceKm": 1119.4,
+      "transportCost": 0.1096,
+      "leadTimeHours": 28.0,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-CENTRAL__STORE-12",
+      "sourceId": "WH-CENTRAL",
+      "targetId": "STORE-12",
+      "sourceCoordinates": [
+        72.8777,
+        19.076
+      ],
+      "targetCoordinates": [
+        77.5938,
+        12.925
+      ],
+      "distanceKm": 816.6,
+      "transportCost": 0.0853,
+      "leadTimeHours": 20.4,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-01",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-01",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        77.215,
+        28.5244
+      ],
+      "distanceKm": 1726.7,
+      "transportCost": 0.1581,
+      "leadTimeHours": 43.2,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-02",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-02",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        72.8295,
+        19.0596
+      ],
+      "distanceKm": 813.4,
+      "transportCost": 0.0851,
+      "leadTimeHours": 20.3,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-03",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-03",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        77.6412,
+        12.9719
+      ],
+      "distanceKm": 4.4,
+      "transportCost": 0.0204,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-04",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-04",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        72.8697,
+        19.1136
+      ],
+      "distanceKm": 816.3,
+      "transportCost": 0.0853,
+      "leadTimeHours": 20.4,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-05",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-05",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        77.6221,
+        12.9352
+      ],
+      "distanceKm": 4.8,
+      "transportCost": 0.0204,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-06",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-06",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        77.2167,
+        28.6328
+      ],
+      "distanceKm": 1738.8,
+      "transportCost": 0.1591,
+      "leadTimeHours": 43.5,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-07",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-07",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        77.7499,
+        12.9698
+      ],
+      "distanceKm": 14.8,
+      "transportCost": 0.0212,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-08",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-08",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        72.9051,
+        19.1176
+      ],
+      "distanceKm": 814.8,
+      "transportCost": 0.0852,
+      "leadTimeHours": 20.4,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-09",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-09",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        77.321,
+        28.5708
+      ],
+      "distanceKm": 1731.7,
+      "transportCost": 0.1585,
+      "leadTimeHours": 43.3,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-10",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-10",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        72.9781,
+        19.2183
+      ],
+      "distanceKm": 820.4,
+      "transportCost": 0.0856,
+      "leadTimeHours": 20.5,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-11",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-11",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        77.089,
+        28.495
+      ],
+      "distanceKm": 1723.8,
+      "transportCost": 0.1579,
+      "leadTimeHours": 43.1,
+      "capacityPerDay": 1000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    },
+    {
+      "id": "WH-SOUTH__STORE-12",
+      "sourceId": "WH-SOUTH",
+      "targetId": "STORE-12",
+      "sourceCoordinates": [
+        77.5946,
+        12.9716
+      ],
+      "targetCoordinates": [
+        77.5938,
+        12.925
+      ],
+      "distanceKm": 5.2,
+      "transportCost": 0.0204,
+      "leadTimeHours": 4.0,
+      "capacityPerDay": 5000,
+      "status": "active",
+      "statusLabel": "Active Transit Lane",
+      "dataSource": "synthetic_demo"
+    }
+  ],
+  "metadata": {
+    "totalWarehouses": 3,
+    "totalStores": 12,
+    "totalLanes": 36,
+    "syntheticDisclaimer": "Synthetic demo FMCG distribution records generated for SupplyShield AI benchmark."
+  }
+}
