@@ -132,6 +132,12 @@ body {
   box-shadow: 0 4px 12px 0 rgba(16, 47, 80, 0.12), 0 2px 4px -1px rgba(16, 47, 80, 0.08);
 }
 
+@media (max-width: 640px) {
+  .ss-card {
+    padding: 14px !important;
+  }
+}
+
 /* KPI Cards */
 .ss-kpi-card {
   background: #ffffff;
@@ -627,6 +633,18 @@ body {
 
 @media (max-width: 1024px) {
   .ss-chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ss-activity-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .ss-activity-grid {
     grid-template-columns: 1fr;
   }
 }

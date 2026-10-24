@@ -678,7 +678,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Bottom Row: Activity + Alerts */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '16px' }}>
+      <div className="ss-activity-grid">
         {/* Activity Feed */}
         <div className="ss-card" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
