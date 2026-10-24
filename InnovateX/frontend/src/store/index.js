@@ -11,6 +11,7 @@ export const useAuthStore = create(
 
       setUser: (user) => set({ user, isAuthenticated: !!user }),
       setToken: (token) => set({ token }),
+      updateUser: (partial) => set((s) => ({ user: { ...s.user, ...partial } })),
 
       login: (user, token) => set({
         user,
@@ -37,6 +38,39 @@ export const useAuthStore = create(
     }
   )
 )
+
+export const useEntityStore = create((set, get) => ({
+  stores: [],
+  warehouses: [],
+  incomingRequests: [],
+  outgoingRequests: [],
+  liveLocation: null,
+  isLoading: false,
+
+  setNetworkData: (data) => set({
+    stores: data.stores || [],
+    warehouses: data.warehouses || [],
+    incomingRequests: data.incomingRequests || [],
+    outgoingRequests: data.outgoingRequests || [],
+  }),
+
+  setLiveLocation: (loc) => set({ liveLocation: loc }),
+  setLoading: (isLoading) => set({ isLoading }),
+
+  addStore: (store) => set((s) => ({ stores: [store, ...s.stores] })),
+  updateStoreInList: (updated) => set((s) => ({
+    stores: s.stores.map((st) => (st._id === updated._id ? updated : st)),
+  })),
+
+  addWarehouse: (wh) => set((s) => ({ warehouses: [wh, ...s.warehouses] })),
+  updateWarehouseInList: (updated) => set((s) => ({
+    warehouses: s.warehouses.map((w) => (w._id === updated._id ? updated : w)),
+  })),
+
+  removeIncomingRequest: (id) => set((s) => ({
+    incomingRequests: s.incomingRequests.filter((r) => r._id !== id),
+  })),
+}))
 
 export const useUIStore = create((set) => ({
   sidebarCollapsed: false,

@@ -15,6 +15,8 @@ import dashboardRoutes from './routes/dashboardRoutes.js'
 import dataRoutes from './routes/dataRoutes.js'
 import analyticsRoutes from './routes/analyticsRoutes.js'
 import forecastRoutes from './routes/forecastRoutes.js'
+import entityRoutes from './routes/entityRoutes.js'
+import onboardingRoutes from './routes/onboardingRoutes.js'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
 
 const app = express()
@@ -99,6 +101,8 @@ setupSwagger(app)
 app.use('/api/v1/health', healthRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/dashboard', dashboardRoutes)
+app.use('/api/v1/entities', entityRoutes)
+app.use('/api/v1/onboarding', onboardingRoutes)
 app.use('/api/v1', dataRoutes)
 app.use('/api/v1', analyticsRoutes)
 app.use('/api/v1', forecastRoutes)

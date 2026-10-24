@@ -4,6 +4,20 @@
    SupplyShield AI Design System
    ============================================================ */
 
+.font-cursive,
+.font-proper-cursive {
+  font-family: 'Dancing Script', 'Caveat', cursive, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.font-script {
+  font-family: 'Caveat', cursive;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 @theme {
   /* Color Palette */
   --color-navy-950: #071b30;
@@ -739,3 +753,94 @@ body {
   backdrop-filter: blur(16px);
   border: 1px solid rgba(215, 230, 245, 0.8);
 }
+
+/* ============================================================
+   RAY AI Onboarding Loader Animations (Delayed Rotation + Light Spread)
+   ============================================================ */
+
+@keyframes rayRotateStep {
+  0%, 15% {
+    transform: rotate(0deg);
+  }
+  25%, 40% {
+    transform: rotate(90deg);
+  }
+  50%, 65% {
+    transform: rotate(180deg);
+  }
+  75%, 90% {
+    transform: rotate(270deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rayLightSpread {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+    box-shadow: 0 0 25px 8px rgba(52, 211, 153, 0.8), inset 0 0 15px rgba(16, 185, 129, 0.6);
+  }
+  20% {
+    transform: scale(1.6);
+    opacity: 0;
+    box-shadow: 0 0 50px 20px rgba(52, 211, 153, 0);
+  }
+  25% {
+    transform: scale(0.6);
+    opacity: 0.9;
+    box-shadow: 0 0 25px 8px rgba(52, 211, 153, 0.8), inset 0 0 15px rgba(16, 185, 129, 0.6);
+  }
+  45% {
+    transform: scale(1.6);
+    opacity: 0;
+    box-shadow: 0 0 50px 20px rgba(52, 211, 153, 0);
+  }
+  50% {
+    transform: scale(0.6);
+    opacity: 0.9;
+    box-shadow: 0 0 25px 8px rgba(52, 211, 153, 0.8), inset 0 0 15px rgba(16, 185, 129, 0.6);
+  }
+  70% {
+    transform: scale(1.6);
+    opacity: 0;
+    box-shadow: 0 0 50px 20px rgba(52, 211, 153, 0);
+  }
+  75% {
+    transform: scale(0.6);
+    opacity: 0.9;
+    box-shadow: 0 0 25px 8px rgba(52, 211, 153, 0.8), inset 0 0 15px rgba(16, 185, 129, 0.6);
+  }
+  95%, 100% {
+    transform: scale(1.6);
+    opacity: 0;
+    box-shadow: 0 0 50px 20px rgba(52, 211, 153, 0);
+  }
+}
+
+@keyframes rayHalo {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(1);
+    background: radial-gradient(circle, rgba(52, 211, 153, 0.35) 0%, rgba(16, 185, 129, 0) 70%);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+    background: radial-gradient(circle, rgba(52, 211, 153, 0.5) 0%, rgba(16, 185, 129, 0) 70%);
+  }
+}
+
+.animate-ray-rotate-step {
+  animation: rayRotateStep 3.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.animate-ray-light-spread {
+  animation: rayLightSpread 3.2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+.animate-ray-halo {
+  animation: rayHalo 3.2s ease-in-out infinite;
+}
+

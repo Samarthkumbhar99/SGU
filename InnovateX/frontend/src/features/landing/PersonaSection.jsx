@@ -62,8 +62,12 @@ export default function PersonaSection() {
             <Users className="w-3.5 h-3.5 text-sky-600" />
             Built for Real Operations
           </div>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            Designed for the three stakeholders who keep supply chains moving
+          <h2 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-slate-900 tracking-tight leading-tight">
+            Designed for the three{' '}
+            <span className="font-cursive text-sky-600 font-semibold italic text-[1.08em] px-1">
+              operational leaders
+            </span>{' '}
+            who keep supply chains moving
           </h2>
           <p className="mt-4 text-base sm:text-lg text-slate-600">
             From the high-pressure warehouse loading dock to executive quarterly reviews, SupplyShield AI aligns the entire operational team.
@@ -81,13 +85,13 @@ export default function PersonaSection() {
                 onClick={() => setActivePersona(idx)}
                 className={`p-6 rounded-2xl border text-left transition-all duration-200 cursor-pointer ${
                   isSelected
-                    ? 'border-sky-500 bg-sky-50/70 shadow-lg ring-2 ring-sky-200 scale-[1.02]'
-                    : 'border-slate-200 hover:border-sky-300 hover:bg-slate-50'
+                    ? 'border-sky-500 bg-sky-50/80 shadow-md ring-2 ring-sky-200/70 scale-[1.01]'
+                    : 'border-slate-200 bg-white hover:border-sky-300 hover:bg-slate-50/80'
                 }`}
               >
                 <div className="flex items-center gap-3 mb-2">
                   <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm"
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shadow-xs"
                     style={{ backgroundColor: p.avatarBg }}
                   >
                     {p.name.charAt(0)}
@@ -97,62 +101,67 @@ export default function PersonaSection() {
                     <span className="text-xs text-sky-700 font-semibold">{p.role}</span>
                   </div>
                 </div>
-                <p className="text-xs text-slate-500 mt-2 line-clamp-2">{p.tagline}</p>
+                <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">{p.tagline}</p>
               </button>
             )
           })}
         </div>
 
-        {/* Active Persona Deep Dive */}
-        <div className="bg-gradient-to-br from-slate-900 to-sky-950 rounded-3xl p-8 sm:p-12 text-white border border-sky-400/20 shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        {/* Active Persona Deep Dive (Professional Enterprise Spec) */}
+        <div className="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200/90 shadow-sm">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Story & Solution */}
             <div className="lg:col-span-7">
-              <div className="inline-block px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 text-xs font-semibold mb-4 border border-sky-400/30">
-                Persona Empathy Profile
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-bold uppercase tracking-wider mb-4">
+                <span className="w-2 h-2 rounded-full bg-sky-600" />
+                Operational Role Blueprint
               </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">{persona.name}</h3>
-              <p className="text-sm font-semibold text-sky-400 mb-6">{persona.role}</p>
+              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-1">{persona.name}</h3>
+              <p className="text-sm font-semibold text-sky-700 mb-6">{persona.role}</p>
 
               <div className="space-y-4 mb-8">
-                <div className="bg-slate-800/80 rounded-xl p-4 border border-rose-500/20">
-                  <span className="text-xs font-bold text-rose-400 uppercase tracking-wider block mb-1">
-                    The Recurring Nightmare
-                  </span>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{persona.pain}</p>
+                {/* Challenge Card */}
+                <div className="bg-rose-50/60 rounded-2xl p-5 border border-rose-200/80">
+                  <div className="flex items-center gap-2 text-xs font-bold text-rose-700 uppercase tracking-wider mb-1.5">
+                    <ShieldAlert className="w-4 h-4 text-rose-600" />
+                    The Operational Vulnerability
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{persona.pain}</p>
                 </div>
 
-                <div className="bg-slate-800/80 rounded-xl p-4 border border-emerald-500/20">
-                  <span className="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">
+                {/* Solution Card */}
+                <div className="bg-emerald-50/60 rounded-2xl p-5 border border-emerald-200/80">
+                  <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     How SupplyShield Solves It
-                  </span>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">{persona.solution}</p>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">{persona.solution}</p>
                 </div>
               </div>
 
               <Link
                 to="/login"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-sky-500/25 transition-all"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-sky-600/20 transition-all hover:scale-[1.01]"
               >
                 <span>Experience {persona.name.split(' ')[0]}'s Workspace</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
-            {/* Impact Metrics */}
+            {/* Impact Metrics (Crisp Enterprise Monospace Cards) */}
             <div className="lg:col-span-5 grid grid-cols-1 gap-4">
               {persona.stats.map((st, i) => (
                 <div
                   key={i}
-                  className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-5 border border-slate-700/80 flex items-center justify-between"
+                  className="bg-slate-50/80 rounded-2xl p-5 border border-slate-200/80 flex items-center justify-between"
                 >
                   <div>
-                    <span className="text-xs font-semibold text-slate-400 block">{st.label}</span>
-                    <span className="text-2xl sm:text-3xl font-black text-white font-mono mt-0.5 block">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">{st.label}</span>
+                    <span className="text-2xl sm:text-3xl font-black text-slate-900 font-mono mt-0.5 block">
                       {st.val}
                     </span>
                   </div>
-                  <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  <span className="text-xs font-extrabold text-emerald-800 bg-emerald-100/80 px-3 py-1.5 rounded-full border border-emerald-200/80">
                     {st.delta}
                   </span>
                 </div>

@@ -55,8 +55,8 @@ export default function LoginPage() {
     try {
       const res = await authAPI.login(data)
       login(res.data.user, res.data.token)
-      toast.success('Welcome back! Redirecting to dashboard…', 'Signed in')
-      navigate('/dashboard')
+      toast.success('Welcome back! Redirecting to workspace…', 'Signed in')
+      navigate(res.data.user?.isOnboarded === false ? '/onboarding' : '/dashboard')
     } catch (err) {
       const msg = err.response?.data?.message || 'Invalid credentials. Please try again.'
       toast.error(msg, 'Sign in failed')
@@ -111,21 +111,18 @@ export default function LoginPage() {
         {/* Content */}
         <div style={{ position: 'relative', zIndex: 1, maxWidth: '480px', width: '100%' }}>
           {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '48px' }}>
-            <div
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '48px' }}>
+            <img
+              src="/logo.webp"
+              alt="SupplyShield AI Logo"
               style={{
                 width: '48px',
                 height: '48px',
-                borderRadius: '14px',
-                background: 'linear-gradient(135deg, #247bc1, #6ab0e1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 24px rgba(36,123,193,0.4)',
+                borderRadius: '12px',
+                objectFit: 'contain',
+                boxShadow: '0 8px 24px rgba(36,123,193,0.3)',
               }}
-            >
-              <Shield size={26} color="#fff" />
-            </div>
+            />
             <div>
               <div style={{ color: '#fff', fontWeight: 800, fontSize: '20px', lineHeight: 1.1 }}>
                 SupplyShield AI
@@ -241,19 +238,16 @@ export default function LoginPage() {
               justifyContent: 'center',
             }}
           >
-            <div
+            <img
+              src="/logo.webp"
+              alt="SupplyShield AI Logo"
               style={{
                 width: '40px',
                 height: '40px',
-                borderRadius: '12px',
-                background: 'linear-gradient(135deg, #247bc1, #6ab0e1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                borderRadius: '10px',
+                objectFit: 'contain',
               }}
-            >
-              <Shield size={22} color="#fff" />
-            </div>
+            />
             <div>
               <div style={{ fontWeight: 800, fontSize: '18px', color: '#17324d', lineHeight: 1 }}>
                 SupplyShield AI

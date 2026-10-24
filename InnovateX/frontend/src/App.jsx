@@ -6,12 +6,17 @@ import AuthCallback from './features/auth/AuthCallback.jsx'
 import LandingPage from './features/landing/LandingPage.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
+import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
 
 // Protected route wrapper
-function ProtectedRoute({ children }) {
-  const { isAuthenticated } = useAuthStore()
+function ProtectedRoute({ children, allowUnonboarded = false }) {
+  const { isAuthenticated, user } = useAuthStore()
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
+  }
+  // First time after login or signup: redirect to AI onboarding if not yet onboarded
+  if (user && user.isOnboarded === false && !allowUnonboarded) {
+    return <Navigate to="/onboarding" replace />
   }
   return children
 }
@@ -58,6 +63,14 @@ export default function App() {
         <Route path="/landing" element={<LandingPage />} />
 
         {/* Protected routes */}
+        <Route
+          path="/onboarding"
+          element={
+            <ProtectedRoute allowUnonboarded={true}>
+              <RayOnboardingPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/dashboard"
           element={
