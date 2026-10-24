@@ -1,4 +1,5 @@
-import { NavLink, useLocation } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   Map,
@@ -8,38 +9,106 @@ import {
   BarChart3,
   History,
   Settings,
-  ChevronLeft,
-  ChevronRight,
+  Sparkles,
   LogOut,
   X,
 } from 'lucide-react'
 import { useUIStore, useAuthStore } from '../../store/index.js'
-import { useNavigate } from 'react-router-dom'
+import BranchedMenu from '../ui/BranchedMenu.jsx'
 
-const NAV_ITEMS = [
-  { to: '/dashboard', icon: LayoutDashboard, label: 'Overview' },
-  { to: '/network-map', icon: Map, label: 'Network Map' },
-  { to: '/inventory', icon: Package, label: 'Inventory' },
-  { to: '/forecasting', icon: TrendingUp, label: 'Forecasting' },
-  { to: '/rescue', icon: Shield, label: 'Inventory Rescue' },
-  { to: '/optimization', icon: BarChart3, label: 'Optimization' },
-  { to: '/scenarios', icon: History, label: 'Scenario History' },
-  { to: '/settings', icon: Settings, label: 'Settings' },
+// Hierarchical supply chain navigation for BranchedMenu
+const SIDEBAR_BRANCHED_ITEMS = [
+  {
+    label: 'Operations & Network',
+    children: [
+      { value: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+      { value: '/network-map', label: 'Network Map', icon: Map },
+      { value: '/inventory', label: 'Inventory Matrix', icon: Package },
+    ],
+  },
+  {
+    label: 'AI & Solvers',
+    children: [
+      { value: '/forecasting', label: 'Demand Forecasting', icon: TrendingUp },
+      { value: '/rescue', label: 'Inventory Rescue', icon: Shield },
+      { value: '/optimization', label: 'MILP Optimization', icon: BarChart3 },
+      { value: '/scenarios', label: 'Scenario History', icon: History },
+    ],
+  },
+  {
+    label: 'Administration',
+    children: [
+      { value: '/onboarding', label: 'AI Telemetry / KYC', icon: Sparkles },
+      { value: '/settings', label: 'Settings & Data', icon: Settings },
+    ],
+  },
 ]
 
+// Flattened leaf items for collapsed icon rail
+const ALL_LEAF_ITEMS = SIDEBAR_BRANCHED_ITEMS.flatMap((section) => section.children || [])
+
 export function Sidebar() {
-  const { sidebarCollapsed, sidebarMobileOpen, toggleSidebar, setSidebarMobileOpen } = useUIStore()
+  const { sidebarCollapsed, sidebarMobileOpen, setSidebarMobileOpen } = useUIStore()
   const { user, logout } = useAuthStore()
+  const location = useLocation()
   const navigate = useNavigate()
+  const sidebarRef = useRef(null)
 
   const handleLogout = () => {
+    setSidebarMobileOpen(false)
     logout()
     navigate('/login')
   }
 
+  // 1. Auto-close sidebar whenever route changes
+  useEffect(() => {
+    setSidebarMobileOpen(false)
+  }, [location.pathname, setSidebarMobileOpen])
+
+  // 2. Close sidebar when clicking anywhere on screen outside the sidebar
+  useEffect(() => {
+    if (!sidebarMobileOpen) return
+
+    const handleClickOutside = (e) => {
+      // If click was inside sidebar, do nothing
+      if (sidebarRef.current && sidebarRef.current.contains(e.target)) {
+        return
+      }
+      // If click was on mobile hamburger toggle button, ignore to avoid conflict
+      const mobileBtn = document.getElementById('mobile-menu-btn')
+      if (mobileBtn && mobileBtn.contains(e.target)) {
+        return
+      }
+      setSidebarMobileOpen(false)
+    }
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setSidebarMobileOpen(false)
+      }
+    }
+
+    // Add mousedown, touchstart and escape key listener
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('touchstart', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [sidebarMobileOpen, setSidebarMobileOpen])
+
+  // Find which branch index contains the current route so it is open by default
+  const activeSectionIndex = SIDEBAR_BRANCHED_ITEMS.findIndex((section) =>
+    section.children?.some((kid) => kid.value === location.pathname)
+  )
+  const defaultOpenIndices = activeSectionIndex >= 0 ? [activeSectionIndex] : [0]
+
   return (
     <>
-      {/* Mobile overlay */}
+      {/* Mobile backdrop overlay — clicking it closes sidebar */}
       {sidebarMobileOpen && (
         <div
           className="ss-sidebar-overlay"
@@ -48,8 +117,9 @@ export function Sidebar() {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Main Sidebar Container (Light Theme) */}
       <nav
+        ref={sidebarRef}
         className={`ss-sidebar ${sidebarCollapsed ? 'ss-sidebar-collapsed' : ''}`}
         style={{
           transform: sidebarMobileOpen ? 'translateX(0)' : undefined,
@@ -57,144 +127,153 @@ export function Sidebar() {
         aria-label="Main navigation"
         data-mobile-open={sidebarMobileOpen}
       >
-        {/* Logo */}
+        {/* Brand Header */}
         <div
           style={{
-            padding: '20px 16px 16px',
-            borderBottom: '1px solid rgba(255,255,255,0.08)',
+            padding: '16px 14px 14px 16px',
+            borderBottom: '1px solid #e2e8f0',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: '12px',
+            gap: '8px',
+            background: '#ffffff',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
-            {/* Logo mark */}
-            <div
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1 }}>
+            <img
+              src="/logo.webp"
+              alt="SupplyShield AI Logo"
               style={{
                 width: '36px',
                 height: '36px',
                 borderRadius: '10px',
-                background: 'linear-gradient(135deg, #247bc1, #6ab0e1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                objectFit: 'contain',
                 flexShrink: 0,
+                border: '1px solid #e2e8f0',
+                padding: '2px',
+                background: '#ffffff',
               }}
-            >
-              <Shield size={20} color="#fff" />
-            </div>
+            />
 
             {!sidebarCollapsed && (
-              <div style={{ minWidth: 0 }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
                 <div
                   style={{
-                    color: '#ffffff',
+                    color: '#0f172a',
                     fontWeight: 800,
                     fontSize: '15px',
-                    lineHeight: 1.1,
+                    lineHeight: 1.15,
                     whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
                   }}
                 >
-                  SupplyShield
+                  Supply<span style={{ color: '#0284c7' }}>Shield</span>{' '}
+                  <span
+                    style={{
+                      fontSize: '10px',
+                      color: '#0284c7',
+                      background: '#f0f9ff',
+                      padding: '1px 5px',
+                      borderRadius: '4px',
+                      border: '1px solid #bae6fd',
+                      fontWeight: 700,
+                    }}
+                  >
+                    AI
+                  </span>
                 </div>
                 <div
                   style={{
-                    color: 'rgba(255,255,255,0.45)',
-                    fontSize: '11px',
-                    fontWeight: 500,
+                    color: '#64748b',
+                    fontSize: '10px',
+                    fontWeight: 600,
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase',
+                    marginTop: '2px',
                   }}
                 >
-                  AI Platform
+                  Distribution Intelligence
                 </div>
               </div>
             )}
           </div>
 
-          {/* Mobile close / desktop collapse */}
+          {/* Cross (close) button for mobile view */}
           <button
-            id="sidebar-toggle-btn"
-            onClick={() => {
-              if (window.innerWidth < 1024) {
-                setSidebarMobileOpen(false)
-              } else {
-                toggleSidebar()
-              }
-            }}
-            style={{
-              background: 'rgba(255,255,255,0.08)',
-              border: 'none',
-              borderRadius: '8px',
-              color: 'rgba(255,255,255,0.65)',
-              cursor: 'pointer',
-              padding: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.15s',
-              flexShrink: 0,
-            }}
-            aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            type="button"
+            onClick={() => setSidebarMobileOpen(false)}
+            className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer flex items-center justify-center shrink-0"
+            title="Close navigation"
+            aria-label="Close sidebar"
           >
-            {window.innerWidth < 1024 ? (
-              <X size={16} />
-            ) : sidebarCollapsed ? (
-              <ChevronRight size={16} />
-            ) : (
-              <ChevronLeft size={16} />
-            )}
+            <X size={20} />
           </button>
         </div>
 
-        {/* Nav Items */}
+        {/* Branched Navigation Area */}
         <div
           style={{
             flex: 1,
             overflowY: 'auto',
             overflowX: 'hidden',
-            padding: '8px 0',
+            padding: sidebarCollapsed ? '14px 6px' : '16px 8px 16px 10px',
           }}
         >
-          {!sidebarCollapsed && (
-            <div
-              style={{
-                padding: '10px 16px 6px',
-                fontSize: '11px',
-                fontWeight: 700,
-                color: 'rgba(255,255,255,0.3)',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-              }}
-            >
-              Navigation
+          {sidebarCollapsed ? (
+            /* Compact Icon Rail when sidebar is collapsed */
+            <div className="flex flex-col items-center gap-2">
+              {ALL_LEAF_ITEMS.map((item) => {
+                const Icon = item.icon
+                const isActive = location.pathname === item.value
+                return (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => {
+                      navigate(item.value)
+                      setSidebarMobileOpen(false)
+                    }}
+                    title={item.label}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-sky-50 text-sky-600 ring-2 ring-sky-300 shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                    }`}
+                  >
+                    <Icon size={19} />
+                  </button>
+                )
+              })}
             </div>
+          ) : (
+            /* Animated BranchedMenu in Pure Light Theme */
+            <BranchedMenu
+              items={SIDEBAR_BRANCHED_ITEMS}
+              defaultOpen={defaultOpenIndices}
+              defaultActive={location.pathname}
+              onSelect={(value) => {
+                navigate(value)
+                setSidebarMobileOpen(false)
+              }}
+              color="#1e293b"
+              accentColor="#0284c7"
+              lineColor="#cbd5e1"
+              width={240}
+              rowHeight={36}
+              indent={36}
+              trunk={14}
+              radius={10}
+              lineWidth={1.5}
+              fontSize={13.5}
+            />
           )}
-
-          {NAV_ITEMS.map(({ to, icon: Icon, label }) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={() => setSidebarMobileOpen(false)}
-              className={({ isActive }) =>
-                `ss-nav-item ${isActive ? 'ss-nav-item-active' : ''}`
-              }
-              title={sidebarCollapsed ? label : undefined}
-            >
-              <Icon className="ss-nav-icon" />
-              {!sidebarCollapsed && <span>{label}</span>}
-            </NavLink>
-          ))}
         </div>
 
-        {/* User section */}
+        {/* User Profile & Sign Out Footer */}
         <div
           style={{
-            borderTop: '1px solid rgba(255,255,255,0.08)',
-            padding: '12px 8px',
+            borderTop: '1px solid #e2e8f0',
+            padding: '12px 10px',
+            background: '#f8fafc',
           }}
         >
           {!sidebarCollapsed && user && (
@@ -203,9 +282,11 @@ export function Sidebar() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                padding: '10px 12px',
-                borderRadius: '8px',
-                marginBottom: '4px',
+                padding: '8px 10px',
+                borderRadius: '10px',
+                marginBottom: '6px',
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
               }}
             >
               <div
@@ -213,7 +294,7 @@ export function Sidebar() {
                   width: '32px',
                   height: '32px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #247bc1, #6ab0e1)',
+                  background: 'linear-gradient(135deg, #0284c7, #38bdf8)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -221,6 +302,7 @@ export function Sidebar() {
                   fontWeight: 700,
                   fontSize: '13px',
                   flexShrink: 0,
+                  boxShadow: '0 2px 6px rgba(2, 132, 199, 0.25)',
                 }}
               >
                 {(user.name || user.email || 'U').charAt(0).toUpperCase()}
@@ -228,8 +310,8 @@ export function Sidebar() {
               <div style={{ minWidth: 0 }}>
                 <div
                   style={{
-                    color: '#fff',
-                    fontWeight: 600,
+                    color: '#0f172a',
+                    fontWeight: 700,
                     fontSize: '13px',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -240,8 +322,9 @@ export function Sidebar() {
                 </div>
                 <div
                   style={{
-                    color: 'rgba(255,255,255,0.45)',
+                    color: '#64748b',
                     fontSize: '11px',
+                    fontWeight: 500,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
@@ -256,11 +339,10 @@ export function Sidebar() {
           <button
             id="logout-btn"
             onClick={handleLogout}
-            className="ss-nav-item"
-            style={{ width: 'calc(100% - 16px)', color: 'rgba(255,255,255,0.55)' }}
+            className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 text-xs font-semibold w-full transition-all cursor-pointer"
             title={sidebarCollapsed ? 'Sign out' : undefined}
           >
-            <LogOut size={20} style={{ flexShrink: 0 }} />
+            <LogOut size={18} style={{ flexShrink: 0 }} />
             {!sidebarCollapsed && <span>Sign out</span>}
           </button>
         </div>
@@ -268,3 +350,4 @@ export function Sidebar() {
     </>
   )
 }
+export default Sidebar

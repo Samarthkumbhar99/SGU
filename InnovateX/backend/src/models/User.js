@@ -35,18 +35,48 @@ const userSchema = new mongoose.Schema(
       trim: true,
       maxlength: [200, 'Company name must be under 200 characters'],
     },
+    phone: {
+      type: String,
+      trim: true,
+    },
     role: {
       type: String,
       enum: [
-        'Distribution Manager',
+        'Retailer',
+        'Warehouse Manager',
         'Warehouse Controller',
+        'Distribution Manager',
         'Supply Chain Analyst',
         'Operations Manager',
         'Admin',
         'Other',
       ],
-      default: 'Distribution Manager',
+      default: 'Retailer',
     },
+    isOnboarded: {
+      type: Boolean,
+      default: false,
+    },
+    liveLocation: {
+      latitude: { type: Number },
+      longitude: { type: Number },
+      accuracy: { type: Number },
+      city: { type: String, default: 'Detected City' },
+      address: { type: String, default: 'Live GPS Location' },
+      updatedAt: { type: Date, default: Date.now },
+    },
+    managedStores: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Store',
+      },
+    ],
+    managedWarehouses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Warehouse',
+      },
+    ],
     isActive: {
       type: Boolean,
       default: true,
@@ -62,8 +92,6 @@ const userSchema = new mongoose.Schema(
   }
 )
 
-// Indexes
-userSchema.index({ email: 1 }, { unique: true })
 
 // Instance method: compare password
 userSchema.methods.comparePassword = async function (candidatePassword) {
