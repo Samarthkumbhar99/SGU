@@ -39,6 +39,13 @@ import { AppLayout } from '../../components/layout/AppLayout.jsx'
 import { dashboardAPI } from '../../services/api.js'
 import { SkeletonKPICard, SkeletonCard } from '../../components/ui/Skeleton.jsx'
 import { useToast } from '../../components/ui/Toast.jsx'
+import { useAuthStore, useEntityStore } from '../../store/index.js'
+import LiveLocationBar from './components/LiveLocationBar.jsx'
+import MyStoresSection from './components/MyStoresSection.jsx'
+import MyWarehousesSection from './components/MyWarehousesSection.jsx'
+import AccessRequestsManager from './components/AccessRequestsManager.jsx'
+import SearchNetworkModal from './components/SearchNetworkModal.jsx'
+import RaySymbol from '../onboarding/RaySymbol.jsx'
 
 // ——— Demo data (used as fallback when API is unavailable) ———
 const DEMO_SUMMARY = {
@@ -283,6 +290,17 @@ export default function DashboardPage() {
   const [error, setError] = useState(null)
   const navigate = useNavigate()
   const toast = useToast()
+  const { user, token } = useAuthStore()
+  const { setNetworkData, stores, warehouses } = useEntityStore()
+
+  // Search network modal
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
+  const [searchModalType, setSearchModalType] = useState('all')
+
+  // Entity tab selection ('all' | 'stores' | 'warehouses')
+  const isRetailer = user?.role === 'Retailer'
+  const isWarehouseMgr = user?.role === 'Warehouse Manager' || user?.role === 'Warehouse Controller'
+  const [entityTab, setEntityTab] = useState(isRetailer ? 'stores' : isWarehouseMgr ? 'warehouses' : 'all')
 
   useEffect(() => {
     const load = async () => {
@@ -297,7 +315,26 @@ export default function DashboardPage() {
       }
     }
     load()
-  }, [])
+
+    // Fetch user-specific stores, warehouses, and access requests
+    const loadMyNetwork = async () => {
+      if (!token) return
+      try {
+        const res = await fetch('http://localhost:5000/api/v1/entities/my-network', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        const data = await res.json()
+        if (data.success) {
+          setNetworkData(data.data)
+        }
+      } catch (e) {
+        console.error('Failed to load my-network data:', e)
+      }
+    }
+    loadMyNetwork()
+  }, [token])
 
   const handleRunOptimization = () => {
     navigate('/rescue')
@@ -308,30 +345,107 @@ export default function DashboardPage() {
 
   return (
     <AppLayout pageTitle="Overview Dashboard" breadcrumbs={['Home', 'Dashboard']}>
-      {/* Demo data notice */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          padding: '10px 16px',
-          background: '#eef6ff',
-          border: '1px solid #d7e6f5',
-          borderRadius: '8px',
-          marginBottom: '20px',
-          fontSize: '13px',
-          color: '#64778b',
-        }}
-      >
-        <Zap size={14} color="#247bc1" style={{ flexShrink: 0 }} />
-        <span>
-          <strong style={{ color: '#247bc1' }}>Demo data active.</strong>{' '}
-          All metrics reflect a synthetic FMCG network (3 warehouses · 12 stores · 20 SKUs). Connect your MongoDB instance to load real data.
-        </span>
-        <button className="ss-btn-ghost" style={{ marginLeft: 'auto', padding: '4px 10px', fontSize: '12px' }}>
-          Learn more
-        </button>
+      {/* RAY AI Onboarding Notification Banner if not onboarded */}
+      {!user?.isOnboarded && (
+        <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-sky-50 border border-emerald-200/90 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <RaySymbol size={28} className="shrink-0" />
+            <div>
+              <div className="text-xs font-bold text-slate-900">
+                Setup your FMCG Profile with RAY AI Agent
+              </div>
+              <div className="text-[11px] text-slate-600">
+                Calibrate live GPS, configure retail stores or warehouse DCs, and set up automatic replenish bounds in under 2 minutes.
+              </div>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/onboarding')}
+            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-xs transition-all hover:scale-105 cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Launch AI Onboarding (RAY)</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Live GPS Telemetry Bar */}
+      <LiveLocationBar />
+
+      {/* Access Requests Manager (Approvals & Sent Requests) */}
+      <AccessRequestsManager />
+
+      {/* User-Specific Entity Management Section */}
+      <div className="mb-8 bg-slate-50/50 p-6 rounded-3xl border border-slate-200/80">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+              {user?.role || 'Supply Chain'} Workspace
+            </div>
+            <span className="text-xs font-bold text-slate-700 bg-white px-2.5 py-0.5 rounded-full border border-slate-200">
+              {user?.company || 'FMCG Network'}
+            </span>
+          </div>
+
+          {/* Entity Tab Filters */}
+          <div className="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => setEntityTab('all')}
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                entityTab === 'all' ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              All Facilities ({stores.length + warehouses.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setEntityTab('stores')}
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                entityTab === 'stores' ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Stores ({stores.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setEntityTab('warehouses')}
+              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                entityTab === 'warehouses' ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Warehouses ({warehouses.length})
+            </button>
+          </div>
+        </div>
+
+        {/* Dynamic Section based on role and tab */}
+        {(entityTab === 'all' || entityTab === 'stores') && (
+          <MyStoresSection
+            onOpenSearchModal={() => {
+              setSearchModalType('store')
+              setIsSearchModalOpen(true)
+            }}
+          />
+        )}
+
+        {(entityTab === 'all' || entityTab === 'warehouses') && (
+          <MyWarehousesSection
+            onOpenSearchModal={() => {
+              setSearchModalType('warehouse')
+              setIsSearchModalOpen(true)
+            }}
+          />
+        )}
       </div>
+
+      {/* Global Network Search & Claim Modal */}
+      <SearchNetworkModal
+        isOpen={isSearchModalOpen}
+        defaultType={searchModalType}
+        onClose={() => setIsSearchModalOpen(false)}
+      />
 
       {/* KPI Grid */}
       <div className="ss-kpi-grid" style={{ marginBottom: '20px' }}>
@@ -564,7 +678,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Bottom Row: Activity + Alerts */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '16px' }}>
+      <div className="ss-activity-grid">
         {/* Activity Feed */}
         <div className="ss-card" style={{ padding: '20px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
