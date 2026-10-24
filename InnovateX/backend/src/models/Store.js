@@ -110,7 +110,7 @@ const storeSchema = new mongoose.Schema(
 )
 
 // Pre-save synchronization
-storeSchema.pre('save', function (next) {
+storeSchema.pre('save', function () {
   if (!this.storeName && this.name) {
     this.storeName = this.name
   } else if (!this.name && this.storeName) {
@@ -124,13 +124,13 @@ storeSchema.pre('save', function (next) {
   }
 
   if (!this.code && !this.storeId) {
-    const cityPrefix = (typeof this.location === 'object' ? this.location?.city : 'STR') || 'STR'
+    const city = (typeof this.location === 'object' ? this.location?.city : 'STR') || 'STR'
+    const cityPrefix = city.substring(0, 3).toUpperCase()
     const rand = Math.floor(1000 + Math.random() * 9000)
-    const generated = `STR-${cityPrefix.substring(0, 3).toUpperCase()}-${rand}`
+    const generated = `STR-${cityPrefix}-${rand}`
     this.code = generated
     this.storeId = generated
   }
-  next()
 })
 
 const Store = mongoose.models.Store || mongoose.model('Store', storeSchema)

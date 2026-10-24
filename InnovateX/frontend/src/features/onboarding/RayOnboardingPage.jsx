@@ -19,6 +19,66 @@ import {
   Compass,
 } from 'lucide-react'
 
+/**
+ * Onboarding Top Navbar
+ * Shown across the entire AI onboarding flow:
+ * - Brand logo & name
+ * - Operational setup badge
+ * - NO other navlinks (platform/inventory/network only display after dashboard launches)
+ * - "Skip for now" option for general users
+ */
+function OnboardingNavbar({ user, onSkip }) {
+  return (
+    <header className="sticky top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-sky-100 shadow-xs px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
+      {/* Brand & Logo - Clean & Single-Line */}
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <img
+          src="/logo.webp"
+          alt="SupplyShield AI Logo"
+          className="w-8 h-8 sm:w-9 sm:h-9 object-contain rounded-xl shadow-xs border border-sky-100 p-0.5 bg-white shrink-0"
+        />
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm sm:text-base font-extrabold tracking-tight text-slate-900 whitespace-nowrap">
+            Supply<span className="text-sky-600">Shield</span> <span className="text-slate-900 font-extrabold">AI</span>
+          </span>
+          <span className="hidden md:inline-block text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2 py-0.5 rounded-md border border-sky-200 whitespace-nowrap">
+            AI Setup & KYC
+          </span>
+        </div>
+      </div>
+
+      {/* Middle: Clean / Minimalist (NO OTHER NAVLINKS — only appear once in dashboard) */}
+      <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-500 font-medium whitespace-nowrap">
+        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse mr-1" />
+        <span>Live FMCG Calibration Channel</span>
+      </div>
+
+      {/* Right: User identity (desktop) & Skip button (compact single-line on mobile) */}
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        {user?.name && (
+          <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100/80 border border-slate-200 text-xs font-semibold text-slate-700 whitespace-nowrap">
+            <span className="w-5 h-5 rounded-full bg-sky-600 text-white flex items-center justify-center text-[10px] font-bold">
+              {user.name.charAt(0).toUpperCase()}
+            </span>
+            <span className="truncate max-w-[100px]">{user.name}</span>
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={onSkip}
+          className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 hover:text-sky-800 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-xs whitespace-nowrap shrink-0"
+          title="Skip setup and proceed straight to dashboard with defaults"
+        >
+          <span className="hidden sm:inline">Skip for now</span>
+          <span className="sm:hidden">Skip</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </header>
+  )
+}
+
 export default function RayOnboardingPage() {
   const navigate = useNavigate()
   const { user, token, updateUser } = useAuthStore()
@@ -114,7 +174,7 @@ export default function RayOnboardingPage() {
         )
         // Fallback default
         const fallback = {
-          latitude: 19.0760,
+          latitude: 19.076,
           longitude: 72.8777,
           accuracy: 50,
           city: 'Mumbai Central Hub',
@@ -201,6 +261,42 @@ export default function RayOnboardingPage() {
     }, 1100)
   }
 
+  // Skip for now option for general users
+  const handleSkipOnboarding = async () => {
+    setIsLoading(true)
+    try {
+      await fetch('http://localhost:5000/api/v1/onboarding/complete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          role: selectedRole || user?.role || 'Retailer',
+          entityAction: 'skip',
+          liveLocation: locationData || {
+            latitude: 19.076,
+            longitude: 72.8777,
+            city: 'Mumbai Central',
+            address: 'Bandra Retail Corridor',
+          },
+        }),
+      })
+      updateUser({
+        isOnboarded: true,
+        role: selectedRole || user?.role || 'Retailer',
+      })
+      toast.success('Onboarding skipped. Default configuration loaded.', 'Welcome to SupplyShield AI')
+      navigate('/dashboard', { replace: true })
+    } catch (e) {
+      console.warn('Skip fallback triggered:', e)
+      updateUser({ isOnboarded: true })
+      navigate('/dashboard', { replace: true })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   // Complete onboarding
   const handleCompleteOnboarding = async () => {
     setIsLoading(true)
@@ -215,7 +311,12 @@ export default function RayOnboardingPage() {
           role: selectedRole,
           phone: phoneNumber,
           company: companyName,
-          liveLocation: locationData,
+          liveLocation: locationData || {
+            latitude: 19.076,
+            longitude: 72.8777,
+            city: 'Mumbai Central',
+            address: 'Bandra Retail Corridor',
+          },
           entityAction: entityChoice,
           entityData: {
             name: newEntityName || (selectedRole.toLowerCase().includes('ware') ? 'Central DC Hub' : 'Fresh Metro Store'),
@@ -244,8 +345,11 @@ export default function RayOnboardingPage() {
         setIsLoading(false)
       }
     } catch (e) {
-      toast.error('Connection error finalizing onboarding')
-      setIsLoading(false)
+      console.error('Error finalizing onboarding:', e)
+      // Robust fallback so user is never blocked
+      updateUser({ isOnboarded: true })
+      toast.success('Workspace loaded with default configurations.', 'Welcome to SupplyShield AI')
+      navigate('/dashboard', { replace: true })
     }
   }
 
@@ -291,19 +395,23 @@ export default function RayOnboardingPage() {
   }
 
   // =========================================================================
-  // VIEW 1: INTRO SPLASH (Matching Image 1: Minimalist centered with mint-green symbol)
+  // VIEW 1: INTRO SPLASH (Matching Image 1: Minimalist centered with mint-green symbol & bluish atmosphere)
   // =========================================================================
   if (phase === 'intro') {
     return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 relative overflow-hidden">
-        {/* Soft radial glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-50/50 rounded-full blur-3xl pointer-events-none" />
+      <div className="min-h-screen bg-gradient-to-br from-sky-50/80 via-blue-50/40 to-slate-50 flex flex-col relative overflow-hidden">
+        {/* Always visible top navbar */}
+        <OnboardingNavbar user={user} onSkip={handleSkipOnboarding} />
 
-        <div className="max-w-md w-full text-center relative z-10 flex flex-col items-center">
-          {/* Mint-green 4-petal geometric symbol */}
+        {/* Soft bluish & emerald ambient radial glows */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-sky-200/30 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-emerald-100/40 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="flex-1 flex flex-col items-center justify-center px-4 relative z-10 text-center max-w-md mx-auto">
+          {/* Mint-green 4-petal geometric symbol (kept green as requested) */}
           <div className="mb-4 flex flex-col items-center">
             <RaySymbol size={56} className="text-emerald-500 mb-2" />
-            <div className="w-20 h-0.5 bg-emerald-300 rounded-full opacity-80" />
+            <div className="w-20 h-0.5 bg-emerald-400 rounded-full opacity-80" />
           </div>
 
           {/* Heading in signature mint-emerald */}
@@ -312,39 +420,52 @@ export default function RayOnboardingPage() {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-sm sm:text-base text-slate-500 leading-relaxed font-normal max-w-sm mb-8">
+          <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-sm mb-8">
             I'll take care of the onboarding for you. We'll move through a few quick steps together and get everything set up smoothly.
           </p>
 
-          <button
-            type="button"
-            onClick={() => setPhase('chat')}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-sm hover:scale-105 cursor-pointer"
-          >
-            <span>Begin Setup</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setPhase('chat')}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition-all shadow-md shadow-sky-600/20 hover:scale-105 cursor-pointer"
+            >
+              <span>Begin Setup</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={handleSkipOnboarding}
+              className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-sky-700 transition-colors cursor-pointer"
+            >
+              Skip to Dashboard →
+            </button>
+          </div>
         </div>
       </div>
     )
   }
 
   // =========================================================================
-  // VIEW 2: RAY AI CONVERSATIONAL WORKSPACE (Matching Image 2: Exact UI/UX)
+  // VIEW 2: RAY AI CONVERSATIONAL WORKSPACE (Bluish theme matching overall theme, green loader)
   // =========================================================================
   return (
-    <div className="min-h-screen bg-white flex flex-col relative text-slate-900 font-sans antialiased">
-      {/* Ambient soft glow along bottom edge (as shown in Image 2) */}
-      <div className="fixed bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-sky-100/40 via-emerald-50/20 to-transparent pointer-events-none z-0" />
+    <div className="min-h-screen bg-gradient-to-br from-sky-50/70 via-blue-50/30 to-slate-50 flex flex-col relative text-slate-900 font-sans antialiased">
+      {/* Always visible top navbar — no other navlinks, only after dashboard launches */}
+      <OnboardingNavbar user={user} onSkip={handleSkipOnboarding} />
+
+      {/* Ambient soft bluish ambient glows */}
+      <div className="fixed top-20 right-10 w-96 h-96 bg-sky-200/20 rounded-full blur-3xl pointer-events-none z-0" />
+      <div className="fixed bottom-0 left-0 right-0 h-44 bg-gradient-to-t from-sky-100/50 via-blue-50/30 to-transparent pointer-events-none z-0" />
 
       {/* Main Content Area */}
-      <div className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 pt-12 pb-36 relative z-10 flex flex-col">
+      <div className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 pt-8 pb-36 relative z-10 flex flex-col">
         {/* Top Header Prompt: RAY Agent Persona Greeting */}
-        <div className="mb-8">
+        <div className="mb-7 bg-white/80 backdrop-blur-xs p-5 rounded-2xl border border-sky-100 shadow-sm shadow-sky-900/5">
           <div className="flex items-start gap-3 mb-2">
-            <RaySymbol size={24} className="shrink-0 mt-0.5" />
+            <RaySymbol size={26} className="shrink-0 mt-0.5" />
             <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
-              Hello, I'm <span className="font-extrabold text-emerald-700">RAY</span> your AI onboarding agent.
+              Hello, I'm <span className="font-extrabold text-emerald-600">RAY</span> your AI onboarding agent.
             </h2>
           </div>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pl-9 font-normal">
@@ -353,9 +474,9 @@ export default function RayOnboardingPage() {
         </div>
 
         {/* Step Progression Content */}
-        <div className="pl-9 space-y-6 flex-1">
+        <div className="space-y-6 flex-1">
           {/* Subheading Prompt */}
-          <div>
+          <div className="px-1">
             <h3 className="text-base font-bold text-slate-900 mb-1">
               {step === 1 && "Let's verify your operational role to get started"}
               {step === 2 && "Let's link your business identity & mobile alerts"}
@@ -382,10 +503,10 @@ export default function RayOnboardingPage() {
                 >
                   {item.sender === 'ray' && <RaySymbol size={18} className="mt-1 shrink-0" />}
                   <div
-                    className={`p-3 rounded-2xl text-xs sm:text-sm max-w-lg leading-relaxed ${
+                    className={`p-3.5 rounded-2xl text-xs sm:text-sm max-w-lg leading-relaxed shadow-xs ${
                       item.sender === 'user'
-                        ? 'bg-slate-900 text-white font-medium rounded-tr-xs'
-                        : 'bg-emerald-50 text-slate-800 border border-emerald-200/80 rounded-tl-xs'
+                        ? 'bg-sky-600 text-white font-medium rounded-tr-xs'
+                        : 'bg-white text-slate-800 border border-sky-100 rounded-tl-xs'
                     }`}
                   >
                     {item.text}
@@ -395,30 +516,30 @@ export default function RayOnboardingPage() {
             </div>
           )}
 
-          {/* Stepped Rotating Light-Spreading Loader when transitioning */}
+          {/* Stepped Rotating Light-Spreading Loader (Kept Green as requested) */}
           {isLoading && (
             <div className="py-12 flex flex-col items-center justify-center">
               <RaySymbol size={44} isLoader={true} className="mb-4" />
-              <div className="text-xs font-bold text-slate-600">
+              <div className="text-xs font-bold text-slate-700">
                 RAY is calibrating supply chain telemetry…
               </div>
-              <div className="text-[11px] text-slate-400 mt-0.5">
-                Updating node constraints and MILP registry
+              <div className="text-[11px] text-sky-600 font-medium mt-0.5">
+                Connecting deterministic MILP solvers & updating registry
               </div>
             </div>
           )}
 
           {/* Interactive Card for Step 1: Role Selection */}
           {!isLoading && step === 1 && (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-7 transition-all">
+            <div className="bg-white rounded-2xl border border-sky-100 shadow-md shadow-sky-900/5 p-6 sm:p-7 transition-all">
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm font-bold text-slate-900">Select Operational Capacity</span>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                  ⚡ Instant
+                <span className="text-[11px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200">
+                  ⚡ Instant Preset
                 </span>
               </div>
               <p className="text-xs text-slate-500 mb-5 leading-relaxed">
-                Save time by configuring pre-tuned MILP heuristics specific to your supply chain role.
+                Save time by configuring pre-tuned heuristics specific to your supply chain role.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
@@ -454,12 +575,12 @@ export default function RayOnboardingPage() {
                       onClick={() => setSelectedRole(item.role)}
                       className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
                         isSelected
-                          ? 'border-emerald-500 bg-emerald-50/60 ring-2 ring-emerald-200 shadow-xs'
-                          : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                          ? 'border-sky-500 bg-sky-50/70 ring-2 ring-sky-200 shadow-xs'
+                          : 'border-slate-200 hover:border-sky-200 hover:bg-sky-50/30'
                       }`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <Icon className={`w-4 h-4 ${isSelected ? 'text-emerald-600' : 'text-slate-400'}`} />
+                        <Icon className={`w-4 h-4 ${isSelected ? 'text-sky-600' : 'text-slate-400'}`} />
                         <span className="text-[10px] font-bold text-slate-500 uppercase">{item.badge}</span>
                       </div>
                       <div className="text-xs font-bold text-slate-900">{item.title}</div>
@@ -469,22 +590,31 @@ export default function RayOnboardingPage() {
                 })}
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleAdvanceStep(2)}
-                className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm transition-all hover:scale-[1.01] cursor-pointer"
-              >
-                Confirm Role & Continue
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => handleAdvanceStep(2)}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-600/20 transition-all hover:scale-[1.01] cursor-pointer"
+                >
+                  Confirm Role & Continue
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSkipOnboarding}
+                  className="text-xs font-bold text-slate-400 hover:text-sky-700 transition-colors"
+                >
+                  Skip for now — use standard retailer profile
+                </button>
+              </div>
             </div>
           )}
 
           {/* Interactive Card for Step 2: Contact & Business Identity */}
           {!isLoading && step === 2 && (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-7">
+            <div className="bg-white rounded-2xl border border-sky-100 shadow-md shadow-sky-900/5 p-6 sm:p-7">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-bold text-slate-900">Auto-fill KYC & Profile Details</span>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <span className="text-[11px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200">
                   ⚡ Instant
                 </span>
               </div>
@@ -500,7 +630,7 @@ export default function RayOnboardingPage() {
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                     placeholder="e.g. Metro Retail Supermarket Ltd."
-                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                    className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-400"
                   />
                 </div>
 
@@ -513,26 +643,35 @@ export default function RayOnboardingPage() {
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       placeholder="+91 98765 43210"
-                      className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400 font-mono"
+                      className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-400 font-mono"
                     />
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleAdvanceStep(3)}
+                    className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-600/20 transition-all hover:scale-[1.01] cursor-pointer"
+                  >
+                    Save Profile Details
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAdvanceStep(3)}
+                    className="px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800"
+                  >
+                    Step Skip
+                  </button>
+                </div>
                 <button
                   type="button"
-                  onClick={() => handleAdvanceStep(3)}
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm transition-all hover:scale-[1.01] cursor-pointer"
+                  onClick={handleSkipOnboarding}
+                  className="text-xs font-bold text-slate-400 hover:text-sky-700 transition-colors"
                 >
-                  Save Profile Details
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAdvanceStep(3)}
-                  className="px-4 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800"
-                >
-                  Skip for Now
+                  Skip for now — continue to dashboard
                 </button>
               </div>
             </div>
@@ -540,7 +679,7 @@ export default function RayOnboardingPage() {
 
           {/* Interactive Card for Step 3: Live GPS Location Permission */}
           {!isLoading && step === 3 && (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-7">
+            <div className="bg-white rounded-2xl border border-sky-100 shadow-md shadow-sky-900/5 p-6 sm:p-7">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-bold text-slate-900">Live GPS Location Telemetry</span>
                 <span className="text-[11px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200">
@@ -553,9 +692,9 @@ export default function RayOnboardingPage() {
 
               {/* Status Display */}
               {locationData ? (
-                <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 mb-6 flex items-start justify-between">
+                <div className="p-4 rounded-xl bg-sky-50/70 border border-sky-200 mb-6 flex items-start justify-between">
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-sky-900">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                       Live GPS Coordinates Verified
                     </div>
@@ -570,7 +709,7 @@ export default function RayOnboardingPage() {
                     type="button"
                     onClick={handleRequestLiveLocation}
                     disabled={isLocating}
-                    className="text-xs font-bold text-emerald-700 hover:text-emerald-900 flex items-center gap-1"
+                    className="text-xs font-bold text-sky-700 hover:text-sky-900 flex items-center gap-1"
                   >
                     <RefreshCw className={`w-3 h-3 ${isLocating ? 'animate-spin' : ''}`} /> Re-Scan
                   </button>
@@ -590,7 +729,7 @@ export default function RayOnboardingPage() {
                     type="button"
                     onClick={handleRequestLiveLocation}
                     disabled={isLocating}
-                    className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                    className="px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
                   >
                     {isLocating ? (
                       <>
@@ -607,40 +746,49 @@ export default function RayOnboardingPage() {
                 </div>
               )}
 
-              <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleAdvanceStep(4)}
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm transition-all hover:scale-[1.01] cursor-pointer"
-                >
-                  Continue to Entity Setup
-                </button>
-                {!locationData && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
                   <button
                     type="button"
-                    onClick={() => {
-                      const fallback = { latitude: 19.0760, longitude: 72.8777, accuracy: 50, city: 'Mumbai Central' }
-                      setLocationData(fallback)
-                      setLiveLocation(fallback)
-                      handleAdvanceStep(4)
-                    }}
-                    className="text-xs font-bold text-slate-500 hover:text-slate-800"
+                    onClick={() => handleAdvanceStep(4)}
+                    className="px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-600/20 transition-all hover:scale-[1.01] cursor-pointer"
                   >
-                    Use Regional Hub Default
+                    Continue to Entity Setup
                   </button>
-                )}
+                  {!locationData && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const fallback = { latitude: 19.076, longitude: 72.8777, accuracy: 50, city: 'Mumbai Central' }
+                        setLocationData(fallback)
+                        setLiveLocation(fallback)
+                        handleAdvanceStep(4)
+                      }}
+                      className="text-xs font-bold text-slate-500 hover:text-slate-800"
+                    >
+                      Use Regional Default
+                    </button>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  onClick={handleSkipOnboarding}
+                  className="text-xs font-bold text-slate-400 hover:text-sky-700 transition-colors"
+                >
+                  Skip for now
+                </button>
               </div>
             </div>
           )}
 
           {/* Interactive Card for Step 4: Create Store/DC or Claim Existing */}
           {!isLoading && step === 4 && (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-7">
+            <div className="bg-white rounded-2xl border border-sky-100 shadow-md shadow-sky-900/5 p-6 sm:p-7">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-bold text-slate-900">
                   {selectedRole.toLowerCase().includes('ware') ? 'Distribution Center Node Setup' : 'Retail Store Node Setup'}
                 </span>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                <span className="text-[11px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200">
                   Node Provisioning
                 </span>
               </div>
@@ -682,7 +830,7 @@ export default function RayOnboardingPage() {
                       value={newEntityName}
                       onChange={(e) => setNewEntityName(e.target.value)}
                       placeholder={selectedRole.toLowerCase().includes('ware') ? 'e.g. Pune Regional Cold Hub' : 'e.g. Fresh Daily Hypermarket #4'}
-                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                      className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-400"
                     />
                   </div>
 
@@ -737,7 +885,7 @@ export default function RayOnboardingPage() {
                       value={searchQuery}
                       onChange={(e) => handleSearchNetwork(e.target.value)}
                       placeholder="Search existing stores or warehouses by name or city…"
-                      className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                      className="w-full pl-9 pr-3.5 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-400"
                     />
                   </div>
 
@@ -810,19 +958,28 @@ export default function RayOnboardingPage() {
                 </div>
               )}
 
-              <button
-                type="button"
-                onClick={() => handleAdvanceStep(5)}
-                className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold shadow-sm transition-all hover:scale-[1.01] cursor-pointer"
-              >
-                Save & Proceed to Review
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => handleAdvanceStep(5)}
+                  className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-600/20 transition-all hover:scale-[1.01] cursor-pointer"
+                >
+                  Save & Proceed to Review
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSkipOnboarding}
+                  className="text-xs font-bold text-slate-400 hover:text-sky-700 transition-colors"
+                >
+                  Skip for now
+                </button>
+              </div>
             </div>
           )}
 
           {/* Interactive Card for Step 5: Completed */}
           {!isLoading && step === 5 && (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-7">
+            <div className="bg-white rounded-2xl border border-sky-100 shadow-md shadow-sky-900/5 p-6 sm:p-7">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-sm font-bold text-slate-900">Telemetry & Credentials Configured</span>
                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
@@ -835,17 +992,17 @@ export default function RayOnboardingPage() {
 
               {/* Summary Pill Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6 text-xs">
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="p-3 rounded-xl bg-sky-50/50 border border-sky-100">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Assigned Role</span>
                   <span className="font-bold text-slate-900">{selectedRole}</span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="p-3 rounded-xl bg-sky-50/50 border border-sky-100">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Live GPS Coordinates</span>
-                  <span className="font-mono font-bold text-emerald-600">
+                  <span className="font-mono font-bold text-sky-700">
                     {locationData ? `${locationData.latitude}°, ${locationData.longitude}°` : 'Default Hub'}
                   </span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="p-3 rounded-xl bg-sky-50/50 border border-sky-100">
                   <span className="text-slate-400 block text-[10px] uppercase font-bold">Initial Node</span>
                   <span className="font-bold text-slate-900 truncate block">
                     {newEntityName || 'Central Hub'}
@@ -853,14 +1010,23 @@ export default function RayOnboardingPage() {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleCompleteOnboarding}
-                className="w-full sm:w-auto px-7 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-md shadow-emerald-600/20 transition-all hover:scale-105 cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span>Launch Operational Dashboard</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={handleCompleteOnboarding}
+                  className="w-full sm:w-auto px-7 py-3 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold shadow-md shadow-sky-600/25 transition-all hover:scale-105 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>Launch Operational Dashboard</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSkipOnboarding}
+                  className="text-xs font-bold text-slate-400 hover:text-sky-700 transition-colors"
+                >
+                  Skip and launch now
+                </button>
+              </div>
             </div>
           )}
 
@@ -868,7 +1034,7 @@ export default function RayOnboardingPage() {
         </div>
       </div>
 
-      {/* Floating Minimalist Input Bar (Exact UIUX from Image 2) */}
+      {/* Floating Minimalist Input Bar (Styled in bluish palette with green ray accents) */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-white via-white/95 to-transparent z-20">
         <div className="max-w-2xl mx-auto">
           {/* Suggestion Chips */}
@@ -882,22 +1048,22 @@ export default function RayOnboardingPage() {
                 key={i}
                 type="button"
                 onClick={() => handleSendTextMessage(chip)}
-                className="px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium whitespace-nowrap transition-colors flex items-center gap-1 cursor-pointer"
+                className="px-3 py-1 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-700 font-medium whitespace-nowrap transition-colors flex items-center gap-1 cursor-pointer border border-sky-200/60"
               >
                 <span>{chip}</span>
-                <span className="text-slate-400 text-[10px]">→ Tab</span>
+                <span className="text-sky-400 text-[10px]">→ Tab</span>
               </button>
             ))}
           </div>
 
           {/* Minimalist Input Container */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-2.5 flex items-center justify-between gap-3">
+          <div className="bg-white rounded-2xl border border-sky-200/90 shadow-lg shadow-sky-900/10 p-2.5 flex items-center justify-between gap-3">
             <button
               type="button"
               onClick={handleRequestLiveLocation}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100 text-xs font-semibold cursor-pointer shrink-0 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sky-700 hover:bg-sky-50 text-xs font-semibold cursor-pointer shrink-0 transition-colors"
             >
-              <Plus className="w-3.5 h-3.5 text-slate-400" />
+              <Plus className="w-3.5 h-3.5 text-sky-500" />
               <span>Share live GPS</span>
             </button>
 
@@ -918,13 +1084,13 @@ export default function RayOnboardingPage() {
             <button
               type="button"
               onClick={() => handleSendTextMessage(textInput)}
-              className="w-8 h-8 rounded-full bg-slate-100 hover:bg-blue-600 hover:text-white text-slate-600 flex items-center justify-center shrink-0 transition-all cursor-pointer"
+              className="w-8 h-8 rounded-full bg-sky-600 hover:bg-sky-500 text-white flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-xs"
             >
               <ArrowUp className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Disclaimer (from Image 2) */}
+          {/* Disclaimer */}
           <p className="text-[10px] text-center text-slate-400 mt-2 font-normal">
             RAY is AI and can make mistakes. Please check important information
           </p>

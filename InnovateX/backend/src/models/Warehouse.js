@@ -98,7 +98,7 @@ const warehouseSchema = new mongoose.Schema(
   }
 )
 
-warehouseSchema.pre('save', function (next) {
+warehouseSchema.pre('save', function () {
   if (!this.warehouseName && this.name) {
     this.warehouseName = this.name
   } else if (!this.name && this.warehouseName) {
@@ -112,13 +112,13 @@ warehouseSchema.pre('save', function (next) {
   }
 
   if (!this.code && !this.warehouseId) {
-    const cityPrefix = (typeof this.location === 'object' ? this.location?.city : 'DC') || 'DC'
+    const city = (typeof this.location === 'object' ? this.location?.city : 'DC') || 'DC'
+    const cityPrefix = city.substring(0, 3).toUpperCase()
     const rand = Math.floor(1000 + Math.random() * 9000)
-    const generated = `DC-${cityPrefix.substring(0, 3).toUpperCase()}-${rand}`
+    const generated = `DC-${cityPrefix}-${rand}`
     this.code = generated
     this.warehouseId = generated
   }
-  next()
 })
 
 const Warehouse = mongoose.models.Warehouse || mongoose.model('Warehouse', warehouseSchema)

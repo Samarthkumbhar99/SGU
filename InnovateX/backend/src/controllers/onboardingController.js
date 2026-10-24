@@ -235,22 +235,28 @@ export const completeOnboarding = async (req, res, next) => {
       phone,
       company,
       liveLocation,
-      entityAction, // 'create' or 'claim'
+      entityAction, // 'create', 'claim', or 'skip'
       entityData = {},
     } = req.body
 
     const userId = req.user._id
 
-    // Update user
-    const updatePayload = {
-      isOnboarded: true,
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' })
     }
-    if (role) updatePayload.role = role
-    if (phone) updatePayload.phone = phone
-    if (company) updatePayload.company = company
+
+    user.isOnboarded = true
+    if (role) user.role = role
+    if (phone) user.phone = phone
+    if (company) user.company = company
     if (liveLocation && liveLocation.latitude) {
-      updatePayload.liveLocation = {
-        ...liveLocation,
+      user.liveLocation = {
+        latitude: Number(liveLocation.latitude),
+        longitude: Number(liveLocation.longitude),
+        accuracy: Number(liveLocation.accuracy) || 10,
+        city: liveLocation.city || 'Detected City',
+        address: liveLocation.address || 'Detected Address',
         updatedAt: new Date(),
       }
     }
@@ -258,15 +264,20 @@ export const completeOnboarding = async (req, res, next) => {
     let createdStore = null
     let createdWarehouse = null
 
-    const resolvedLocation = liveLocation?.latitude
-      ? liveLocation
-      : { latitude: 19.0760, longitude: 72.8777, city: 'Mumbai Central', address: 'Bandra Retail Corridor' }
+    const resolvedLocation = {
+      latitude: Number(user.liveLocation?.latitude) || 19.0760,
+      longitude: Number(user.liveLocation?.longitude) || 72.8777,
+      accuracy: Number(user.liveLocation?.accuracy) || 15,
+      city: user.liveLocation?.city || 'Mumbai Central',
+      state: 'MH',
+      address: user.liveLocation?.address || 'Bandra Retail Corridor',
+    }
 
     if (entityAction === 'create') {
-      const isWarehouse = role === 'Warehouse Manager' || role === 'Warehouse Controller'
+      const isWarehouse = (role || user.role) === 'Warehouse Manager' || (role || user.role) === 'Warehouse Controller'
       if (isWarehouse) {
         createdWarehouse = await Warehouse.create({
-          name: entityData.name || `${company || 'Regional'} Central DC`,
+          name: entityData.name || `${company || user.name || 'Regional'} Central DC`,
           type: entityData.type || 'Regional Distribution Center',
           location: resolvedLocation,
           totalPalletCapacity: Number(entityData.capacity) || 5000,
@@ -276,10 +287,11 @@ export const completeOnboarding = async (req, res, next) => {
           owner: userId,
           managers: [userId],
         })
-        updatePayload.$addToSet = { managedWarehouses: createdWarehouse._id }
+        if (!user.managedWarehouses) user.managedWarehouses = []
+        user.managedWarehouses.push(createdWarehouse._id)
       } else {
         createdStore = await Store.create({
-          name: entityData.name || `${company || 'Metro'} Supermarket Store #1`,
+          name: entityData.name || `${company || user.name || 'Metro'} Supermarket Store #1`,
           category: entityData.category || 'Supermarket',
           location: resolvedLocation,
           dailyDemandVelocity: 4200,
@@ -287,24 +299,28 @@ export const completeOnboarding = async (req, res, next) => {
           maxShelfCapacityUnits: 15000,
           currentStockUnits: 11800,
           serviceLeadTimeHours: 3.2,
-          contactPhone: phone || '',
+          contactPhone: phone || user.phone || '',
           owner: userId,
           managers: [userId],
         })
-        updatePayload.$addToSet = { managedStores: createdStore._id }
+        if (!user.managedStores) user.managedStores = []
+        user.managedStores.push(createdStore._id)
       }
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updatePayload, { new: true })
+    await user.save()
+
+    const safeUser = typeof user.toSafeJSON === 'function' ? user.toSafeJSON() : (user.toObject ? user.toObject() : user)
 
     res.json({
       success: true,
       message: 'Onboarding completed successfully',
-      user: updatedUser.toSafeJSON(),
+      user: safeUser,
       createdStore,
       createdWarehouse,
     })
   } catch (err) {
+    console.error('❌ completeOnboarding error:', err)
     next(err)
   }
 }

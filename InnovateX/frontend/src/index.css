@@ -132,6 +132,12 @@ body {
   box-shadow: 0 4px 12px 0 rgba(16, 47, 80, 0.12), 0 2px 4px -1px rgba(16, 47, 80, 0.08);
 }
 
+@media (max-width: 640px) {
+  .ss-card {
+    padding: 14px !important;
+  }
+}
+
 /* KPI Cards */
 .ss-kpi-card {
   background: #ffffff;
@@ -372,7 +378,9 @@ body {
   left: 0;
   height: 100vh;
   width: 260px;
-  background: #102f50;
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  box-shadow: 2px 0 12px rgba(15, 23, 42, 0.03);
   z-index: 50;
   display: flex;
   flex-direction: column;
@@ -384,12 +392,25 @@ body {
   width: 72px;
 }
 
+@media (max-width: 1024px) {
+  .ss-sidebar {
+    transform: translateX(-100%);
+    box-shadow: 4px 0 28px rgba(15, 23, 42, 0.18);
+  }
+
+  .ss-sidebar[data-mobile-open="true"] {
+    transform: translateX(0) !important;
+  }
+}
+
 .ss-sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(7, 27, 48, 0.5);
+  background: rgba(15, 23, 42, 0.45);
   z-index: 49;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(3px);
+  cursor: pointer;
+  animation: fadeIn 0.2s ease;
 }
 
 /* Sidebar nav item */
@@ -537,15 +558,39 @@ body {
 .ss-topbar {
   position: sticky;
   top: 0;
-  height: 64px;
-  background: rgba(255, 255, 255, 0.92);
+  height: 60px;
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid #d7e6f5;
+  border-bottom: 1px solid #e2e8f0;
   z-index: 40;
   display: flex;
   align-items: center;
-  padding: 0 24px;
-  gap: 16px;
+  padding: 0 20px;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .ss-topbar {
+    height: 54px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .ss-topbar-breadcrumbs {
+    display: none !important;
+  }
+
+  .ss-topbar-user-name,
+  .ss-topbar-user-chevron {
+    display: none !important;
+  }
+
+  .ss-topbar-user-btn {
+    padding: 2px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    background: transparent !important;
+  }
 }
 
 .ss-page-content {
@@ -588,6 +633,18 @@ body {
 
 @media (max-width: 1024px) {
   .ss-chart-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ss-activity-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 16px;
+}
+
+@media (max-width: 1024px) {
+  .ss-activity-grid {
     grid-template-columns: 1fr;
   }
 }
