@@ -8,7 +8,7 @@ const SUPPLY_CHAIN_TIERS = [
     id: 'raw-material',
     title: 'Raw material',
     hasSolutions: false,
-    headerBg: 'bg-slate-100/70',
+    headerBg: 'bg-[#f1f5f9]',
     solutions: [
       'Inbound agricultural & ingredient lead-time buffers',
       'Supplier harvest volatility & crop yield tracking',
@@ -17,45 +17,45 @@ const SUPPLY_CHAIN_TIERS = [
     route: '/inventory',
     // 2x2 Produce Cluster: Strawberry, Carrot, Apple, Broccoli
     renderIcon: () => (
-      <svg viewBox="0 0 48 48" className="w-12 h-12" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 54 54" className="w-14 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Strawberry (Top-Left) */}
-        <g transform="translate(6, 6) scale(0.7)">
-          <path d="M12 2C6.5 2 4 6 4 12C4 18 10 22 12 23C14 22 20 18 20 12C20 6 17.5 2 12 2Z" fill="#EF4444" />
-          {/* Strawberry leaves */}
-          <path d="M12 2C10 0 7 1 6 3M12 2C14 0 17 1 18 3M12 2V0" stroke="#15803D" strokeWidth="1.5" strokeLinecap="round" />
+        <g transform="translate(8, 7) scale(0.8)">
+          <path d="M12 2C6.5 2 4 6 4 12C4 18 10 22 12 23C14 22 20 18 20 12C20 6 17.5 2 12 2Z" fill="#E11D48" />
+          {/* Leaves */}
+          <path d="M12 2C10 0 7 1 6 3M12 2C14 0 17 1 18 3M12 2V0" stroke="#16A34A" strokeWidth="1.8" strokeLinecap="round" />
           {/* Seeds */}
-          <circle cx="9" cy="8" r="0.6" fill="#FEF08A" />
-          <circle cx="15" cy="8" r="0.6" fill="#FEF08A" />
-          <circle cx="12" cy="12" r="0.6" fill="#FEF08A" />
-          <circle cx="9" cy="16" r="0.6" fill="#FEF08A" />
-          <circle cx="15" cy="16" r="0.6" fill="#FEF08A" />
+          <circle cx="8" cy="8" r="0.7" fill="#FEF08A" />
+          <circle cx="16" cy="8" r="0.7" fill="#FEF08A" />
+          <circle cx="12" cy="12" r="0.7" fill="#FEF08A" />
+          <circle cx="8" cy="16" r="0.7" fill="#FEF08A" />
+          <circle cx="16" cy="16" r="0.7" fill="#FEF08A" />
         </g>
 
         {/* Carrot (Top-Right) */}
-        <g transform="translate(24, 4) rotate(22) scale(0.68)">
+        <g transform="translate(28, 5) rotate(22) scale(0.78)">
           <path d="M12 4C8 4 6 8 8 16L12 26L16 16C18 8 16 4 12 4Z" fill="#F97316" />
-          {/* Carrot ridges */}
-          <path d="M8.5 10H14M9.5 15H14.5M10.5 20H13.5" stroke="#EA580C" strokeWidth="1" strokeLinecap="round" />
-          {/* Carrot top leaves */}
-          <path d="M12 4V0M12 4C10 2 8 2 7 1M12 4C14 2 16 2 17 1" stroke="#22C55E" strokeWidth="1.5" strokeLinecap="round" />
+          {/* Ridges */}
+          <path d="M8.5 10H14M9.5 15H14.5M10.5 20H13.5" stroke="#EA580C" strokeWidth="1.2" strokeLinecap="round" />
+          {/* Leaves */}
+          <path d="M12 4V0M12 4C10 2 8 2 7 1M12 4C14 2 16 2 17 1" stroke="#22C55E" strokeWidth="1.8" strokeLinecap="round" />
         </g>
 
         {/* Apple (Bottom-Left) */}
-        <g transform="translate(6, 22) scale(0.7)">
+        <g transform="translate(8, 25) scale(0.8)">
           <path d="M12 5C7 5 4 8.5 4 14C4 19.5 8 23 12 23C16 23 20 19.5 20 14C20 8.5 17 5 12 5Z" fill="#DC2626" />
-          <path d="M12 5C11 2 13 1 14 0" stroke="#78350F" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M14 2C16 2 17 3 17 4C17 5 15 5 14 2Z" fill="#4ADE80" />
+          <path d="M12 5C11 2 13 1 14 0" stroke="#78350F" strokeWidth="1.8" strokeLinecap="round" />
+          <path d="M14 2C16 2 17 3 17 4C17 5 15 5 14 2Z" fill="#22C55E" />
         </g>
 
         {/* Broccoli (Bottom-Right) */}
-        <g transform="translate(22, 22) scale(0.72)">
+        <g transform="translate(26, 25) scale(0.82)">
           {/* Stalk */}
           <path d="M10 14H14V22C14 23 13 24 12 24C11 24 10 23 10 22V14Z" fill="#86EFAC" />
           {/* Florets */}
-          <circle cx="8" cy="11" r="4.5" fill="#15803D" />
-          <circle cx="16" cy="11" r="4.5" fill="#15803D" />
-          <circle cx="12" cy="7" r="5" fill="#16A34A" />
-          <circle cx="12" cy="12" r="3.5" fill="#166534" />
+          <circle cx="8" cy="11" r="5" fill="#15803D" />
+          <circle cx="16" cy="11" r="5" fill="#15803D" />
+          <circle cx="12" cy="7" r="5.5" fill="#16A34A" />
+          <circle cx="12" cy="12" r="4" fill="#166534" />
         </g>
       </svg>
     ),
@@ -64,7 +64,7 @@ const SUPPLY_CHAIN_TIERS = [
     id: 'manufacturers',
     title: 'Manufacturers',
     hasSolutions: true,
-    headerBg: 'bg-sky-100/70',
+    headerBg: 'bg-[#e5f1fb]',
     solutions: [
       'Multi-SKU batch production scheduling & lot sizing',
       'Production downtime & changeover cost minimization',
@@ -72,26 +72,26 @@ const SUPPLY_CHAIN_TIERS = [
       'Dynamic Bill of Materials (BOM) safety-buffer modeling',
     ],
     route: '/inventory',
-    // Factory Silhouette
+    // Factory Silhouette exactly like reference image
     renderIcon: () => (
-      <svg viewBox="0 0 48 48" className="w-12 h-12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Factory base & saw-tooth roof */}
+      <svg viewBox="0 0 54 54" className="w-14 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Factory base & sawtooth peaks */}
         <path
-          d="M8 38V22L16 27V22L24 27V12H34V38H8Z"
-          fill="#1E40AF"
+          d="M9 41V24L18 29V24L27 29V14H38V41H9Z"
+          fill="#1E4287"
         />
-        {/* Chimney / tall smokestack */}
-        <rect x="36" y="8" width="5" height="30" fill="#2563EB" rx="1" />
+        {/* Chimney / tall stack */}
+        <rect x="40" y="10" width="5" height="31" fill="#2563EB" rx="1" />
         {/* Windows */}
-        <rect x="11" y="30" width="3" height="3" fill="#93C5FD" rx="0.5" />
-        <rect x="16" y="30" width="3" height="3" fill="#93C5FD" rx="0.5" />
-        <rect x="21" y="30" width="3" height="3" fill="#93C5FD" rx="0.5" />
-        <rect x="26" y="30" width="3" height="3" fill="#93C5FD" rx="0.5" />
-        <rect x="11" y="34" width="3" height="2" fill="#93C5FD" rx="0.5" />
-        <rect x="16" y="34" width="3" height="2" fill="#93C5FD" rx="0.5" />
-        <rect x="21" y="34" width="3" height="2" fill="#93C5FD" rx="0.5" />
-        <rect x="26" y="34" width="3" height="2" fill="#93C5FD" rx="0.5" />
-        <rect x="28" y="16" width="3" height="8" fill="#93C5FD" rx="0.5" />
+        <rect x="12" y="32" width="3.5" height="3.5" fill="#BFDBFE" rx="0.5" />
+        <rect x="18" y="32" width="3.5" height="3.5" fill="#BFDBFE" rx="0.5" />
+        <rect x="24" y="32" width="3.5" height="3.5" fill="#BFDBFE" rx="0.5" />
+        <rect x="30" y="32" width="3.5" height="3.5" fill="#BFDBFE" rx="0.5" />
+        <rect x="12" y="36.5" width="3.5" height="2.5" fill="#BFDBFE" rx="0.5" />
+        <rect x="18" y="36.5" width="3.5" height="2.5" fill="#BFDBFE" rx="0.5" />
+        <rect x="24" y="36.5" width="3.5" height="2.5" fill="#BFDBFE" rx="0.5" />
+        <rect x="30" y="36.5" width="3.5" height="2.5" fill="#BFDBFE" rx="0.5" />
+        <rect x="31" y="18" width="4" height="9" fill="#BFDBFE" rx="0.5" />
       </svg>
     ),
   },
@@ -99,7 +99,7 @@ const SUPPLY_CHAIN_TIERS = [
     id: 'distributors',
     title: 'Distributors',
     hasSolutions: true,
-    headerBg: 'bg-sky-100/70',
+    headerBg: 'bg-[#e5f1fb]',
     solutions: [
       'Google OR-Tools MILP regional routing & cross-docking',
       'Dynamic FEFO allocation to prioritize high-velocity depots',
@@ -107,29 +107,30 @@ const SUPPLY_CHAIN_TIERS = [
       'Disruption mitigation: 2.8s re-solve on highway closures',
     ],
     route: '/network-map',
-    // Delivery Truck / Fleet Van Silhouette
+    // Delivery Van / Logistics Truck Silhouette exactly like reference image
     renderIcon: () => (
-      <svg viewBox="0 0 48 48" className="w-12 h-12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Main Cargo Box */}
-        <rect x="6" y="16" width="23" height="17" rx="2" fill="#1E40AF" />
-        {/* Truck Cab */}
+      <svg viewBox="0 0 54 54" className="w-14 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Main Cargo Container */}
+        <rect x="7" y="18" width="26" height="18" rx="2" fill="#1E4287" />
+        {/* Truck Front Cab */}
         <path
-          d="M29 19H34.5C36 19 37.2 19.8 38 21.2L41 26.5V33H29V19Z"
-          fill="#1E40AF"
+          d="M33 21H39C40.6 21 42 22 42.8 23.5L46 29.5V36H33V21Z"
+          fill="#1E4287"
         />
         {/* Windshield */}
         <path
-          d="M30.5 21H34.2L36.8 26H30.5V21Z"
-          fill="#93C5FD"
+          d="M34.5 23H38.5L41.5 28.5H34.5V23Z"
+          fill="#BFDBFE"
           rx="1"
         />
-        {/* Headlight */}
-        <rect x="39" y="28" width="2" height="2" rx="0.5" fill="#FEF08A" />
-        {/* Wheels */}
-        <circle cx="14" cy="34" r="4.5" fill="#0F172A" />
-        <circle cx="14" cy="34" r="2" fill="#94A3B8" />
-        <circle cx="34" cy="34" r="4.5" fill="#0F172A" />
-        <circle cx="34" cy="34" r="2" fill="#94A3B8" />
+        {/* Headlight beam */}
+        <rect x="44" y="30.5" width="2.5" height="2.5" rx="0.5" fill="#FDE047" />
+        {/* Front Wheel */}
+        <circle cx="16" cy="37" r="5" fill="#0F172A" />
+        <circle cx="16" cy="37" r="2.2" fill="#94A3B8" />
+        {/* Rear Wheel */}
+        <circle cx="39" cy="37" r="5" fill="#0F172A" />
+        <circle cx="39" cy="37" r="2.2" fill="#94A3B8" />
       </svg>
     ),
   },
@@ -137,7 +138,7 @@ const SUPPLY_CHAIN_TIERS = [
     id: 'retailers',
     title: 'Retailers',
     hasSolutions: true,
-    headerBg: 'bg-sky-100/70',
+    headerBg: 'bg-[#e5f1fb]',
     solutions: [
       'Point-of-Sale (POS) shelf replenishment sync',
       'Elimination of phantom stockouts via barcode telemetry',
@@ -145,26 +146,26 @@ const SUPPLY_CHAIN_TIERS = [
       'Markdown reduction by matching expiry to foot-traffic',
     ],
     route: '/inventory-table',
-    // Storefront with Awning
+    // Storefront with Awning exactly like reference image
     renderIcon: () => (
-      <svg viewBox="0 0 48 48" className="w-12 h-12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Store Awning */}
-        <path d="M10 16L12 22H36L38 16H10Z" fill="#1E40AF" />
-        {/* Awning Stripes */}
-        <path d="M14 16L15.5 22H18.5L17.5 16H14Z" fill="#93C5FD" />
-        <path d="M22 16L23 22H26L25.5 16H22Z" fill="#93C5FD" />
-        <path d="M30 16L30.5 22H33.5L33.5 16H30Z" fill="#93C5FD" />
-        {/* Store Wall */}
-        <rect x="12" y="22" width="24" height="15" fill="#DBEAFE" />
-        {/* Store Door */}
-        <rect x="16" y="27" width="5" height="10" fill="#1E40AF" />
-        <rect x="17" y="28" width="1.5" height="4" fill="#93C5FD" />
-        {/* Store Window */}
-        <rect x="24" y="25" width="10" height="7" fill="#93C5FD" rx="1" />
-        <line x1="29" y1="25" x2="29" y2="32" stroke="#1E40AF" strokeWidth="1" />
-        <line x1="24" y1="28.5" x2="34" y2="28.5" stroke="#1E40AF" strokeWidth="1" />
+      <svg viewBox="0 0 54 54" className="w-14 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Awning Roof */}
+        <path d="M11 18L13.5 24.5H40.5L43 18H11Z" fill="#1E4287" />
+        {/* Awning Light Blue Stripes */}
+        <path d="M15.5 18L17.5 24.5H21L19.5 18H15.5Z" fill="#BFDBFE" />
+        <path d="M25 18L26 24.5H29.5L29 18H25Z" fill="#BFDBFE" />
+        <path d="M34 18L34.5 24.5H38L37.5 18H34Z" fill="#BFDBFE" />
+        {/* Storefront Wall */}
+        <rect x="13.5" y="24.5" width="27" height="16.5" fill="#DBEAFE" />
+        {/* Door */}
+        <rect x="17.5" y="29.5" width="6" height="11.5" fill="#1E4287" />
+        <rect x="18.5" y="30.5" width="2" height="5" fill="#BFDBFE" />
+        {/* Large Window */}
+        <rect x="27" y="27.5" width="11" height="8.5" fill="#BFDBFE" rx="1" />
+        <line x1="32.5" y1="27.5" x2="32.5" y2="36" stroke="#1E4287" strokeWidth="1.2" />
+        <line x1="27" y1="31.5" x2="38" y2="31.5" stroke="#1E4287" strokeWidth="1.2" />
         {/* Foundation */}
-        <rect x="10" y="37" width="28" height="2" fill="#1E40AF" rx="0.5" />
+        <rect x="11" y="41" width="32" height="2.5" fill="#1E4287" rx="0.5" />
       </svg>
     ),
   },
@@ -172,38 +173,38 @@ const SUPPLY_CHAIN_TIERS = [
     id: 'consumers',
     title: 'Consumers',
     hasSolutions: false,
-    headerBg: 'bg-slate-100/70',
+    headerBg: 'bg-[#f1f5f9]',
     solutions: [
       'Guaranteed freshness index on perishable staples',
       '100% on-shelf availability for preferred brands',
       'Zero expired goods reaching consumer households',
     ],
     route: '/network-explorer',
-    // Supermarket Shelves / Stocked Goods
+    // Supermarket Shelves exactly like reference image
     renderIcon: () => (
-      <svg viewBox="0 0 48 48" className="w-12 h-12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {/* Shelf Frame */}
-        <rect x="8" y="10" width="32" height="2" fill="#1E40AF" rx="1" />
-        <rect x="8" y="20" width="32" height="2" fill="#1E40AF" rx="1" />
-        <rect x="8" y="30" width="32" height="2" fill="#1E40AF" rx="1" />
-        <rect x="8" y="40" width="32" height="2" fill="#1E40AF" rx="1" />
-        <rect x="8" y="10" width="2" height="32" fill="#1E40AF" />
-        <rect x="38" y="10" width="2" height="32" fill="#1E40AF" />
-        {/* Top Shelf Items (Boxes) */}
-        <rect x="12" y="13" width="5" height="7" fill="#2563EB" rx="0.5" />
-        <rect x="18" y="14" width="4" height="6" fill="#3B82F6" rx="0.5" />
-        <rect x="23" y="13" width="7" height="7" fill="#1D4ED8" rx="0.5" />
-        <rect x="31" y="14" width="5" height="6" fill="#60A5FA" rx="0.5" />
-        {/* Middle Shelf Items */}
-        <rect x="12" y="23" width="6" height="7" fill="#1D4ED8" rx="0.5" />
-        <rect x="19" y="24" width="4" height="6" fill="#60A5FA" rx="0.5" />
-        <rect x="24" y="23" width="5" height="7" fill="#2563EB" rx="0.5" />
-        <rect x="30" y="23" width="6" height="7" fill="#3B82F6" rx="0.5" />
-        {/* Bottom Shelf Items */}
-        <rect x="12" y="33" width="8" height="7" fill="#3B82F6" rx="0.5" />
-        <rect x="21" y="34" width="5" height="6" fill="#2563EB" rx="0.5" />
-        <rect x="27" y="33" width="4" height="7" fill="#60A5FA" rx="0.5" />
-        <rect x="32" y="33" width="4" height="7" fill="#1D4ED8" rx="0.5" />
+      <svg viewBox="0 0 54 54" className="w-14 h-14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {/* Shelving Frame */}
+        <rect x="9" y="11" width="36" height="2.5" fill="#1E4287" rx="1" />
+        <rect x="9" y="22" width="36" height="2.5" fill="#1E4287" rx="1" />
+        <rect x="9" y="33" width="36" height="2.5" fill="#1E4287" rx="1" />
+        <rect x="9" y="43" width="36" height="2.5" fill="#1E4287" rx="1" />
+        <rect x="9" y="11" width="2.5" height="34.5" fill="#1E4287" />
+        <rect x="42.5" y="11" width="2.5" height="34.5" fill="#1E4287" />
+        {/* Top Shelf Products */}
+        <rect x="14" y="14.5" width="5.5" height="7.5" fill="#2563EB" rx="0.5" />
+        <rect x="21" y="15.5" width="4.5" height="6.5" fill="#3B82F6" rx="0.5" />
+        <rect x="27" y="14.5" width="7.5" height="7.5" fill="#1D4ED8" rx="0.5" />
+        <rect x="36" y="15.5" width="5" height="6.5" fill="#60A5FA" rx="0.5" />
+        {/* Middle Shelf Products */}
+        <rect x="14" y="25.5" width="6.5" height="7.5" fill="#1D4ED8" rx="0.5" />
+        <rect x="22" y="26.5" width="4.5" height="6.5" fill="#60A5FA" rx="0.5" />
+        <rect x="28" y="25.5" width="5.5" height="7.5" fill="#2563EB" rx="0.5" />
+        <rect x="35" y="25.5" width="6.5" height="7.5" fill="#3B82F6" rx="0.5" />
+        {/* Bottom Shelf Products */}
+        <rect x="14" y="36.5" width="8.5" height="6.5" fill="#3B82F6" rx="0.5" />
+        <rect x="24" y="37.5" width="5.5" height="5.5" fill="#2563EB" rx="0.5" />
+        <rect x="31" y="36.5" width="4.5" height="6.5" fill="#60A5FA" rx="0.5" />
+        <rect x="37" y="36.5" width="4.5" height="6.5" fill="#1D4ED8" rx="0.5" />
       </svg>
     ),
   },
@@ -220,12 +221,22 @@ export default function SupplyChainJourney() {
   }
 
   return (
-    <section className="relative w-full py-8 sm:py-12 bg-white select-none">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Optional Section Tag */}
-        <div className="text-center mb-6 sm:mb-8">
-          <p className="text-xs font-extrabold uppercase tracking-widest text-sky-800 bg-sky-50 inline-block px-3.5 py-1 rounded-full border border-sky-100">
-            End-to-End Distribution Chain
+    <section className="relative w-full py-12 sm:py-16 bg-white select-none">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Heading: How SupplyShield Works */}
+        <div className="text-center mb-10 sm:mb-14">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-bold uppercase tracking-wider mb-3 shadow-xs">
+            End-to-End FMCG Distribution Network
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-slate-900 tracking-tight leading-tight">
+            How{' '}
+            <span className="font-cursive text-sky-600 font-semibold italic text-[1.08em] px-1">
+              SupplyShield
+            </span>{' '}
+            Works
+          </h2>
+          <p className="text-slate-500 text-sm sm:text-base max-w-2xl mx-auto mt-2.5 leading-relaxed">
+            From raw ingredient harvest to consumer pantries, deterministic optimization synchronizes every tier in real time.
           </p>
         </div>
 
@@ -240,22 +251,22 @@ export default function SupplyChainJourney() {
                 {/* Single Supply Chain Step Card */}
                 <div
                   onClick={() => tier.hasSolutions && handleToggle(tier.id, tier.hasSolutions)}
-                  className={`relative flex-1 w-full bg-white rounded-2xl sm:rounded-[22px] border transition-all duration-300 overflow-hidden flex flex-col justify-between min-h-[220px] sm:min-h-[235px] ${
+                  className={`relative flex-1 w-full bg-white rounded-2xl sm:rounded-[26px] border transition-all duration-300 overflow-hidden flex flex-col justify-between min-h-[240px] sm:min-h-[255px] ${
                     isOpen
-                      ? 'border-sky-500 shadow-xl shadow-sky-900/10 ring-2 ring-sky-400/20'
-                      : 'border-slate-200/90 shadow-md shadow-slate-200/50 hover:shadow-lg hover:border-slate-300'
+                      ? 'border-sky-500 shadow-xl shadow-sky-900/10 ring-2 ring-sky-400/25'
+                      : 'border-slate-200/90 shadow-md shadow-slate-200/40 hover:shadow-lg hover:border-slate-300'
                   } ${tier.hasSolutions ? 'cursor-pointer' : 'cursor-default'}`}
                 >
-                  {/* Top Area: Smooth curved convex background with icon */}
+                  {/* Top Area: Smooth curved convex background with centered icon */}
                   <div
-                    className={`relative w-full h-[120px] sm:h-[128px] ${tier.headerBg} rounded-b-[40px] flex items-center justify-center p-4 transition-colors`}
+                    className={`relative w-full h-[130px] sm:h-[140px] ${tier.headerBg} rounded-b-[48px] flex items-center justify-center p-4 transition-colors`}
                   >
                     <div className="transform transition-transform duration-300 hover:scale-110">
                       {tier.renderIcon()}
                     </div>
                   </div>
 
-                  {/* Bottom Area: Title + Optional 'View solutions ⌵' Link */}
+                  {/* Bottom Area: Centered bold title + Optional 'View solutions ⌵' Link */}
                   <div className="p-4 sm:p-5 flex flex-col items-center justify-center text-center flex-1">
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
                       {tier.title}
@@ -270,7 +281,7 @@ export default function SupplyChainJourney() {
                         }}
                         className="mt-2.5 inline-flex items-center gap-1 text-xs sm:text-[13px] font-semibold text-sky-600 hover:text-sky-700 transition-colors cursor-pointer group"
                       >
-                        <span>View solutions</span>
+                        <span className="hover:underline">View solutions</span>
                         <ChevronDown
                           className={`w-3.5 h-3.5 transition-transform duration-200 ${
                             isOpen ? 'rotate-180 text-sky-700' : 'group-hover:translate-y-0.5'
@@ -286,8 +297,8 @@ export default function SupplyChainJourney() {
 
                 {/* Connecting Right-Arrow Badge between cards (hidden after the last card) */}
                 {!isLast && (
-                  <div className="hidden lg:flex items-center justify-center z-10 shrink-0 mx-[-12px]">
-                    <div className="w-7 h-7 rounded-full bg-white border border-slate-200/90 shadow-sm flex items-center justify-center text-slate-700 hover:text-sky-600 transition-all">
+                  <div className="hidden lg:flex items-center justify-center z-10 shrink-0 mx-[-14px]">
+                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-700 hover:text-sky-600 transition-all">
                       <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                     </div>
                   </div>
@@ -299,20 +310,20 @@ export default function SupplyChainJourney() {
 
         {/* Interactive Expandable Solution Drawer */}
         {activeTier && (
-          <div className="mt-6 bg-gradient-to-r from-sky-50 via-white to-sky-50/50 rounded-2xl border border-sky-200/80 p-5 sm:p-6 shadow-lg shadow-sky-900/5 animate-in fade-in slide-in-from-top-2 duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-sky-100 mb-4">
+          <div className="mt-8 bg-gradient-to-r from-sky-50 via-white to-sky-50/50 rounded-2xl border border-sky-200/80 p-5 sm:p-6 shadow-xl shadow-sky-900/5 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="flex items-center justify-between pb-3.5 border-b border-sky-100 mb-4">
               <div className="flex items-center gap-3">
-                <span className="p-1.5 rounded-lg bg-sky-100 text-sky-700 font-bold text-xs">
-                  {activeTier.title} Solutions
+                <span className="px-3 py-1 rounded-lg bg-sky-100 text-sky-800 font-bold text-xs uppercase tracking-wider">
+                  {activeTier.title} Operational Suite
                 </span>
                 <span className="text-xs text-slate-500 hidden sm:inline">
-                  SupplyShield AI deterministic operations suite
+                  SupplyShield AI deterministic solver solutions
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveTierId(null)}
-                className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition-colors"
+                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                 title="Close"
               >
                 <X className="w-4 h-4" />
