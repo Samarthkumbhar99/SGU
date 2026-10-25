@@ -65,104 +65,60 @@ function LandingVideoShowcase() {
   }
 
   return (
-    <section className="py-12 sm:py-16 bg-gradient-to-b from-slate-50/80 via-sky-50/30 to-white relative overflow-hidden">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold uppercase tracking-wider mb-3">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Live Network Simulation
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            Autonomous FMCG Distribution Loop in Action
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto mt-2">
-            Watch real-time demand signals, automated FEFO dispatch, and MILP re-planning execute in an endless deterministic loop.
-          </p>
-        </div>
-
-        {/* Video Frame Container */}
+    <section className="py-6 sm:py-10 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Freely Displayed, Large Video with Floating Controls */}
         <div
           ref={containerRef}
-          className="relative rounded-3xl overflow-hidden border border-sky-200/80 shadow-2xl shadow-sky-900/10 group"
-          style={{
-            background: 'linear-gradient(150deg, #f0f7ff 0%, #e0f2fe 45%, #dbeafe 100%)',
-          }}
+          className={`relative w-full flex items-center justify-center group ${
+            isFullscreen ? 'bg-black w-full h-full' : ''
+          }`}
         >
-          {/* Top Control Bar inside Video Container */}
-          <div className="absolute top-4 left-4 right-4 z-20 flex items-center justify-between pointer-events-auto">
-            {/* Left badge */}
-            <div className="flex items-center gap-2.5 bg-white/85 backdrop-blur-md px-3 py-1.5 rounded-full border border-sky-100 shadow-xs">
-              <img
-                src="/logo.webp"
-                alt="SupplyShield Logo"
-                className="w-5 h-5 rounded-md object-contain"
-              />
-              <span className="text-xs font-extrabold text-slate-800 tracking-tight">
-                SupplyShield AI
-              </span>
-              <span className="text-[10px] font-mono font-semibold text-sky-700 bg-sky-50 px-1.5 py-0.5 rounded-full border border-sky-200/60">
-                ● Live Loop
-              </span>
-            </div>
+          {/* Floating Controls Overlay (Top Right of Video) */}
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-8 z-20 flex items-center gap-2">
+            {/* Mute / Unmute Button */}
+            <button
+              type="button"
+              onClick={toggleSound}
+              className="px-3.5 py-1.5 rounded-full bg-white/85 hover:bg-white text-slate-700 hover:text-sky-700 backdrop-blur-md border border-slate-200/90 shadow-sm flex items-center gap-1.5 text-xs font-semibold transition-all cursor-pointer hover:scale-105 active:scale-95"
+              title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
+              aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
+            >
+              {isMuted ? (
+                <>
+                  <VolumeX className="w-4 h-4 text-slate-500" />
+                  <span className="hidden sm:inline text-[11px] font-medium">Unmute</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="w-4 h-4 text-sky-600" />
+                  <span className="hidden sm:inline text-[11px] text-sky-700 font-bold">Sound On</span>
+                </>
+              )}
+            </button>
 
-            {/* Right Controls: Sound & Fullscreen */}
-            <div className="flex items-center gap-2">
-              {/* Mute / Unmute Button */}
-              <button
-                type="button"
-                onClick={toggleSound}
-                className="px-3 py-1.5 rounded-full bg-white/90 hover:bg-white text-slate-700 hover:text-sky-700 backdrop-blur-md border border-sky-200 shadow-xs flex items-center gap-1.5 text-xs font-semibold transition-all cursor-pointer hover:scale-105 active:scale-95"
-                title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
-                aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
-              >
-                {isMuted ? (
-                  <>
-                    <VolumeX className="w-4 h-4 text-slate-500" />
-                    <span className="hidden sm:inline text-[11px]">Unmute</span>
-                  </>
-                ) : (
-                  <>
-                    <Volume2 className="w-4 h-4 text-sky-600" />
-                    <span className="hidden sm:inline text-[11px] text-sky-700 font-bold">Sound On</span>
-                  </>
-                )}
-              </button>
-
-              {/* Fullscreen Button */}
-              <button
-                type="button"
-                onClick={toggleFullscreen}
-                className="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-700 hover:text-sky-700 backdrop-blur-md border border-sky-200 shadow-xs flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95"
-                title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-                aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-              >
-                {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-              </button>
-            </div>
+            {/* Fullscreen Button */}
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              className="w-9 h-9 rounded-full bg-white/85 hover:bg-white text-slate-700 hover:text-sky-700 backdrop-blur-md border border-slate-200/90 shadow-sm flex items-center justify-center transition-all cursor-pointer hover:scale-105 active:scale-95"
+              title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+              aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
+            >
+              {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </button>
           </div>
 
-          {/* Video Player */}
-          <div className="w-full flex items-center justify-center p-4 sm:p-8 pt-16 sm:pt-16">
-            <video
-              ref={videoRef}
-              src="/Intro.webm"
-              autoPlay
-              loop
-              muted={isMuted}
-              playsInline
-              className="w-full h-auto max-h-[580px] object-contain rounded-2xl pointer-events-auto shadow-xs"
-            />
-          </div>
-
-          {/* Bottom Subtitle Bar */}
-          <div className="p-4 sm:px-8 border-t border-sky-100/80 bg-white/60 backdrop-blur-xs flex items-center justify-between text-xs text-slate-600">
-            <span className="font-semibold text-slate-800">
-              Smarter Decisions. Stronger Supply Chains.
-            </span>
-            <span className="font-mono text-[11px] text-sky-700">
-              OR-Tools MILP Flow Conservation
-            </span>
-          </div>
+          {/* Large Video Displayed Freely Without Box / Framing */}
+          <video
+            ref={videoRef}
+            src="/Intro.webm"
+            autoPlay
+            loop
+            muted={isMuted}
+            playsInline
+            className="w-full h-auto max-h-[760px] object-contain rounded-2xl pointer-events-auto"
+          />
         </div>
       </div>
     </section>
