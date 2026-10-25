@@ -14,6 +14,9 @@ import {
   Activity,
   Layers,
   ArrowRight,
+  Venus,
+  Mars,
+  ArrowLeftRight,
 } from 'lucide-react'
 import axios from 'axios'
 
@@ -485,16 +488,13 @@ export default function SupplyShieldConcierge() {
                   className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                     isListening
                       ? 'bg-rose-500 text-white ring-4 ring-rose-500/30 animate-pulse'
-                      : 'bg-slate-800 text-slate-300 group-hover:text-white group-hover:bg-slate-700'
+                      : 'bg-rose-500/15 text-rose-400 border border-rose-500/40 group-hover:bg-rose-500/25'
                   }`}
                 >
                   {isListening ? (
-                    <Mic className="w-4 h-4 text-white" />
+                    <Mic className="w-4 h-4 text-white stroke-[2.5]" />
                   ) : (
-                    <div className="relative">
-                      <Mic className="w-4 h-4 text-rose-500" />
-                      <span className="absolute inset-0 border-t-2 border-rose-500 rotate-45 transform origin-center" />
-                    </div>
+                    <MicOff className="w-4 h-4 text-rose-400 stroke-[2.5]" />
                   )}
                 </div>
                 <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-200">
@@ -511,14 +511,14 @@ export default function SupplyShieldConcierge() {
                 <div
                   className={`w-9 h-9 rounded-full flex items-center justify-center transition-all ${
                     speakerEnabled
-                      ? 'bg-sky-600/30 text-sky-400 border border-sky-500/40'
-                      : 'bg-slate-800 text-slate-400 group-hover:bg-slate-700'
+                      ? 'bg-sky-500/20 text-sky-400 border border-sky-500/40 group-hover:bg-sky-500/30'
+                      : 'bg-slate-800 text-slate-400 border border-slate-700 group-hover:bg-slate-700'
                   }`}
                 >
                   {speakerEnabled ? (
-                    <Volume2 className="w-4 h-4 text-sky-400" />
+                    <Volume2 className="w-4 h-4 text-sky-400 stroke-[2.5]" />
                   ) : (
-                    <VolumeX className="w-4 h-4 text-slate-500" />
+                    <VolumeX className="w-4 h-4 text-slate-400 stroke-[2.5]" />
                   )}
                 </div>
                 <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-200">
@@ -534,17 +534,21 @@ export default function SupplyShieldConcierge() {
                 title={`Switch AI voice to ${voiceGender === 'female' ? 'Male' : 'Female'}`}
               >
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center transition-all font-bold text-xs ${
+                  className={`w-9 h-9 rounded-full flex items-center justify-center transition-all font-bold ${
                     voiceGender === 'female'
-                      ? 'bg-pink-600/25 text-pink-300 border border-pink-500/40 group-hover:bg-pink-600/35'
-                      : 'bg-indigo-600/25 text-indigo-300 border border-indigo-500/40 group-hover:bg-indigo-600/35'
+                      ? 'bg-pink-500/20 text-pink-400 border border-pink-500/40 group-hover:bg-pink-500/30'
+                      : 'bg-indigo-500/20 text-indigo-400 border border-indigo-500/40 group-hover:bg-indigo-500/30'
                   }`}
                 >
-                  {voiceGender === 'female' ? '♀' : '♂'}
+                  {voiceGender === 'female' ? (
+                    <Venus className="w-4 h-4 text-pink-400 stroke-[2.5]" />
+                  ) : (
+                    <Mars className="w-4 h-4 text-indigo-400 stroke-[2.5]" />
+                  )}
                 </div>
                 <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-200 capitalize flex items-center gap-1">
-                  <span>{voiceGender}</span>
-                  <span className="text-[9px] text-sky-400 font-normal">⇄</span>
+                  <span>{voiceGender === 'female' ? 'Female' : 'Male'}</span>
+                  <ArrowLeftRight className="w-2.5 h-2.5 text-sky-400 stroke-[2.5]" />
                 </span>
               </button>
             </div>
