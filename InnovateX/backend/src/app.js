@@ -57,14 +57,20 @@ const allowedOrigins = [
   env.FRONTEND_URL,
   'http://localhost:5173',
   'http://localhost:5174',
+  'https://supplyshieldxai.netlify.app',
   ...(env.CORS_ORIGIN ? env.CORS_ORIGIN.split(',').map((s) => s.trim()) : []),
-]
+].filter(Boolean)
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (curl, mobile apps, same-origin)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.netlify.app') ||
+        origin === 'https://supplyshieldxai.netlify.app'
+      ) {
         callback(null, true)
       } else {
         callback(new Error(`CORS: origin '${origin}' not allowed.`))

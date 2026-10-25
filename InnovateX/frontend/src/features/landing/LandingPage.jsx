@@ -6,6 +6,7 @@ import DisruptionSimulator from './DisruptionSimulator.jsx'
 import FeatureShowcase from './FeatureShowcase.jsx'
 import RoiCalculator from './RoiCalculator.jsx'
 import PersonaSection from './PersonaSection.jsx'
+import LandingVideoShowcase from './LandingVideoShowcase.jsx'
 import VariableProximity from '../../components/ui/VariableProximity.jsx'
 import {
   Shield,
@@ -187,6 +188,11 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ======================================================== */}
+      {/* FREELY DISPLAYED LOGISTICS VIDEO SHOWCASE                */}
+      {/* ======================================================== */}
+      <LandingVideoShowcase />
 
       {/* ======================================================== */}
       {/* INTERACTIVE DISRUPTION SIMULATOR SANDBOX                 */}
