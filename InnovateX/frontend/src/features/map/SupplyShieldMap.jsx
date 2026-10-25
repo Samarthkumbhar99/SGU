@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
-import { Map, Marker, Popup, NavigationControl, ScaleControl, LngLatBounds } from 'maplibre-gl'
+import maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+
+const { Map, Marker, Popup, NavigationControl, ScaleControl, LngLatBounds } = maplibregl
 import { MapboxOverlay } from '@deck.gl/mapbox'
 import { HeatmapLayer } from '@deck.gl/aggregation-layers'
 import { ArcLayer } from '@deck.gl/layers'
