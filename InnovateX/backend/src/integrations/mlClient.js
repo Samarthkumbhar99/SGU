@@ -288,6 +288,27 @@ export class MlClient {
       ...options,
     })
   }
+
+  /**
+   * Simulate multi-day inventory trajectory
+   */
+  async simulateInventory(payload, options = {}) {
+    return this.request('/api/v1/inventory/simulate', {
+      method: 'POST',
+      body: payload,
+      ...options,
+    })
+  }
+
+  /**
+   * Get facility inventory health status
+   */
+  async getInventoryHealth(options = {}) {
+    return this.request('/api/v1/inventory/health', {
+      method: 'GET',
+      ...options,
+    })
+  }
 }
 
 export const mlClient = new MlClient()

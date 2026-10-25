@@ -324,3 +324,27 @@ def test_api_inventory_plan_endpoint(client):
     assert rec["sku_id"] == "SKU_001"
     assert rec["is_reorder_triggered"] is True
     assert rec["recommended_order_quantity"] == 150  # 250 - 100 = 150
+
+
+def test_api_inventory_simulate_endpoint(client):
+    """Test POST /api/v1/inventory/simulate endpoint."""
+    payload = {
+        "sku_id": "SKU-001",
+        "location_id": "WH-CENTRAL",
+        "starting_on_hand": 200,
+        "avg_daily_demand": 20.0,
+        "supplier_lead_time_days": 5.0,
+        "lead_time_delay_days": 2.0,
+        "demand_multiplier": 1.2,
+        "review_horizon_days": 14,
+        "enable_replenishment": True,
+    }
+    resp = client.post("/api/v1/inventory/simulate", json=payload)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["sku_id"] == "SKU-001"
+    assert data["location_id"] == "WH-CENTRAL"
+    assert len(data["timeline"]) == 14
+    assert data["reorder_point"] > 0
+    assert data["safety_stock"] > 0
+    assert data["managed_total_fulfilled"] > 0

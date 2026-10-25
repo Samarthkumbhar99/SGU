@@ -5,6 +5,7 @@ import {
   getDemand,
   getSuppliers,
   getRecommendations,
+  simulateInventory,
 } from '../controllers/analyticsController.js'
 
 const router = express.Router()
@@ -18,5 +19,8 @@ router.get('/analytics/recommendations', getRecommendations)
 
 // Root recommendations endpoint per contract
 router.get('/recommendations', getRecommendations)
+
+// Inventory multi-day simulation
+router.post('/inventory/simulate', simulateInventory)
 
 export default router

@@ -63,9 +63,11 @@ export const productsAPI = {
   getAll: () => api.get('/products'),
 }
 
-// Inventory
+// Inventory & Multi-Day Simulation
 export const inventoryAPI = {
   getAll: (params) => api.get('/inventory', { params }),
+  getMatrix: (params) => api.get('/analytics/inventory', { params }),
+  simulate: (data) => api.post('/inventory/simulate', data),
 }
 
 // Routes

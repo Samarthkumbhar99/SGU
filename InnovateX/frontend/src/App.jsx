@@ -10,6 +10,7 @@ import OptimizationWorkbenchPage from './features/optimization/OptimizationWorkb
 import DisruptionSimulatorPage from './features/scenarios/DisruptionSimulatorPage.jsx'
 import RunHistoryPage from './features/scenarios/RunHistoryPage.jsx'
 import DemandForecastingPage from './features/forecasting/DemandForecastingPage.jsx'
+import InventoryMatrixPage from './features/inventory/InventoryMatrixPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
 
@@ -96,11 +97,7 @@ export default function App() {
           path="/inventory"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Inventory Management"
-                breadcrumbs={['Dashboard', 'Inventory']}
-                description="Searchable, filterable inventory table with expiry tracking, batch management, CSV import/export, and validated create/edit forms."
-              />
+              <InventoryMatrixPage />
             </ProtectedRoute>
           }
         />

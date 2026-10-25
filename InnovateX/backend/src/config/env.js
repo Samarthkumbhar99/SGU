@@ -41,7 +41,7 @@ const envSchema = z.object({
         : 'dev_supplyshield_jwt_secret_must_be_overridden_in_production_at_least_32_chars'
     ),
   JWT_EXPIRES_IN: z.string().default('7d'),
-  ML_SERVICE_URL: z.string().url().default('http://localhost:8000'),
+  ML_SERVICE_URL: z.string().url().default('http://localhost:8001'),
   FRONTEND_URL: z.string().default('http://localhost:5173'),
   CORS_ORIGIN: z.string().optional(),
   LOG_LEVEL: z
