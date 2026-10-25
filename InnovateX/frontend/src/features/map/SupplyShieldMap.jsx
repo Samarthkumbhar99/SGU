@@ -29,6 +29,8 @@ import {
   CheckCircle2,
   X,
 } from 'lucide-react'
+import { getInventoryScale } from '../../utils/inventoryScale.js'
+import InventoryShelfModal from '../../components/ui/InventoryShelfModal.jsx'
 
 // Open-access vector basemap style (OpenFreeMap Liberty - OpenMapTiles vector tiles)
 const BASEMAP_STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty'
@@ -664,6 +666,7 @@ export default function SupplyShieldMap({
   const [mapZoom, setMapZoom] = useState(DATASET_CLUSTERS.north.zoom)
   const [, setActivePopupNode] = useState(null)
   const [hoverInfo, setHoverInfo] = useState(null)
+  const [inspectingNode, setInspectingNode] = useState(null)
 
   // Layer and UX Controls
   const [is3D, setIs3D] = useState(initial3D)
@@ -877,7 +880,7 @@ export default function SupplyShieldMap({
     }
   }, [activeRescueStore, triggerStoreRescue])
 
-  // Expose global rescue trigger for marker popups
+  // Expose global rescue & 3D shelf inspector triggers for marker popups
   useEffect(() => {
     window.__triggerStoreRescue = (nodeId) => {
       const target = networkNodes.find((n) => n.id === nodeId || n.code === nodeId)
@@ -885,8 +888,15 @@ export default function SupplyShieldMap({
         triggerStoreRescue(target)
       }
     }
+    window.__openInventoryInspector = (nodeId) => {
+      const target = networkNodes.find((n) => n.id === nodeId || n.code === nodeId)
+      if (target) {
+        setInspectingNode(target)
+      }
+    }
     return () => {
       delete window.__triggerStoreRescue
+      delete window.__openInventoryInspector
     }
   }, [networkNodes, triggerStoreRescue])
 
@@ -1121,6 +1131,43 @@ export default function SupplyShieldMap({
             if (e.features && e.features.length > 0) {
               const props = e.features[0].properties
               handleNodeClick(props)
+
+              const targetNode =
+                networkNodes.find(
+                  (n) => n.id === props.id || n.code === props.code || n.name === props.name
+                ) || props
+
+              const content = buildNodePopupHtml(targetNode)
+              const housePopup = new Popup({
+                offset: 25,
+                closeButton: true,
+                closeOnClick: false,
+                maxWidth: '320px',
+              })
+                .setLngLat(e.lngLat)
+                .setHTML(content)
+                .addTo(map)
+
+              housePopup.on('open', () => {
+                const dom = housePopup.getElement()
+                if (dom) {
+                  const rescueBtn = dom.querySelector('.ss-popup-rescue-btn')
+                  if (rescueBtn) {
+                    rescueBtn.onclick = (ev) => {
+                      ev.stopPropagation()
+                      triggerStoreRescue(targetNode)
+                      housePopup.remove()
+                    }
+                  }
+                  const inspectBtn = dom.querySelector('.ss-popup-inspect-btn')
+                  if (inspectBtn) {
+                    inspectBtn.onclick = (ev) => {
+                      ev.stopPropagation()
+                      setInspectingNode(targetNode)
+                    }
+                  }
+                }
+              })
             }
           })
 
@@ -1382,6 +1429,139 @@ export default function SupplyShieldMap({
     }
   }, [showArcs, showHeatmap, mapLoaded, networkNodes, networkLanes, mapZoom])
 
+  // Build high-definition 3D shelf visualizer popup HTML (Levels 1 to 7 scale)
+  const buildNodePopupHtml = useCallback((node, customBgColor) => {
+    const isStore =
+      node.type === 'Retail Store' ||
+      node.type === 'Store' ||
+      String(node.name || '').toLowerCase().includes('store')
+
+    const inv = getInventoryScale(node)
+    const statusColor = customBgColor || inv.barColor
+
+    const rescueBtnHtml = isStore
+      ? `
+        <button
+          type="button"
+          class="ss-popup-rescue-btn"
+          data-node-id="${node.id}"
+          onclick="window.__triggerStoreRescue && window.__triggerStoreRescue('${node.id}')"
+          style="
+            width: 100%;
+            margin-top: 8px;
+            margin-bottom: 6px;
+            padding: 7px 10px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+          "
+        >
+          <span>⚡</span>
+          <span>Auto-Rescue Store (Shortest Path)</span>
+        </button>
+      `
+      : ''
+
+    return `
+      <div style="font-family: inherit; padding: 4px 2px; min-width: 255px; max-width: 290px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px;">
+          <span style="font-size: 12.5px; font-weight: 800; color: #0f172a; line-height: 1.2;">${node.name}</span>
+          <span style="font-size: 9px; font-weight: 700; background: ${inv.badgeBg}; color: ${inv.badgeColor}; border: 1px solid ${inv.borderColor}; padding: 1px 6px; border-radius: 4px; white-space: nowrap;">
+            ${inv.shortLabel}
+          </span>
+        </div>
+        <div style="font-size: 10px; color: #64778b; margin-bottom: 6px; line-height: 1.3;">
+          ${node.address || 'Supply Chain Logistics Facility'}
+        </div>
+
+        <!-- 3D Inventory Shelf Visualizer Card (1.png to 7.png Scale) -->
+        <div style="position: relative; margin-bottom: 8px; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1; background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+          <img
+            src="${inv.imageSrc}"
+            alt="${inv.title}"
+            style="width: 100%; height: 130px; object-fit: contain; display: block; background: #ffffff;"
+            onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback='1';this.src='${inv.fallbackImageSrc}'}"
+          />
+          <div style="position: absolute; top: 6px; left: 6px; display: flex; align-items: center; gap: 4px;">
+            <span style="font-size: 9.5px; font-weight: 800; background: rgba(15, 23, 42, 0.92); color: #ffffff; padding: 2px 7px; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.3);">
+              Shelf Scale ${inv.scale}/7
+            </span>
+            <span style="font-size: 9px; font-weight: 700; background: ${inv.badgeBg}; color: ${inv.badgeColor}; border: 1px solid ${inv.borderColor}; padding: 1px 5px; border-radius: 4px;">
+              ${inv.percent}% Full
+            </span>
+          </div>
+          <button
+            type="button"
+            class="ss-popup-inspect-btn"
+            data-node-id="${node.id}"
+            onclick="window.__openInventoryInspector && window.__openInventoryInspector('${node.id}')"
+            style="position: absolute; bottom: 6px; right: 6px; font-size: 9px; font-weight: 700; background: rgba(15, 23, 42, 0.9); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); padding: 3px 8px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 3px; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"
+          >
+            <span>🔍</span>
+            <span>Inspect 3D Shelf</span>
+          </button>
+        </div>
+
+        <!-- 7-Level Scale Meter -->
+        <div style="margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; font-size: 9px; color: #64748b; font-weight: 600; margin-bottom: 3px;">
+            <span>1 (Empty)</span>
+            <span style="font-weight: 800; color: ${inv.barColor};">${inv.shortLabel} (${inv.scale}/7)</span>
+            <span>7 (Full)</span>
+          </div>
+          <div style="display: flex; gap: 3px;">
+            ${[1, 2, 3, 4, 5, 6, 7]
+              .map(
+                (lvl) => `
+              <div style="flex: 1; height: 5px; border-radius: 2px; background: ${
+                lvl <= inv.scale ? inv.barColor : '#e2e8f0'
+              };"></div>
+            `
+              )
+              .join('')}
+          </div>
+        </div>
+
+        <!-- Facility Inventory Telemetry Grid -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 11px; margin-bottom: 6px; background: #f8fafc; padding: 6px 8px; border-radius: 6px; border: 1px solid #f1f5f9;">
+          <div>
+            <span style="color: #64778b; font-size: 10px;">Type:</span>
+            <strong style="display: block; color: #17324d;">${node.type}</strong>
+          </div>
+          <div>
+            <span style="color: #64778b; font-size: 10px;">Stock On-Hand:</span>
+            <strong style="display: block; color: #17324d;">${inv.stockOnHand.toLocaleString()} u</strong>
+          </div>
+          <div>
+            <span style="color: #64778b; font-size: 10px;">Max Capacity:</span>
+            <strong style="display: block; color: #17324d;">${inv.capacity.toLocaleString()} u</strong>
+          </div>
+          <div>
+            <span style="color: #64778b; font-size: 10px;">Status:</span>
+            <span style="display: inline-block; font-weight: 700; color: ${statusColor};">${node.status || inv.shortLabel}</span>
+          </div>
+        </div>
+
+        ${rescueBtnHtml}
+
+        <div style="font-size: 9px; color: #94a3b8; font-style: italic; border-top: 1px solid #e2e8f0; padding-top: 4px; display: flex; justify-content: space-between;">
+          <span>Lat: ${node.coordinates[1].toFixed(4)}, Lng: ${node.coordinates[0].toFixed(4)}</span>
+          <span>Buffer: ${node.daysOfSupply ? node.daysOfSupply + 'd' : 'Active'}</span>
+        </div>
+      </div>
+    `
+  }, [])
+
   // Render or update MapLibre HTML markers when showPins is active
   useEffect(() => {
     const map = mapInstanceRef.current
@@ -1474,89 +1654,31 @@ export default function SupplyShieldMap({
         </div>
       `
 
-      const isStore = node.type === 'Retail Store'
-      const rescueBtnHtml = isStore
-        ? `
-          <button
-            type="button"
-            class="ss-popup-rescue-btn"
-            data-node-id="${node.id}"
-            onclick="window.__triggerStoreRescue && window.__triggerStoreRescue('${node.id}')"
-            style="
-              width: 100%;
-              margin-top: 8px;
-              margin-bottom: 6px;
-              padding: 7px 10px;
-              background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-              color: #ffffff;
-              border: none;
-              border-radius: 6px;
-              font-size: 11px;
-              font-weight: 700;
-              letter-spacing: 0.2px;
-              cursor: pointer;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 5px;
-              box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
-            "
-          >
-            <span>⚡</span>
-            <span>Auto-Rescue Store (Shortest Path)</span>
-          </button>
-        `
-        : ''
-
-      const popupContent = `
-        <div style="font-family: inherit; padding: 6px 4px; min-width: 230px;">
-          <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-            <span style="font-size: 12px; font-weight: 800; color: #17324d;">${node.name}</span>
-          </div>
-          <div style="font-size: 11px; color: #64778b; margin-bottom: 8px;">
-            ${node.address || 'Logistics Node'}
-          </div>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; margin-bottom: 8px; background: #f8fafc; padding: 6px; border-radius: 6px;">
-            <div>
-              <span style="color: #64778b;">Type:</span>
-              <strong style="display: block; color: #17324d;">${node.type}</strong>
-            </div>
-            <div>
-              <span style="color: #64778b;">Stock On-Hand:</span>
-              <strong style="display: block; color: #17324d;">${(node.stockOnHand || 0).toLocaleString()} units</strong>
-            </div>
-            <div>
-              <span style="color: #64778b;">Weekly Demand:</span>
-              <strong style="display: block; color: #17324d;">${(node.weeklyDemand || 0).toLocaleString()} u/wk</strong>
-            </div>
-            <div>
-              <span style="color: #64778b;">Status:</span>
-              <span style="display: inline-block; font-weight: 700; color: ${bgColor};">${node.status || 'Active'}</span>
-            </div>
-          </div>
-          ${rescueBtnHtml}
-          <div style="font-size: 10px; color: #94a3b8; font-style: italic; border-top: 1px solid #e2e8f0; padding-top: 4px;">
-            Dataset Node • Lat: ${node.coordinates[1].toFixed(4)}, Lng: ${node.coordinates[0].toFixed(4)}
-          </div>
-        </div>
-      `
+      const popupContent = buildNodePopupHtml(node, bgColor)
 
       const popup = new Popup({
         offset: 25,
         closeButton: true,
         closeOnClick: false,
-        maxWidth: '310px',
+        maxWidth: '320px',
       }).setHTML(popupContent)
 
       popup.on('open', () => {
         const dom = popup.getElement()
         if (dom) {
-          const btn = dom.querySelector('.ss-popup-rescue-btn')
-          if (btn) {
-            btn.onclick = (ev) => {
+          const rescueBtn = dom.querySelector('.ss-popup-rescue-btn')
+          if (rescueBtn) {
+            rescueBtn.onclick = (ev) => {
               ev.stopPropagation()
               triggerStoreRescue(node)
               popup.remove()
+            }
+          }
+          const inspectBtn = dom.querySelector('.ss-popup-inspect-btn')
+          if (inspectBtn) {
+            inspectBtn.onclick = (ev) => {
+              ev.stopPropagation()
+              setInspectingNode(node)
             }
           }
         }
@@ -3095,6 +3217,17 @@ export default function SupplyShieldMap({
       >
         MapLibre GL • deck.gl • © OpenStreetMap • SupplyShield AI
       </div>
+
+      {/* 3D Inventory Shelf Inspector Modal (Scale 1 to 7) */}
+      <InventoryShelfModal
+        isOpen={!!inspectingNode}
+        node={inspectingNode}
+        onClose={() => setInspectingNode(null)}
+        onTriggerRescue={(target) => {
+          triggerStoreRescue(target)
+          setInspectingNode(null)
+        }}
+      />
     </div>
   )
 }
