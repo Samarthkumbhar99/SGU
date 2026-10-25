@@ -52,6 +52,7 @@ const STEPS = [
 ]
 
 import { useGoogleAuth } from './useGoogleAuth.js'
+import AuthVideoHero from './AuthVideoHero.jsx'
 
 export default function SignupPage() {
   const [showPass, setShowPass] = useState(false)
@@ -97,7 +98,7 @@ export default function SignupPage() {
       })
       login(res.data.user, res.data.token)
       toast.success('Account created! Welcome to SupplyShield AI.', 'Account created')
-      navigate('/dashboard')
+      navigate(res.data.user?.isOnboarded === false ? '/onboarding' : '/dashboard')
     } catch (err) {
       const msg = err.response?.data?.message || 'Sign up failed. Please try again.'
       toast.error(msg, 'Registration failed')
@@ -124,117 +125,9 @@ export default function SignupPage() {
 
   return (
     <div className="ss-auth-layout">
-      {/* Left Hero Panel */}
-      <div className="ss-auth-hero">
-        <div
-          className="ss-geo-blob"
-          style={{
-            top: '5%',
-            right: '-80px',
-            width: '320px',
-            height: '320px',
-            background: 'radial-gradient(circle, rgba(36,123,193,0.25) 0%, transparent 70%)',
-          }}
-          aria-hidden="true"
-        />
-        <div
-          className="ss-geo-blob"
-          style={{
-            bottom: '5%',
-            left: '-60px',
-            width: '260px',
-            height: '260px',
-            background: 'radial-gradient(circle, rgba(106,176,225,0.18) 0%, transparent 70%)',
-          }}
-          aria-hidden="true"
-        />
-
-        <div style={{ position: 'relative', zIndex: 1, maxWidth: '480px', width: '100%' }}>
-          {/* Logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '48px' }}>
-            <div
-              style={{
-                width: '48px',
-                height: '48px',
-                borderRadius: '14px',
-                background: 'linear-gradient(135deg, #247bc1, #6ab0e1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 24px rgba(36,123,193,0.4)',
-              }}
-            >
-              <Shield size={26} color="#fff" />
-            </div>
-            <div>
-              <div style={{ color: '#fff', fontWeight: 800, fontSize: '20px', lineHeight: 1.1 }}>
-                SupplyShield AI
-              </div>
-              <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '12px', fontWeight: 500, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                Distribution Intelligence
-              </div>
-            </div>
-          </div>
-
-          <h1
-            style={{
-              color: '#ffffff',
-              fontSize: '34px',
-              fontWeight: 800,
-              lineHeight: 1.15,
-              marginBottom: '16px',
-              letterSpacing: '-0.02em',
-            }}
-          >
-            Join the future of{' '}
-            <span style={{ background: 'linear-gradient(135deg, #6ab0e1, #a8d1f0)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              supply chain
-            </span>{' '}
-            intelligence.
-          </h1>
-
-          <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '15px', lineHeight: 1.6, marginBottom: '40px' }}>
-            Set up your organization's distribution command center and start optimizing in minutes.
-          </p>
-
-          {/* What you get */}
-          <div style={{ marginBottom: '40px' }}>
-            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '11px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '16px' }}>
-              What you get
-            </div>
-            {[
-              'Full access to OR-Tools optimization engine',
-              'Real-time disruption scenario simulation',
-              'FEFO batch expiry management',
-              'Interactive network map with risk overlays',
-              'AI-grounded decision explanations',
-              '20 SKU × 3 warehouse × 12 store demo dataset',
-            ].map((feat) => (
-              <div key={feat} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                <CheckCircle size={14} color="#208567" style={{ flexShrink: 0 }} />
-                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>{feat}</span>
-              </div>
-            ))}
-          </div>
-
-          <div
-            style={{
-              padding: '12px 16px',
-              background: 'rgba(36,123,193,0.15)',
-              border: '1px solid rgba(36,123,193,0.25)',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
-            }}
-          >
-            <Zap size={14} color="#6ab0e1" style={{ flexShrink: 0 }} />
-            <span style={{ color: 'rgba(255,255,255,0.65)', fontSize: '12px', lineHeight: 1.4 }}>
-              <strong style={{ color: '#6ab0e1' }}>No credit card required.</strong>{' '}
-              Free demo access with full optimization capabilities.
-            </span>
-          </div>
-        </div>
+      {/* Left Hero Panel: Static video animation loop with light bluish shade and mute button */}
+      <div className="ss-auth-hero" style={{ padding: 0, overflow: 'hidden', background: '#f0f7ff' }}>
+        <AuthVideoHero />
       </div>
 
       {/* Right Form Panel */}
@@ -242,9 +135,16 @@ export default function SignupPage() {
         <div className="ss-auth-form-container animate-fade-in">
           {/* Mobile logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px', justifyContent: 'center' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #247bc1, #6ab0e1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Shield size={22} color="#fff" />
-            </div>
+            <img
+              src="/logo.webp"
+              alt="SupplyShield AI Logo"
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                objectFit: 'contain',
+              }}
+            />
             <div>
               <div style={{ fontWeight: 800, fontSize: '18px', color: '#17324d', lineHeight: 1 }}>SupplyShield AI</div>
               <div style={{ fontSize: '11px', color: '#64778b', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Distribution Intelligence</div>
