@@ -1,12 +1,13 @@
-const Store = require('../models/Store')
-const Warehouse = require('../models/Warehouse')
-const AccessRequest = require('../models/AccessRequest')
-const User = require('../models/User')
+import Store from '../models/Store.js'
+import Warehouse from '../models/Warehouse.js'
+import AccessRequest from '../models/AccessRequest.js'
+import User from '../models/User.js'
+
 
 // @desc    Get current user's owned & managed stores, warehouses, and access requests
 // @route   GET /api/v1/entities/my-network
 // @access  Private
-exports.getMyNetwork = async (req, res, next) => {
+export const getMyNetwork = async (req, res, next) => {
   try {
     const userId = req.user._id
 
@@ -57,7 +58,7 @@ exports.getMyNetwork = async (req, res, next) => {
 // @desc    Create a new store (for Retailers & Ops)
 // @route   POST /api/v1/entities/stores
 // @access  Private
-exports.createStore = async (req, res, next) => {
+export const createStore = async (req, res, next) => {
   try {
     const {
       name,
@@ -114,7 +115,7 @@ exports.createStore = async (req, res, next) => {
 // @desc    Update store profile & operational parameters
 // @route   PUT /api/v1/entities/stores/:id
 // @access  Private
-exports.updateStore = async (req, res, next) => {
+export const updateStore = async (req, res, next) => {
   try {
     const store = await Store.findById(req.params.id)
     if (!store) {
@@ -164,7 +165,7 @@ exports.updateStore = async (req, res, next) => {
 // @desc    Create a new warehouse / DC
 // @route   POST /api/v1/entities/warehouses
 // @access  Private
-exports.createWarehouse = async (req, res, next) => {
+export const createWarehouse = async (req, res, next) => {
   try {
     const {
       name,
@@ -217,7 +218,7 @@ exports.createWarehouse = async (req, res, next) => {
 // @desc    Update warehouse profile & capacity
 // @route   PUT /api/v1/entities/warehouses/:id
 // @access  Private
-exports.updateWarehouse = async (req, res, next) => {
+export const updateWarehouse = async (req, res, next) => {
   try {
     const warehouse = await Warehouse.findById(req.params.id)
     if (!warehouse) {
@@ -266,7 +267,7 @@ exports.updateWarehouse = async (req, res, next) => {
 // @desc    Search all registered network stores & warehouses to request access
 // @route   GET /api/v1/entities/search
 // @access  Private
-exports.searchEntities = async (req, res, next) => {
+export const searchEntities = async (req, res, next) => {
   try {
     const { q = '', type = 'all' } = req.query
     const queryRegex = new RegExp(q, 'i')
@@ -307,7 +308,7 @@ exports.searchEntities = async (req, res, next) => {
 // @desc    Request manager/staff access to an existing store or warehouse
 // @route   POST /api/v1/entities/access-requests
 // @access  Private
-exports.requestAccess = async (req, res, next) => {
+export const requestAccess = async (req, res, next) => {
   try {
     const { targetType, targetId, roleRequested = 'Co-Manager', reason } = req.body
 
@@ -375,7 +376,7 @@ exports.requestAccess = async (req, res, next) => {
 // @desc    Review (Approve/Reject) an access request
 // @route   PATCH /api/v1/entities/access-requests/:id/review
 // @access  Private
-exports.reviewAccessRequest = async (req, res, next) => {
+export const reviewAccessRequest = async (req, res, next) => {
   try {
     const { action, reviewNote } = req.body // action: 'Approved' | 'Rejected'
     if (!['Approved', 'Rejected'].includes(action)) {
@@ -428,7 +429,7 @@ exports.reviewAccessRequest = async (req, res, next) => {
 // @desc    Update user live GPS location
 // @route   POST /api/v1/entities/location
 // @access  Private
-exports.updateLiveLocation = async (req, res, next) => {
+export const updateLiveLocation = async (req, res, next) => {
   try {
     const { latitude, longitude, accuracy, city, address } = req.body
 

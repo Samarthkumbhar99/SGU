@@ -1,0 +1,73 @@
+{
+  "model_version": "v1.0.0",
+  "training_timestamp": "2026-10-24T23:28:18.673872+00:00",
+  "target_column": "units_sold",
+  "feature_columns": [
+    "day_of_week",
+    "day_of_month",
+    "month",
+    "week_of_year",
+    "is_weekend",
+    "lag_1",
+    "lag_7",
+    "lag_14",
+    "lag_28",
+    "rolling_mean_7",
+    "rolling_std_7",
+    "rolling_mean_14",
+    "rolling_std_14",
+    "rolling_mean_28",
+    "promotion_flag",
+    "unit_cost",
+    "unit_price",
+    "gross_margin",
+    "supplier_lead_time_days",
+    "sku_code",
+    "warehouse_code",
+    "region_code"
+  ],
+  "split_policy": {
+    "train_end": "2024-09-30",
+    "val_end": "2024-10-31",
+    "test_start": "2024-11-01",
+    "test_end": "2024-12-30"
+  },
+  "best_iteration": 78,
+  "test_results_summary": {
+    "Naive (Lag-1)": {
+      "mae": 5.9321,
+      "rmse": 7.4954,
+      "wape": 0.3868,
+      "bias": -0.1391,
+      "mae_improvement_over_naive_pct": 0.0
+    },
+    "Seasonal Naive (7-Day)": {
+      "mae": 5.976,
+      "rmse": 7.5124,
+      "wape": 0.3897,
+      "bias": -1.0104,
+      "mae_improvement_over_naive_pct": -0.74
+    },
+    "Moving Average (14-Day)": {
+      "mae": 4.4087,
+      "rmse": 5.5877,
+      "wape": 0.2875,
+      "bias": -1.057,
+      "mae_improvement_over_naive_pct": 25.68
+    },
+    "Ridge Regression": {
+      "mae": 7.9659,
+      "rmse": 10.2486,
+      "wape": 0.5194,
+      "bias": -5.999,
+      "mae_improvement_over_naive_pct": -34.28
+    },
+    "LightGBM Regressor": {
+      "mae": 6.0648,
+      "rmse": 7.4965,
+      "wape": 0.3955,
+      "bias": -4.6672,
+      "mae_improvement_over_naive_pct": -2.24
+    }
+  }
+}

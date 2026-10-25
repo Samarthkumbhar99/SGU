@@ -1,12 +1,13 @@
-const express = require('express')
-const router = express.Router()
-const { protect } = require('../middleware/auth')
-const { chatWithRay, completeOnboarding } = require('../controllers/onboardingController')
+import express from 'express'
+import { protect } from '../middleware/auth.js'
+import { chatWithRay, completeOnboarding } from '../controllers/onboardingController.js'
 
-// Protect onboarding routes
+const router = express.Router()
+
+// All routes require authentication
 router.use(protect)
 
 router.post('/chat', chatWithRay)
 router.post('/complete', completeOnboarding)
 
-module.exports = router
+export default router

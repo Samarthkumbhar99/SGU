@@ -26,15 +26,29 @@ from src.schemas.forecasting import (
 class ForecastingService:
     """Coordinates daily demand forecasting and model evaluation."""
 
-    def __init__(self, dataset_dir: Path):
+    def __init__(self, dataset_dir: Path, daily_demand: Optional[pd.DataFrame] = None):
         self.dataset_dir = dataset_dir
+        self._daily_demand = daily_demand
+        self._series_cache: Optional[Dict[Tuple[str, str], pd.DataFrame]] = None
 
     def _get_daily_demand(self) -> pd.DataFrame:
-        """Load daily demand from dataset bundle without caching stale data."""
-        bundle = load_dataset_bundle(self.dataset_dir)
-        if bundle.daily_demand is None:
-            raise FileNotFoundError("daily_demand.csv could not be loaded from dataset directory.")
-        return bundle.daily_demand
+        """Load daily demand from dataset bundle, reusing cached instance data."""
+        if self._daily_demand is None:
+            bundle = load_dataset_bundle(self.dataset_dir)
+            if bundle.daily_demand is None:
+                raise FileNotFoundError("daily_demand.csv could not be loaded from dataset directory.")
+            self._daily_demand = bundle.daily_demand
+        return self._daily_demand
+
+    def _get_series(self, store_id: str, product_id: str) -> pd.DataFrame:
+        """Efficiently fetch store-product series using a pre-grouped index."""
+        if self._series_cache is None:
+            df = self._get_daily_demand()
+            self._series_cache = {
+                (str(s), str(p)): group.sort_values("date")
+                for (s, p), group in df.groupby(["store_id", "product_id"])
+            }
+        return self._series_cache.get((store_id, product_id), pd.DataFrame())
 
     def _select_best_model_on_validation(
         self,
@@ -82,11 +96,8 @@ class ForecastingService:
         return final_model, best_model_name, best_score
 
     def generate_forecast(self, req: ForecastRequest) -> ForecastResponse:
-        """Generate non-negative daily demand predictions for requested store and SKU."""
-        df = self._get_daily_demand()
-
-        # Validate identifiers
-        series_df = df[(df["store_id"] == req.store_id) & (df["product_id"] == req.product_id)].sort_values("date")
+        # Validate identifiers via pre-indexed series cache
+        series_df = self._get_series(req.store_id, req.product_id)
         if series_df.empty:
             raise ValueError(f"No historical demand records found for store '{req.store_id}' and product '{req.product_id}'.")
 

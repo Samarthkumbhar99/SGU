@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const accessRequestSchema = new mongoose.Schema(
   {
@@ -55,5 +55,5 @@ const accessRequestSchema = new mongoose.Schema(
   }
 )
 
-const AccessRequest = mongoose.model('AccessRequest', accessRequestSchema)
-module.exports = AccessRequest
+const AccessRequest = mongoose.models.AccessRequest || mongoose.model('AccessRequest', accessRequestSchema)
+export default AccessRequest
