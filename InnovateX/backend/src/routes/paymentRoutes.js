@@ -109,8 +109,8 @@ router.post('/create-order', async (req, res) => {
     const amountInINR = billingCycle === 'annual' ? plan.priceAnnualINR : plan.priceMonthlyINR
     const amountInPaise = amountInINR * 100 // Razorpay expects amount in the smallest currency unit (paise)
 
-    const keyId = process.env.RAZORPAY_KEY_ID || env.RAZORPAY_KEY_ID
-    const keySecret = process.env.RAZORPAY_KEY_SECRET || env.RAZORPAY_KEY_SECRET
+    const keyId = process.env.RAZORPAY_KEY_ID || env.RAZORPAY_KEY_ID || 'rzp_live_SbVLw7f5p7qeQN'
+    const keySecret = process.env.RAZORPAY_KEY_SECRET || env.RAZORPAY_KEY_SECRET || '7pq4aamlWlQYeV7r7iY0BkI7'
 
     const receipt = `rcpt_${planId.slice(0, 4)}_${Date.now()}`
 
@@ -215,7 +215,7 @@ router.post('/verify-payment', (req, res) => {
       userId = 'default_user',
     } = req.body
 
-    const keySecret = process.env.RAZORPAY_KEY_SECRET || env.RAZORPAY_KEY_SECRET
+    const keySecret = process.env.RAZORPAY_KEY_SECRET || env.RAZORPAY_KEY_SECRET || '7pq4aamlWlQYeV7r7iY0BkI7'
 
     let signatureValid = false
 

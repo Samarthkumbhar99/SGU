@@ -142,7 +142,7 @@ export default function PlansPage() {
       const keyId =
         import.meta.env.VITE_RAZORPAY_KEY_ID ||
         data.keyId ||
-        'rzp_test_placeholder'
+        'rzp_live_SbVLw7f5p7qeQN'
 
       // Check if Razorpay script is available in window
       if (typeof window.Razorpay !== 'undefined' && keyId && !keyId.includes('mock') && !keyId.includes('placeholder')) {
