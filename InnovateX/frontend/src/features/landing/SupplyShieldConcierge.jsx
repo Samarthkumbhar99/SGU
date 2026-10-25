@@ -25,6 +25,7 @@ export default function SupplyShieldConcierge() {
   const [voiceGender, setVoiceGender] = useState('female') // 'female' | 'male'
   const [voices, setVoices] = useState([])
   const [showVoiceBanner, setShowVoiceBanner] = useState(true)
+  const [showTopBanner, setShowTopBanner] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
 
@@ -350,69 +351,127 @@ export default function SupplyShieldConcierge() {
         <>
           {/* Elevated Popup Window - lifted up so close button sits cleanly below */}
           <div className="fixed bottom-24 sm:bottom-26 right-4 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[420px] max-h-[calc(100vh-130px)] h-[580px] sm:h-[620px] bg-[#090d16] text-white rounded-[32px] shadow-2xl border-2 border-slate-800 flex flex-col overflow-hidden select-none animate-in fade-in zoom-in-95 duration-200">
-            {/* Top Banner Card: Ask me about... (Exact match to Image 2) */}
-            <div className="relative bg-[#dff2fd] text-slate-900 rounded-2xl p-4 sm:p-5 m-3.5 mb-2.5 overflow-hidden shadow-xs shrink-0">
-              {/* Floating Voice Ready Pill */}
-              {showVoiceBanner && (
-                <div className="absolute top-2.5 right-2.5 z-20 inline-flex items-center gap-2 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full shadow-md border border-slate-200/80 text-[11px] font-bold text-slate-800 animate-in fade-in duration-200">
-                  <span className="flex items-center gap-0.5 text-sky-600">
-                    <span className="w-0.5 h-2.5 bg-sky-600 animate-pulse" />
-                    <span className="w-0.5 h-4 bg-sky-600 animate-pulse delay-75" />
-                    <span className="w-0.5 h-2 bg-sky-600 animate-pulse delay-150" />
-                  </span>
-                  <span>Voice is ready, enable mic to talk</span>
+            {/* 1. Collapsible Top Guide Banner & Book Button */}
+            {showTopBanner ? (
+              <div className="shrink-0 animate-in fade-in duration-200">
+                {/* Top Banner Card: Ask me about... (Exact match to Image 2) */}
+                <div className="relative bg-[#dff2fd] text-slate-900 rounded-2xl p-4 sm:p-5 m-3.5 mb-2.5 overflow-hidden shadow-xs">
+                  {/* Floating Voice Ready Pill */}
+                  {showVoiceBanner && (
+                    <div className="absolute top-2.5 right-10 z-20 inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-full shadow-md border border-slate-200/80 text-[10px] sm:text-[11px] font-bold text-slate-800 animate-in fade-in duration-200">
+                      <span className="flex items-center gap-0.5 text-sky-600">
+                        <span className="w-0.5 h-2.5 bg-sky-600 animate-pulse" />
+                        <span className="w-0.5 h-4 bg-sky-600 animate-pulse delay-75" />
+                        <span className="w-0.5 h-2 bg-sky-600 animate-pulse delay-150" />
+                      </span>
+                      <span>Voice is ready, enable mic to talk</span>
+                      <button
+                        type="button"
+                        onClick={() => setShowVoiceBanner(false)}
+                        className="text-slate-400 hover:text-slate-700 ml-1 p-0.5 cursor-pointer"
+                        title="Dismiss voice tip"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Close ONLY this banner card to show full chat window */}
                   <button
                     type="button"
-                    onClick={() => setShowVoiceBanner(false)}
-                    className="text-slate-400 hover:text-slate-700 ml-1 p-0.5 cursor-pointer"
-                    title="Dismiss"
+                    onClick={() => setShowTopBanner(false)}
+                    className="absolute top-2.5 right-2.5 z-30 w-6 h-6 rounded-full bg-slate-900/10 hover:bg-slate-900/25 text-slate-700 hover:text-slate-900 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-90"
+                    title="Close guide to show full chat"
                   >
-                    <X className="w-3 h-3" />
+                    <X className="w-3.5 h-3.5 stroke-[2.5]" />
+                  </button>
+
+                  <div className="pr-6">
+                    <h3 className="text-sm font-extrabold text-slate-900 mb-2.5">
+                      Ask me about...
+                    </h3>
+                    <ul className="space-y-1.5 text-[11px] font-semibold text-slate-700 leading-tight">
+                      <li className="flex items-start gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1 shrink-0" />
+                        <span>Unifying your supply chain planning with an AI-native platform</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1 shrink-0" />
+                        <span>How SupplyShield AI agents improve forecast accuracy and reduce waste</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1 shrink-0" />
+                        <span>How teams get started and see measurable results with SupplyShield</span>
+                      </li>
+                      <li className="flex items-start gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1 shrink-0" />
+                        <span>How SupplyShield drives smarter decisions and higher product availability</span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* Subtle robot/metrics watermark */}
+                  <div className="absolute -right-2 -bottom-2 w-28 h-28 opacity-25 pointer-events-none flex items-center justify-center">
+                    <Bot className="w-24 h-24 text-sky-800" />
+                  </div>
+                </div>
+
+                {/* Action Button: Book a Meeting (Exact match to Image 2) */}
+                <div className="px-3.5 mb-2.5">
+                  <button
+                    type="button"
+                    onClick={() => navigate('/network-map')}
+                    className="w-full py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-xs tracking-wide shadow-md transition-all hover:scale-[1.01] active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <span>Book a Meeting / Launch Demo</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
-              )}
-
-              <div className="pr-4">
-                <h3 className="text-sm font-extrabold text-slate-900 mb-2.5">
-                  Ask me about...
-                </h3>
-                <ul className="space-y-1.5 text-[11px] font-semibold text-slate-700 leading-tight">
-                  <li className="flex items-start gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1 shrink-0" />
-                    <span>Unifying your supply chain planning with an AI-native platform</span>
-                  </li>
-                  <li className="flex items-start gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1 shrink-0" />
-                    <span>How SupplyShield AI agents improve forecast accuracy and reduce waste</span>
-                  </li>
-                  <li className="flex items-start gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1 shrink-0" />
-                    <span>How teams get started and see measurable results with SupplyShield</span>
-                  </li>
-                  <li className="flex items-start gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1 shrink-0" />
-                    <span>How SupplyShield drives smarter decisions and higher product availability</span>
-                  </li>
-                </ul>
               </div>
+            ) : (
+              /* Compact Top Bar when guide is closed (Full Chat Window Mode) */
+              <div className="flex items-center justify-between px-4 py-2.5 border-b border-slate-800/80 bg-[#0c121e] shrink-0 animate-in fade-in duration-150">
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <img
+                      src="/Chatbot.png"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null
+                        e.currentTarget.src = '/chatbot.png'
+                      }}
+                      alt="SupplyShield Concierge"
+                      className="w-6 h-6 rounded-full object-cover border border-sky-400/50"
+                    />
+                    <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-400 ring-1 ring-slate-900 animate-pulse" />
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-bold text-white tracking-tight">SupplyShield AI Concierge</h3>
+                    <p className="text-[10px] text-slate-400">Full Chat View</p>
+                  </div>
+                </div>
 
-              {/* Subtle robot/metrics watermark */}
-              <div className="absolute -right-2 -bottom-2 w-28 h-28 opacity-25 pointer-events-none flex items-center justify-center">
-                <Bot className="w-24 h-24 text-sky-800" />
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowTopBanner(true)}
+                    className="text-[11px] font-semibold text-sky-400 hover:text-sky-300 hover:bg-sky-950/50 px-2.5 py-1 rounded-lg border border-sky-500/30 transition-all cursor-pointer flex items-center gap-1"
+                    title="Show Ask me about recommendations"
+                  >
+                    <Sparkles className="w-3 h-3 text-sky-400" />
+                    <span>Show Guide</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => navigate('/network-map')}
+                    className="text-[11px] font-semibold text-white bg-[#0284c7] hover:bg-[#0369a1] px-2.5 py-1 rounded-lg shadow-xs transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                  >
+                    <span>Demo</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
               </div>
-            </div>
-
-            {/* Action Button: Book a Meeting (Exact match to Image 2) */}
-            <div className="px-3.5 mb-2.5 shrink-0">
-              <button
-                type="button"
-                onClick={() => navigate('/network-map')}
-                className="w-full py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-xs tracking-wide shadow-md transition-all hover:scale-[1.01] active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <span>Book a Meeting / Launch Demo</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
+            )}
 
             {/* Voice Controls Bar: Mic, Speaker & Gender Toggles */}
             <div className="flex items-center justify-center gap-6 sm:gap-8 py-2 px-4 border-b border-slate-800/80 bg-[#0c121e] shrink-0">
