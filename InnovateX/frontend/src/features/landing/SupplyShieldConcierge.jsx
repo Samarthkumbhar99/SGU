@@ -22,9 +22,25 @@ export default function SupplyShieldConcierge() {
   const [inputText, setInputText] = useState('')
   const [isListening, setIsListening] = useState(false)
   const [speakerEnabled, setSpeakerEnabled] = useState(true)
+  const [voiceGender, setVoiceGender] = useState('female') // 'female' | 'male'
+  const [voices, setVoices] = useState([])
   const [showVoiceBanner, setShowVoiceBanner] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const navigate = useNavigate()
+
+  // Load available speech synthesis voices
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      const updateVoices = () => {
+        const vList = window.speechSynthesis.getVoices()
+        if (vList && vList.length > 0) {
+          setVoices(vList)
+        }
+      }
+      updateVoices()
+      window.speechSynthesis.onvoiceschanged = updateVoices
+    }
+  }, [])
 
   // Chat message thread
   const [messages, setMessages] = useState([
@@ -85,31 +101,67 @@ export default function SupplyShieldConcierge() {
     }
   }, [])
 
-  // Text-to-Speech function for AI spoken responses
-  const speakResponse = (text) => {
+  // Find preferred voice matching male / female selection
+  const getPreferredVoice = (gender) => {
+    if (!('speechSynthesis' in window)) return null
+    const vList = voices.length > 0 ? voices : window.speechSynthesis.getVoices()
+    if (!vList || vList.length === 0) return null
+
+    const englishVoices = vList.filter((v) => v.lang.startsWith('en'))
+    const pool = englishVoices.length > 0 ? englishVoices : vList
+
+    if (gender === 'female') {
+      const femaleKeywords = [
+        'jenny', 'samantha', 'zira', 'female', 'victoria', 'karen', 'moira', 'fiona',
+        'natural', 'google us english', 'eva', 'stephanie', 'aria', 'sara'
+      ]
+      const matched = pool.find((v) =>
+        femaleKeywords.some((kw) => v.name.toLowerCase().includes(kw))
+      )
+      return matched || pool[0]
+    } else {
+      const maleKeywords = [
+        'david', 'guy', 'george', 'mark', 'alex', 'daniel', 'male',
+        'google uk english male', 'oliver', 'tom', 'james', 'richard', 'ryan'
+      ]
+      const matched = pool.find((v) =>
+        maleKeywords.some((kw) => v.name.toLowerCase().includes(kw))
+      )
+      return matched || (pool.length > 1 ? pool[1] : pool[0])
+    }
+  }
+
+  // Text-to-Speech function for AI spoken responses (Male / Female tailored)
+  const speakResponse = (text, genderOverride) => {
     if (!speakerEnabled || !('speechSynthesis' in window)) return
     window.speechSynthesis.cancel()
 
+    const activeGender = genderOverride || voiceGender
     // Clean markdown symbols for natural voice narration
     const cleanText = text.replace(/[*_#`\[\]]/g, '')
     const utterance = new SpeechSynthesisUtterance(cleanText)
-    utterance.rate = 1.05
-    utterance.pitch = 1.0
 
-    const voices = window.speechSynthesis.getVoices()
-    const preferredVoice = voices.find(
-      (v) =>
-        v.lang.startsWith('en') &&
-        (v.name.includes('Natural') ||
-          v.name.includes('Google') ||
-          v.name.includes('Samantha') ||
-          v.name.includes('Jenny') ||
-          v.name.includes('Zira') ||
-          v.name.includes('Female'))
-    )
+    if (activeGender === 'female') {
+      utterance.rate = 1.05
+      utterance.pitch = 1.05
+    } else {
+      utterance.rate = 0.98
+      utterance.pitch = 0.82 // deeper natural masculine pitch
+    }
+
+    const preferredVoice = getPreferredVoice(activeGender)
     if (preferredVoice) utterance.voice = preferredVoice
 
     window.speechSynthesis.speak(utterance)
+  }
+
+  // Toggle Voice Gender (Male <-> Female)
+  const toggleVoiceGender = () => {
+    const nextGender = voiceGender === 'female' ? 'male' : 'female'
+    setVoiceGender(nextGender)
+    if (speakerEnabled) {
+      speakResponse(`Voice switched to ${nextGender}`, nextGender)
+    }
   }
 
   // Toggle Microphone Speech-to-Text
@@ -222,7 +274,11 @@ export default function SupplyShieldConcierge() {
               {/* Concierge Avatar with green online dot */}
               <div className="relative">
                 <img
-                  src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80"
+                  src="/Chatbot.png"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null
+                    e.currentTarget.src = '/chatbot.png'
+                  }}
                   alt="SupplyShield Concierge"
                   className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border-2 border-white/90 shadow-xs"
                 />
@@ -358,8 +414,8 @@ export default function SupplyShieldConcierge() {
               </button>
             </div>
 
-            {/* Voice Controls Bar: Mic & Speaker Toggles (Exact match to Image 2) */}
-            <div className="flex items-center justify-center gap-8 py-2 px-4 border-b border-slate-800/80 bg-[#0c121e] shrink-0">
+            {/* Voice Controls Bar: Mic, Speaker & Gender Toggles */}
+            <div className="flex items-center justify-center gap-6 sm:gap-8 py-2 px-4 border-b border-slate-800/80 bg-[#0c121e] shrink-0">
               {/* Mic Toggle */}
               <button
                 type="button"
@@ -410,6 +466,28 @@ export default function SupplyShieldConcierge() {
                   {speakerEnabled ? 'Speaker On' : 'Speaker Off'}
                 </span>
               </button>
+
+              {/* Voice Gender Toggle: Female / Male */}
+              <button
+                type="button"
+                onClick={toggleVoiceGender}
+                className="flex flex-col items-center gap-1 group cursor-pointer"
+                title={`Switch AI voice to ${voiceGender === 'female' ? 'Male' : 'Female'}`}
+              >
+                <div
+                  className={`w-9 h-9 rounded-full flex items-center justify-center transition-all font-bold text-xs ${
+                    voiceGender === 'female'
+                      ? 'bg-pink-600/25 text-pink-300 border border-pink-500/40 group-hover:bg-pink-600/35'
+                      : 'bg-indigo-600/25 text-indigo-300 border border-indigo-500/40 group-hover:bg-indigo-600/35'
+                  }`}
+                >
+                  {voiceGender === 'female' ? '♀' : '♂'}
+                </div>
+                <span className="text-[10px] font-bold text-slate-400 group-hover:text-slate-200 capitalize flex items-center gap-1">
+                  <span>{voiceGender}</span>
+                  <span className="text-[9px] text-sky-400 font-normal">⇄</span>
+                </span>
+              </button>
             </div>
 
             {/* Chat Messages Scroll Container */}
@@ -422,15 +500,28 @@ export default function SupplyShieldConcierge() {
                     key={msg.id}
                     className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} space-y-1.5`}
                   >
-                    {/* Bubble */}
-                    <div
-                      className={`px-4 py-2.5 text-xs leading-relaxed max-w-[85%] ${
-                        isUser
-                          ? 'bg-[#0284c7] text-white rounded-2xl rounded-br-xs shadow-md'
-                          : 'bg-[#182234] text-slate-200 rounded-2xl rounded-bl-xs border border-slate-800/90 shadow-sm'
-                      }`}
-                    >
-                      {msg.text}
+                    {/* Bubble with avatar */}
+                    <div className={`flex items-end gap-2 max-w-[90%] ${isUser ? 'ml-auto' : ''}`}>
+                      {!isUser && (
+                        <img
+                          src="/Chatbot.png"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null
+                            e.currentTarget.src = '/chatbot.png'
+                          }}
+                          alt="SupplyShield Concierge"
+                          className="w-6 h-6 rounded-full object-cover border border-sky-400/40 shadow-xs shrink-0 mb-0.5"
+                        />
+                      )}
+                      <div
+                        className={`px-4 py-2.5 text-xs leading-relaxed ${
+                          isUser
+                            ? 'bg-[#0284c7] text-white rounded-2xl rounded-br-xs shadow-md'
+                            : 'bg-[#182234] text-slate-200 rounded-2xl rounded-bl-xs border border-slate-800/90 shadow-sm'
+                        }`}
+                      >
+                        {msg.text}
+                      </div>
                     </div>
 
                     {/* Clickable Suggested Option Chips */}
