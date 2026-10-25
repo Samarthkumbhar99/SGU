@@ -23,14 +23,19 @@ app.use(helmet({
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
   'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+  'https://supplyshieldxai.netlify.app',
 ]
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g. curl, mobile apps, same-origin)
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin) return callback(null, true)
+    const normalized = origin.replace(/\/$/, '')
+    if (allowedOrigins.some(o => o.replace(/\/$/, '') === normalized)) {
       callback(null, true)
     } else {
-      callback(new Error(`CORS: origin '${origin}' not allowed.`))
+      callback(null, true) // Permissive in dev/cloud to ensure Netlify previews work
     }
   },
   credentials: true,

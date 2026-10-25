@@ -195,15 +195,18 @@ function initSocket(server) {
     'http://localhost:5174',
     'http://127.0.0.1:5173',
     'http://127.0.0.1:5174',
+    'https://supplyshieldxai.netlify.app',
   ]
 
   io = new Server(server, {
     cors: {
       origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin) return callback(null, true)
+        const normalized = origin.replace(/\/$/, '')
+        if (allowedOrigins.some(o => o.replace(/\/$/, '') === normalized)) {
           callback(null, true)
         } else {
-          callback(null, true) // permissive for local dev
+          callback(null, true) // permissive for preview branches and local dev
         }
       },
       credentials: true,
