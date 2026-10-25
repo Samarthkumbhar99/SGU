@@ -3,11 +3,11 @@ import { Volume2, VolumeX, Maximize2, Minimize2 } from 'lucide-react'
 
 /**
  * LandingVideoShowcase
- * Freely displayed, full-width showcase video directly below the social proof strip:
- * - Plays `/Intro.webm` in an infinite loop
- * - Default muted with an interactive Unmute/Mute toggle
- * - Fullscreen toggle option with native Fullscreen API support
- * - Freely displayed (no restrictive outer card/container or inner padding boxes)
+ * Seamlessly merged with page background (zero borders, zero shadows, no dark vignette):
+ * - Displays `/Intro.webm` seamlessly like a native static/vector animation on the page
+ * - Infinite loop, auto-playing, default muted
+ * - Subtle floating light-glassmorphic Unmute and Fullscreen controls
+ * - Merged seamlessly with the white/neutral page canvas
  */
 export default function LandingVideoShowcase() {
   const [isMuted, setIsMuted] = useState(true)
@@ -56,14 +56,14 @@ export default function LandingVideoShowcase() {
   }
 
   return (
-    <section className="relative w-full py-6 sm:py-10 overflow-hidden bg-slate-900/2">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Freely Displayed Video Player without bounding card container */}
+    <section className="relative w-full py-6 sm:py-12 bg-white overflow-hidden select-none">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Seamless animation wrapper - completely borderless, merged with page background */}
         <div
           ref={containerRef}
-          className="group relative w-full aspect-[16/9] max-h-[640px] rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-950 shadow-2xl shadow-sky-950/15 ring-1 ring-slate-900/10"
+          className="relative w-full aspect-[16/9] max-h-[620px] flex items-center justify-center bg-white"
         >
-          {/* Endless looped auto-playing video */}
+          {/* Endless looped auto-playing video acting as a native static animation */}
           <video
             ref={videoRef}
             src="/Intro.webm"
@@ -71,38 +71,32 @@ export default function LandingVideoShowcase() {
             loop
             muted
             playsInline
-            className="w-full h-full object-cover select-none"
+            className="w-full h-full object-contain pointer-events-none"
+            style={{
+              // Seamless radial edge blend to merge 100% into the white page background
+              maskImage: 'radial-gradient(ellipse 92% 88% at 50% 50%, black 75%, transparent 100%)',
+              WebkitMaskImage: 'radial-gradient(ellipse 92% 88% at 50% 50%, black 75%, transparent 100%)',
+            }}
           />
 
-          {/* Subtle gradient vignette at bottom to elevate floating controls */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
-
-          {/* Floating Top-Left Status Pill */}
-          <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 pointer-events-none">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/70 backdrop-blur-md border border-white/10 text-white/90 text-xs font-semibold shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Live Logistics Simulation Engine
-            </span>
-          </div>
-
-          {/* Floating Bottom-Right Action Controls (Mute/Unmute + Fullscreen) */}
-          <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 z-20 flex items-center gap-2.5">
+          {/* Minimalist, unobtrusive floating controls (Mute/Unmute + Fullscreen) */}
+          <div className="absolute bottom-2 right-2 sm:bottom-4 sm:right-4 z-20 flex items-center gap-2">
             {/* Audio Mute / Unmute Button */}
             <button
               type="button"
               onClick={toggleSound}
               title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
-              className="px-3 py-2 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white/90 hover:text-white backdrop-blur-md border border-white/15 shadow-xl flex items-center gap-2 text-xs font-medium transition-all cursor-pointer hover:scale-105 active:scale-95"
+              className="px-3 py-1.5 rounded-full bg-white/85 hover:bg-white text-slate-700 hover:text-sky-700 backdrop-blur-md border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-xs font-semibold transition-all cursor-pointer hover:scale-105 active:scale-95"
             >
               {isMuted ? (
                 <>
-                  <VolumeX className="w-4 h-4 text-slate-300" />
-                  <span className="hidden sm:inline">Unmute</span>
+                  <VolumeX className="w-3.5 h-3.5 text-slate-500" />
+                  <span className="text-[11px] font-medium text-slate-600">Unmute</span>
                 </>
               ) : (
                 <>
-                  <Volume2 className="w-4 h-4 text-sky-400" />
-                  <span className="hidden sm:inline text-sky-400">Muted Off</span>
+                  <Volume2 className="w-3.5 h-3.5 text-sky-600" />
+                  <span className="text-[11px] font-medium text-sky-700">Muted Off</span>
                 </>
               )}
             </button>
@@ -112,17 +106,17 @@ export default function LandingVideoShowcase() {
               type="button"
               onClick={toggleFullscreen}
               title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-              className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white/90 hover:text-white backdrop-blur-md border border-white/15 shadow-xl flex items-center gap-2 text-xs font-medium transition-all cursor-pointer hover:scale-105 active:scale-95"
+              className="p-1.5 sm:px-3 sm:py-1.5 rounded-full bg-white/85 hover:bg-white text-slate-700 hover:text-sky-700 backdrop-blur-md border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-xs font-semibold transition-all cursor-pointer hover:scale-105 active:scale-95"
             >
               {isFullscreen ? (
                 <>
-                  <Minimize2 className="w-4 h-4 text-sky-400" />
-                  <span className="hidden sm:inline text-sky-400">Exit Fullscreen</span>
+                  <Minimize2 className="w-3.5 h-3.5 text-sky-600" />
+                  <span className="hidden sm:inline text-[11px] font-medium text-sky-700">Exit</span>
                 </>
               ) : (
                 <>
-                  <Maximize2 className="w-4 h-4 text-slate-300" />
-                  <span className="hidden sm:inline">Fullscreen</span>
+                  <Maximize2 className="w-3.5 h-3.5 text-slate-500" />
+                  <span className="hidden sm:inline text-[11px] font-medium text-slate-600">Fullscreen</span>
                 </>
               )}
             </button>

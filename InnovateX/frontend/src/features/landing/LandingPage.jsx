@@ -7,6 +7,7 @@ import FeatureShowcase from './FeatureShowcase.jsx'
 import RoiCalculator from './RoiCalculator.jsx'
 import PersonaSection from './PersonaSection.jsx'
 import LandingVideoShowcase from './LandingVideoShowcase.jsx'
+import SupplyChainJourney from './SupplyChainJourney.jsx'
 import VariableProximity from '../../components/ui/VariableProximity.jsx'
 import {
   Shield,
@@ -193,6 +194,11 @@ export default function LandingPage() {
       {/* FREELY DISPLAYED LOGISTICS VIDEO SHOWCASE                */}
       {/* ======================================================== */}
       <LandingVideoShowcase />
+
+      {/* ======================================================== */}
+      {/* 5-STAGE SUPPLY CHAIN JOURNEY CARDS (EXACT MATCH)         */}
+      {/* ======================================================== */}
+      <SupplyChainJourney />
 
       {/* ======================================================== */}
       {/* INTERACTIVE DISRUPTION SIMULATOR SANDBOX                 */}
