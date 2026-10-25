@@ -6,53 +6,130 @@ const BADGE_CONFIG = {
     label: 'Historical Dataset',
     detail: 'Verified baseline records (50 SKUs, 5 warehouses, 91,250 observations)',
     icon: Database,
-    bg: 'bg-slate-100 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700',
+    bg: '#f1f5f9',
+    text: '#0f172a',
+    border: '#cbd5e1',
+    iconColor: '#475569',
+    dotColor: '#64748b',
   },
   forecast: {
     label: 'Forecasted Demand',
-    detail: 'Phase 3 ML demand forecasting model prediction',
+    detail: 'Phase 3 ML demand forecasting model prediction (LightGBM / Ridge)',
     icon: TrendingUp,
-    bg: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-800',
+    bg: '#eef2ff',
+    text: '#1e1b4b',
+    border: '#c7d2fe',
+    iconColor: '#4f46e5',
+    dotColor: '#6366f1',
   },
   optimizer: {
     label: 'Optimizer Recommendation',
-    detail: 'Google OR-Tools CP-SAT mathematical optimization (not yet committed to inventory)',
+    detail: 'Google OR-Tools CP-SAT discrete mathematical optimization (MILP solver)',
     icon: Cpu,
-    bg: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800',
+    bg: '#ecfdf5',
+    text: '#064e3b',
+    border: '#a7f3d0',
+    iconColor: '#059669',
+    dotColor: '#10b981',
   },
   demo: {
     label: 'Configured Demo Network',
     detail: '12 retail stores & 36 transport lanes configured for simulation testing',
     icon: Network,
-    bg: 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800',
+    bg: '#fffbeb',
+    text: '#78350f',
+    border: '#fde68a',
+    iconColor: '#b45309',
+    dotColor: '#f59e0b',
+  },
+  configured: {
+    label: 'Configured Network',
+    detail: '3 Regional Hubs & facilities configured in verified active topology',
+    icon: Network,
+    bg: '#fffbeb',
+    text: '#78350f',
+    border: '#fde68a',
+    iconColor: '#b45309',
+    dotColor: '#f59e0b',
   },
   freight: {
     label: 'Assumed Freight Rate',
-    detail: 'Scenario rate ($0.10-$0.40/unit) assuming carrier tariff benchmarks',
+    detail: 'Scenario rate (₹0.10 - ₹0.40/unit) assuming carrier tariff benchmarks',
     icon: DollarSign,
-    bg: 'bg-orange-50 text-orange-800 border-orange-200 dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-800',
+    bg: '#faf5ff',
+    text: '#4c1d95',
+    border: '#e9d5ff',
+    iconColor: '#7c3aed',
+    dotColor: '#8b5cf6',
+  },
+  assumed: {
+    label: 'Assumed Baseline',
+    detail: 'Scenario freight tariff benchmark (₹0.10 - ₹0.40/unit per corridor)',
+    icon: DollarSign,
+    bg: '#faf5ff',
+    text: '#4c1d95',
+    border: '#e9d5ff',
+    iconColor: '#7c3aed',
+    dotColor: '#8b5cf6',
   },
   disrupted: {
     label: 'Simulated Disruption',
     detail: 'In-memory cloned network shock (does not mutate live production inventory)',
     icon: AlertOctagon,
-    bg: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800',
+    bg: '#fff1f2',
+    text: '#881337',
+    border: '#fecdd3',
+    iconColor: '#e11d48',
+    dotColor: '#f43f5e',
+  },
+  risk: {
+    label: 'Risk Alert',
+    detail: 'Active corridor disruption or inventory bottleneck alert',
+    icon: AlertOctagon,
+    bg: '#fff1f2',
+    text: '#881337',
+    border: '#fecdd3',
+    iconColor: '#e11d48',
+    dotColor: '#f43f5e',
   },
 }
 
-export function ProvenanceBadge({ type = 'historical', showDetail = false, className = '' }) {
-  const config = BADGE_CONFIG[type] || BADGE_CONFIG.historical
+export function ProvenanceBadge({
+  type = 'historical',
+  tooltip,
+  title,
+  showDetail = false,
+  className = '',
+}) {
+  const normalizedType = type?.toLowerCase?.() || 'historical'
+  const config = BADGE_CONFIG[normalizedType] || BADGE_CONFIG.historical
   const Icon = config.icon
+  const activeTooltip = tooltip || title || config.detail
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-xs font-medium border ${config.bg} ${className}`}
-      title={config.detail}
+      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-tight select-none transition-all cursor-help hover:opacity-90 shadow-2xs ${className}`}
+      style={{
+        backgroundColor: config.bg,
+        color: config.text,
+        border: `1px solid ${config.border}`,
+        whiteSpace: 'nowrap',
+      }}
+      title={activeTooltip}
     >
-      <Icon className="w-3 h-3 shrink-0" />
+      <Icon
+        className="w-3 h-3 shrink-0"
+        style={{ color: config.iconColor }}
+        aria-hidden="true"
+      />
       <span>{config.label}</span>
       {showDetail && (
-        <span className="text-[10px] opacity-75 font-normal">({config.detail})</span>
+        <span
+          className="text-[10px] font-normal opacity-85 ml-1 border-l pl-1"
+          style={{ borderColor: config.border }}
+        >
+          {config.detail}
+        </span>
       )}
     </span>
   )
@@ -60,11 +137,19 @@ export function ProvenanceBadge({ type = 'historical', showDetail = false, class
 
 export function ProvenanceDisclosureBanner({ message }) {
   return (
-    <div className="flex items-start gap-3 p-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-600 dark:text-slate-400">
-      <Info className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+    <div
+      className="flex items-start gap-3 p-3.5 rounded-xl text-xs leading-relaxed transition-all shadow-2xs"
+      style={{
+        backgroundColor: '#f8fafc',
+        border: '1px solid #e2e8f0',
+        color: '#334155',
+      }}
+    >
+      <Info className="w-4 h-4 text-sky-600 shrink-0 mt-0.5" />
       <div>
-        <span className="font-semibold text-slate-800 dark:text-slate-200">Data Provenance Disclosure: </span>
-        {message || 'Historical figures reflect real dataset observations. Point-of-sale store demand, transport lane rates, and capacity limits are configured benchmark assumptions for scenario testing.'}
+        <span style={{ fontWeight: 700, color: '#0f172a' }}>Data Provenance Disclosure: </span>
+        {message ||
+          'Historical figures reflect real dataset observations. Point-of-sale store demand, transport lane rates, and capacity limits are configured benchmark assumptions for scenario testing.'}
       </div>
     </div>
   )

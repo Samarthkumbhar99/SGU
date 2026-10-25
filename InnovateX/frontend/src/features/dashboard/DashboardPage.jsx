@@ -17,6 +17,8 @@ import {
   Store,
   Zap,
   BarChart2,
+  FileText,
+  Sparkles,
 } from 'lucide-react'
 import {
   LineChart,
@@ -159,71 +161,91 @@ function KPICard({
   provenanceTooltip,
 }) {
   const isPositive = change > 0
-  const trendColor = change > 0 ? (color === 'success' ? '#208567' : '#d94b50') : '#208567'
+  const trendColor = change > 0 ? (color === 'success' ? '#166a52' : '#b03035') : '#166a52'
 
   if (loading) return <SkeletonKPICard />
 
+  const iconBg =
+    color === 'success' ? '#ecfdf5' :
+    color === 'warning' ? '#fffbeb' :
+    color === 'critical' ? '#fff1f2' :
+    '#eff6ff'
+
+  const iconBorder =
+    color === 'success' ? '#a7f3d0' :
+    color === 'warning' ? '#fde68a' :
+    color === 'critical' ? '#fecdd3' :
+    '#bfdbfe'
+
+  const iconColor =
+    color === 'success' ? '#059669' :
+    color === 'warning' ? '#d97706' :
+    color === 'critical' ? '#e11d48' :
+    '#2563eb'
+
   return (
-    <div className="ss-kpi-card" id={id}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '16px' }}>
-        <div>
-          <div style={{ fontSize: '13px', fontWeight: 600, color: '#64778b', letterSpacing: '0.01em', marginBottom: provenanceType ? '6px' : '0px' }}>
+    <div className="ss-kpi-card group hover:border-sky-300 transition-all duration-200" id={id}>
+      <div>
+        {/* Top Header: Label & Category Icon */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', marginBottom: '8px' }}>
+          <span style={{ fontSize: '12px', fontWeight: 700, color: '#64748b', letterSpacing: '0.02em', textTransform: 'uppercase' }}>
             {label}
+          </span>
+          <div
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              background: iconBg,
+              border: `1px solid ${iconBorder}`,
+            }}
+          >
+            <Icon size={17} color={iconColor} />
           </div>
-          {provenanceType && (
+        </div>
+
+        {/* Provenance Badge */}
+        {provenanceType && (
+          <div style={{ marginBottom: '12px' }}>
             <ProvenanceBadge type={provenanceType} tooltip={provenanceTooltip} />
+          </div>
+        )}
+
+        {/* Metric Value */}
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px', marginBottom: '12px' }}>
+          <span
+            className="tabular-nums font-mono tracking-tight"
+            style={{ fontSize: '27px', fontWeight: 800, color: '#0f172a', lineHeight: 1.1 }}
+          >
+            {typeof value === 'number' ? value.toLocaleString() : value}
+          </span>
+          {unit && (
+            <span style={{ fontSize: '13px', fontWeight: 700, color: '#64748b' }}>
+              {unit}
+            </span>
           )}
         </div>
-        <div
-          style={{
-            width: '38px',
-            height: '38px',
-            borderRadius: '10px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            background:
-              color === 'success' ? '#ebfdf5' :
-              color === 'warning' ? '#fffbeb' :
-              color === 'critical' ? '#fff5f5' :
-              '#eef6ff',
-          }}
-        >
-          <Icon
-            size={18}
-            color={
-              color === 'success' ? '#208567' :
-              color === 'warning' ? '#d99a27' :
-              color === 'critical' ? '#d94b50' :
-              '#247bc1'
-            }
-          />
-        </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', marginBottom: '8px' }}>
-        <span
-          className="tabular-nums"
-          style={{ fontSize: '28px', fontWeight: 800, color: '#17324d', lineHeight: 1 }}
-        >
-          {typeof value === 'number' ? value.toLocaleString() : value}
-        </span>
-        {unit && <span style={{ fontSize: '14px', fontWeight: 600, color: '#64778b' }}>{unit}</span>}
-      </div>
-
+      {/* Metric Trend & Context */}
       {change !== undefined && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', paddingTop: '8px', borderTop: '1px solid #f1f5f9' }}>
           {change >= 0 ? (
-            <ArrowUpRight size={13} color={trendColor} />
+            <ArrowUpRight size={14} color={trendColor} />
           ) : (
-            <ArrowDownRight size={13} color={trendColor} />
+            <ArrowDownRight size={14} color={trendColor} />
           )}
-          <span className="tabular-nums" style={{ fontSize: '12px', fontWeight: 600, color: trendColor }}>
+          <span className="tabular-nums" style={{ fontSize: '12px', fontWeight: 700, color: trendColor }}>
             {change > 0 ? '+' : ''}{change}%
           </span>
           {changeLabel && (
-            <span style={{ fontSize: '12px', color: '#99aabb' }}>{changeLabel}</span>
+            <span style={{ fontSize: '11px', fontWeight: 500, color: '#94a3b8' }}>
+              {changeLabel}
+            </span>
           )}
         </div>
       )}
@@ -425,8 +447,21 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          {/* Entity Tab Filters */}
-          <div className="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 text-xs font-bold">
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Export Dashboard PDF Report Button */}
+            <button
+              type="button"
+              onClick={() => navigate('/report?section=dashboard')}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 hover:text-sky-800 border border-sky-200 text-xs font-bold transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
+              title="Export Executive Dashboard Audit (PDF)"
+            >
+              <FileText size={14} className="text-sky-600" />
+              <span>Export PDF Report</span>
+              <Sparkles size={11} className="text-amber-500" />
+            </button>
+
+            {/* Entity Tab Filters */}
+            <div className="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 text-xs font-bold">
             <button
               type="button"
               onClick={() => setEntityTab('all')}
@@ -456,6 +491,7 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+      </div>
 
         {/* Dynamic Section based on role and tab */}
         {(entityTab === 'all' || entityTab === 'stores') && (
@@ -594,18 +630,44 @@ export default function DashboardPage() {
           provenanceType="optimizer"
           provenanceTooltip="Ratio of dispatched units to target demand across all retail store corridors"
         />
-        <div className="ss-kpi-card" id="kpi-run-optimization" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px', cursor: 'pointer', border: '1.5px dashed #247bc1', background: 'linear-gradient(135deg, #f8fbff, #eef6ff)' }}
+        <div
+          className="ss-kpi-card group cursor-pointer transition-all duration-300 hover:border-sky-400 hover:shadow-md"
+          id="kpi-run-optimization"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            border: '1.5px dashed #38bdf8',
+            background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+            minHeight: '170px',
+          }}
           onClick={handleRunOptimization}
           role="button"
           tabIndex={0}
           onKeyDown={(e) => e.key === 'Enter' && handleRunOptimization()}
         >
-          <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'linear-gradient(135deg, #247bc1, #6ab0e1)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 16px rgba(36,123,193,0.35)' }}>
-            <Play size={22} color="#fff" fill="#fff" />
+          <div
+            className="group-hover:scale-110 group-hover:shadow-lg transition-all duration-300"
+            style={{
+              width: '50px',
+              height: '50px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 8px 20px -4px rgba(2, 132, 199, 0.4)',
+            }}
+          >
+            <Play size={22} color="#ffffff" fill="#ffffff" style={{ marginLeft: '2px' }} />
           </div>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: 700, fontSize: '14px', color: '#17324d' }}>Run Optimization</div>
-            <div style={{ fontSize: '12px', color: '#64778b', marginTop: '2px' }}>Start a new rescue scenario</div>
+            <div style={{ fontWeight: 800, fontSize: '15px', color: '#0c4a6e' }}>Run Optimization</div>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: '#0369a1', marginTop: '2px' }}>
+              Start a new rescue scenario
+            </div>
           </div>
         </div>
       </div>

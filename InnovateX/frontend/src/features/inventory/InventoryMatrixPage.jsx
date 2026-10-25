@@ -24,6 +24,7 @@ import {
   ChevronRight,
   Activity,
   Zap,
+  FileText,
 } from 'lucide-react'
 import {
   ResponsiveContainer,
@@ -565,7 +566,17 @@ export default function InventoryMatrixPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => navigate('/report?section=inventory')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 hover:text-sky-800 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
+                  title="Export FEFO Perishable Inventory Audit (PDF)"
+                >
+                  <FileText size={14} className="text-sky-600" />
+                  <span>Export Inventory PDF</span>
+                  <Sparkles size={11} className="text-amber-500" />
+                </button>
                 <span className="text-xs text-slate-400 font-medium">Showing {filteredMatrix.length} positions</span>
               </div>
             </div>
@@ -634,25 +645,25 @@ export default function InventoryMatrixPage() {
                           </td>
                           <td className="py-3 px-4 text-center">
                             {item.status === 'CRITICAL_SHORTAGE' && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-900 border border-rose-200 shadow-2xs">
                                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                                 Critical
                               </span>
                             )}
                             {item.status === 'REORDER_REQUIRED' && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                                 Reorder
                               </span>
                             )}
                             {item.status === 'HEALTHY' && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-2xs">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 Optimal
                               </span>
                             )}
                             {item.status === 'OVERSTOCK' && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-900 border border-indigo-200 shadow-2xs">
                                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                                 Surplus
                               </span>

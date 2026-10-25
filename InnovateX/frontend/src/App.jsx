@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './store/index.js'
 import LoginPage from './features/auth/LoginPage.jsx'
 import SignupPage from './features/auth/SignupPage.jsx'
@@ -6,13 +6,29 @@ import AuthCallback from './features/auth/AuthCallback.jsx'
 import LandingPage from './features/landing/LandingPage.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
 import NetworkExplorerPage from './features/network/NetworkExplorerPage.jsx'
+import NetworkMapPage from './features/map/NetworkMapPage.jsx'
 import OptimizationWorkbenchPage from './features/optimization/OptimizationWorkbenchPage.jsx'
 import DisruptionSimulatorPage from './features/scenarios/DisruptionSimulatorPage.jsx'
 import RunHistoryPage from './features/scenarios/RunHistoryPage.jsx'
 import DemandForecastingPage from './features/forecasting/DemandForecastingPage.jsx'
 import InventoryMatrixPage from './features/inventory/InventoryMatrixPage.jsx'
+import InventoryPage from './features/inventory/InventoryPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
+import SearchPage from './features/search/SearchPage.jsx'
+import ProfilePage from './features/profile/ProfilePage.jsx'
+import AiReportPage from './features/reports/AiReportPage.jsx'
+import SupplyShieldConcierge from './features/landing/SupplyShieldConcierge.jsx'
+
+// Global AI Chatbot wrapper (active everywhere except /login and /signup)
+function GlobalChatbot() {
+  const location = useLocation()
+  const path = location.pathname.toLowerCase()
+  if (path === '/login' || path === '/signup') {
+    return null
+  }
+  return <SupplyShieldConcierge />
+}
 
 // Protected route wrapper
 function ProtectedRoute({ children, allowUnonboarded = false }) {
@@ -89,6 +105,14 @@ export default function App() {
           path="/network-map"
           element={
             <ProtectedRoute>
+              <NetworkMapPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/network-explorer"
+          element={
+            <ProtectedRoute>
               <NetworkExplorerPage />
             </ProtectedRoute>
           }
@@ -98,6 +122,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <InventoryMatrixPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/inventory-table"
+          element={
+            <ProtectedRoute>
+              <InventoryPage />
             </ProtectedRoute>
           }
         />
@@ -145,6 +177,30 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/search"
+          element={
+            <ProtectedRoute>
+              <SearchPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/report"
+          element={
+            <ProtectedRoute>
+              <AiReportPage />
+            </ProtectedRoute>
+          }
+        />
 
         {/* OAuth Callback route */}
         <Route path="/auth/callback" element={<AuthCallback />} />
@@ -153,6 +209,7 @@ export default function App() {
         <Route path="/" element={<RootRoute />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
+      <GlobalChatbot />
     </BrowserRouter>
   )
 }

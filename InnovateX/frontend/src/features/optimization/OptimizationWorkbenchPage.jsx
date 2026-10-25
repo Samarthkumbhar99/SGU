@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Cpu,
   Play,
@@ -16,12 +17,15 @@ import {
   RefreshCw,
   FileSpreadsheet,
   Zap,
+  FileText,
+  Sparkles,
 } from 'lucide-react'
 import { AppLayout } from '../../components/layout/AppLayout.jsx'
 import { optimizationAPI } from '../../services/api.js'
 import { ProvenanceBadge, ProvenanceDisclosureBanner } from '../../components/ui/ProvenanceBadge.jsx'
 
 export default function OptimizationWorkbenchPage() {
+  const navigate = useNavigate()
   // Input parameters state
   const [horizonDays, setHorizonDays] = useState(7)
   const [shortagePenalty, setShortagePenalty] = useState(100.0)
@@ -142,16 +146,28 @@ export default function OptimizationWorkbenchPage() {
             </p>
           </div>
 
-          {result && (
-            <div className="flex items-center gap-2">
-              <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${result.status === 'OPTIMAL' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
-                Status: {result.status}
-              </span>
-              <span className="text-xs text-slate-400 font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                {result.run_id || 'opt-active'}
-              </span>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/report?section=optimization')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
+              title="Export MILP Dispatch Plan (PDF) with Groq LLM"
+            >
+              <FileText className="w-3.5 h-3.5 text-sky-600" />
+              <span>Export PDF Plan</span>
+              <Sparkles className="w-3 h-3 text-amber-500" />
+            </button>
+            {result && (
+              <>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold border shadow-2xs ${result.status === 'OPTIMAL' ? 'bg-emerald-50 text-emerald-900 border-emerald-300' : 'bg-amber-50 text-amber-900 border-amber-300'}`}>
+                  Status: {result.status}
+                </span>
+                <span className="text-xs text-slate-400 font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
+                  {result.run_id || 'opt-active'}
+                </span>
+              </>
+            )}
+          </div>
         </div>
 
         {/* Provenance Disclosure */}

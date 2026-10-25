@@ -1,8 +1,51 @@
 {
-  "dataset_name": "SupplyShield AI Demo Dataset",
+  "dataset_name": "SupplyShield AI Synthetic FMCG Demo Logistics Dataset",
+  "version": "1.0.0",
   "date_range": {
     "start": "2025-01-01",
     "end": "2025-12-31"
   },
-  "version": "1.0.0"
+  "geographic_scope": "India (Delhi NCR, Mumbai MMR, Bangalore Metropolis)",
+  "synthetic_disclaimer": "This dataset contains strictly synthetic simulation data generated for research and hackathon benchmarking. It does not represent live operational or commercial customer records.",
+  "tables": {
+    "products.csv": {
+      "count": 20,
+      "primary_key": "product_id"
+    },
+    "warehouses.csv": {
+      "count": 3,
+      "primary_key": "warehouse_id"
+    },
+    "stores.csv": {
+      "count": 12,
+      "primary_key": "store_id"
+    },
+    "daily_demand.csv": {
+      "count": 87600,
+      "business_key": [
+        "date",
+        "store_id",
+        "product_id"
+      ]
+    },
+    "transport_lanes.csv": {
+      "count": 36,
+      "primary_key": "lane_id"
+    },
+    "inventory_snapshot.csv": {
+      "count": 300,
+      "composite_key": [
+        "location_id",
+        "product_id"
+      ]
+    },
+    "inventory_batches.csv": {
+      "count": 60,
+      "primary_key": "batch_id"
+    },
+    "scenarios.csv": {
+      "count": 4,
+      "primary_key": "scenario_id"
+    }
+  }
 }

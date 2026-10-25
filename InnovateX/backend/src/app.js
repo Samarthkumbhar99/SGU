@@ -12,12 +12,16 @@ import setupSwagger from './config/swagger.js'
 import healthRoutes from './routes/healthRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
+import inventoryRoutes from './routes/inventoryRoutes.js'
 import dataRoutes from './routes/dataRoutes.js'
 import analyticsRoutes from './routes/analyticsRoutes.js'
 import forecastRoutes from './routes/forecastRoutes.js'
 import entityRoutes from './routes/entityRoutes.js'
 import onboardingRoutes from './routes/onboardingRoutes.js'
 import optimizationRoutes from './routes/optimizationRoutes.js'
+import notificationRoutes from './routes/notificationRoutes.js'
+import chatRoutes from './routes/chatRoutes.js'
+import reportRoutes from './routes/reportRoutes.js'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
 
 const app = express()
@@ -56,14 +60,20 @@ const allowedOrigins = [
   env.FRONTEND_URL,
   'http://localhost:5173',
   'http://localhost:5174',
+  'https://supplyshieldxai.netlify.app',
   ...(env.CORS_ORIGIN ? env.CORS_ORIGIN.split(',').map((s) => s.trim()) : []),
-]
+].filter(Boolean)
 
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (curl, mobile apps, same-origin)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith('.netlify.app') ||
+        origin === 'https://supplyshieldxai.netlify.app'
+      ) {
         callback(null, true)
       } else {
         callback(new Error(`CORS: origin '${origin}' not allowed.`))
@@ -102,12 +112,16 @@ setupSwagger(app)
 app.use('/api/v1/health', healthRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/dashboard', dashboardRoutes)
+app.use('/api/v1/inventory', inventoryRoutes)
 app.use('/api/v1/entities', entityRoutes)
 app.use('/api/v1/onboarding', onboardingRoutes)
 app.use('/api/v1', dataRoutes)
 app.use('/api/v1', analyticsRoutes)
 app.use('/api/v1', forecastRoutes)
 app.use('/api/v1', optimizationRoutes)
+app.use('/api/v1/notifications', notificationRoutes)
+app.use('/api/v1/chat', chatRoutes)
+app.use('/api/v1/reports', reportRoutes)
 
 
 // ——— 404 & Centralized Error handling ———
