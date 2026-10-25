@@ -8,7 +8,6 @@ import RoiCalculator from './RoiCalculator.jsx'
 import PersonaSection from './PersonaSection.jsx'
 import LandingVideoShowcase from './LandingVideoShowcase.jsx'
 import SupplyChainJourney from './SupplyChainJourney.jsx'
-import SupplyShieldConcierge from './SupplyShieldConcierge.jsx'
 import VariableProximity from '../../components/ui/VariableProximity.jsx'
 import {
   Shield,
@@ -369,9 +368,6 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-
-      {/* Globally Fixed AI Concierge Chatbot (Voice & Groq powered) */}
-      <SupplyShieldConcierge />
     </div>
   )
 }

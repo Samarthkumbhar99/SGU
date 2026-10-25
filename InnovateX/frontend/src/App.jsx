@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './store/index.js'
 import LoginPage from './features/auth/LoginPage.jsx'
 import SignupPage from './features/auth/SignupPage.jsx'
@@ -17,6 +17,17 @@ import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
 import SearchPage from './features/search/SearchPage.jsx'
 import ProfilePage from './features/profile/ProfilePage.jsx'
+import SupplyShieldConcierge from './features/landing/SupplyShieldConcierge.jsx'
+
+// Global AI Chatbot wrapper (active everywhere except /login and /signup)
+function GlobalChatbot() {
+  const location = useLocation()
+  const path = location.pathname.toLowerCase()
+  if (path === '/login' || path === '/signup') {
+    return null
+  }
+  return <SupplyShieldConcierge />
+}
 
 // Protected route wrapper
 function ProtectedRoute({ children, allowUnonboarded = false }) {
@@ -189,6 +200,7 @@ export default function App() {
         <Route path="/" element={<RootRoute />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
+      <GlobalChatbot />
     </BrowserRouter>
   )
 }
