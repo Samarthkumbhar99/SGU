@@ -21,6 +21,8 @@ import AiReportPage from './features/reports/AiReportPage.jsx'
 import PlansPage from './features/plans/PlansPage.jsx'
 import SupplyShieldConcierge from './features/landing/SupplyShieldConcierge.jsx'
 
+import { canAccessRoute } from './utils/rbac.js'
+
 // Global AI Chatbot wrapper (active everywhere except /login and /signup)
 function GlobalChatbot() {
   const location = useLocation()
@@ -34,6 +36,8 @@ function GlobalChatbot() {
 // Protected route wrapper
 function ProtectedRoute({ children, allowUnonboarded = false }) {
   const { isAuthenticated, user } = useAuthStore()
+  const location = useLocation()
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />
   }
@@ -41,6 +45,12 @@ function ProtectedRoute({ children, allowUnonboarded = false }) {
   if (user && user.isOnboarded === false && !allowUnonboarded) {
     return <Navigate to="/onboarding" replace />
   }
+
+  // Role-based route accessibility check (Top roles retain unrestricted overall access)
+  if (!canAccessRoute(user?.role, location.pathname)) {
+    return <Navigate to="/dashboard" replace />
+  }
+
   return children
 }
 

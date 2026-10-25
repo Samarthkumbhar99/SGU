@@ -15,9 +15,12 @@ import {
   Search,
   User,
   CreditCard,
+  Crown,
+  ShieldCheck,
 } from 'lucide-react'
 import { useUIStore, useAuthStore } from '../../store/index.js'
 import BranchedMenu from '../ui/BranchedMenu.jsx'
+import { filterNavigationForRole, getRoleBadge, isExecutiveRole } from '../../utils/rbac.js'
 
 // Hierarchical supply chain navigation for BranchedMenu
 const SIDEBAR_BRANCHED_ITEMS = [
@@ -59,6 +62,11 @@ export function Sidebar() {
   const location = useLocation()
   const navigate = useNavigate()
   const sidebarRef = useRef(null)
+
+  const roleBadge = getRoleBadge(user?.role)
+  const isExecutive = isExecutiveRole(user?.role)
+  const roleNavItems = filterNavigationForRole(SIDEBAR_BRANCHED_ITEMS, user?.role)
+  const roleLeafItems = roleNavItems.flatMap((section) => section.children || [])
 
   const handleLogout = () => {
     setSidebarMobileOpen(false)
@@ -227,7 +235,7 @@ export function Sidebar() {
           {sidebarCollapsed ? (
             /* Compact Icon Rail when sidebar is collapsed */
             <div className="flex flex-col items-center gap-2">
-              {ALL_LEAF_ITEMS.map((item) => {
+              {roleLeafItems.map((item) => {
                 const Icon = item.icon
                 const isActive = location.pathname === item.value
                 return (
@@ -253,7 +261,7 @@ export function Sidebar() {
           ) : (
             /* Animated BranchedMenu in Pure Light Theme */
             <BranchedMenu
-              items={SIDEBAR_BRANCHED_ITEMS}
+              items={roleNavItems}
               defaultOpen={defaultOpenIndices}
               defaultActive={location.pathname}
               onSelect={(value) => {
@@ -313,7 +321,7 @@ export function Sidebar() {
               >
                 {(user.name || user.email || 'U').charAt(0).toUpperCase()}
               </div>
-              <div style={{ minWidth: 0 }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
                 <div
                   style={{
                     color: '#0f172a',
@@ -326,17 +334,23 @@ export function Sidebar() {
                 >
                   {user.name || 'User'}
                 </div>
-                <div
-                  style={{
-                    color: '#64748b',
-                    fontSize: '11px',
-                    fontWeight: 500,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {user.role || 'Distribution Manager'}
+                <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-full border inline-flex items-center gap-1"
+                    style={{
+                      backgroundColor: roleBadge.badgeBg,
+                      color: roleBadge.badgeColor,
+                      borderColor: roleBadge.borderColor,
+                    }}
+                  >
+                    {isExecutive && <Crown size={10} className="text-amber-500" />}
+                    <span>{roleBadge.label}</span>
+                  </span>
+                  {isExecutive && (
+                    <span className="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300">
+                      Overall
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

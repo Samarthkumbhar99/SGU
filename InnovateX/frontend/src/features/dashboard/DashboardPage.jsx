@@ -43,6 +43,12 @@ import { ProvenanceBadge, ProvenanceDisclosureBanner } from '../../components/ui
 import { SkeletonKPICard, SkeletonCard } from '../../components/ui/Skeleton.jsx'
 import { useToast } from '../../components/ui/Toast.jsx'
 import { useAuthStore, useEntityStore } from '../../store/index.js'
+import { getRoleScope, isExecutiveRole, getRoleBadge, ROLE_GROUPS } from '../../utils/rbac.js'
+import RetailerDashboardView from './views/RetailerDashboardView.jsx'
+import WarehouseDashboardView from './views/WarehouseDashboardView.jsx'
+import AnalystDashboardView from './views/AnalystDashboardView.jsx'
+import ExecutiveDashboardView from './views/ExecutiveDashboardView.jsx'
+import { Eye, Crown, ShieldCheck } from 'lucide-react'
 import LiveLocationBar from './components/LiveLocationBar.jsx'
 import MyStoresSection from './components/MyStoresSection.jsx'
 import MyWarehousesSection from './components/MyWarehousesSection.jsx'
@@ -339,10 +345,19 @@ export default function DashboardPage() {
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false)
   const [searchModalType, setSearchModalType] = useState('all')
 
-  // Entity tab selection ('all' | 'stores' | 'warehouses')
-  const isRetailer = user?.role === 'Retailer'
-  const isWarehouseMgr = user?.role === 'Warehouse Manager' || user?.role === 'Warehouse Controller'
-  const [entityTab, setEntityTab] = useState(isRetailer ? 'stores' : isWarehouseMgr ? 'warehouses' : 'all')
+  const userScope = getRoleScope(user?.role)
+  const isExecutive = isExecutiveRole(user?.role)
+  const roleBadge = getRoleBadge(user?.role)
+
+  // For executives, allow switching operational view lens
+  const [viewLens, setViewLens] = useState(userScope)
+
+  // Keep viewLens in sync if user role updates
+  useEffect(() => {
+    setViewLens(getRoleScope(user?.role))
+  }, [user?.role])
+
+  const activeScope = isExecutive ? viewLens : userScope
 
   useEffect(() => {
     const load = async () => {
@@ -432,491 +447,97 @@ export default function DashboardPage() {
       {/* Live GPS Telemetry Bar */}
       <LiveLocationBar />
 
-      {/* Access Requests Manager (Approvals & Sent Requests) */}
-      <AccessRequestsManager />
-
-      {/* User-Specific Entity Management Section */}
-      <div className="mb-8 bg-slate-50/50 p-6 rounded-3xl border border-slate-200/80">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+      {/* Role-Specific Dashboard Views with Executive Perspective Lens */}
+      {isExecutive && (
+        <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white shadow-lg border border-indigo-900/50 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-              {user?.role || 'Supply Chain'} Workspace
+            <div className="w-10 h-10 rounded-xl bg-amber-400/20 border border-amber-400/40 flex items-center justify-center text-amber-300">
+              <Crown className="w-5 h-5" />
             </div>
-            <span className="text-xs font-bold text-slate-700 bg-white px-2.5 py-0.5 rounded-full border border-slate-200">
-              {user?.company || 'FMCG Network'}
-            </span>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black tracking-widest uppercase text-amber-300">
+                  Master Executive Access
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+                  Full Authority
+                </span>
+              </div>
+              <div className="text-xs text-slate-300 font-medium mt-0.5">
+                You have unrestricted overall network accessibility. Switch perspective to inspect role-specific dashboards:
+              </div>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Export Dashboard PDF Report Button */}
-            <button
-              type="button"
-              onClick={() => navigate('/report?section=dashboard')}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 hover:text-sky-800 border border-sky-200 text-xs font-bold transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
-              title="Export Executive Dashboard Audit (PDF)"
-            >
-              <FileText size={14} className="text-sky-600" />
-              <span>Export PDF Report</span>
-              <Sparkles size={11} className="text-amber-500" />
-            </button>
-
-            {/* Entity Tab Filters */}
-            <div className="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 text-xs font-bold">
-            <button
-              type="button"
-              onClick={() => setEntityTab('all')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                entityTab === 'all' ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              All Facilities ({stores.length + warehouses.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setEntityTab('stores')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                entityTab === 'stores' ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Stores ({stores.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setEntityTab('warehouses')}
-              className={`px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
-                entityTab === 'warehouses' ? 'bg-sky-600 text-white shadow-2xs' : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              Warehouses ({warehouses.length})
-            </button>
+          <div className="flex items-center gap-1.5 p-1 bg-slate-800/90 rounded-xl border border-slate-700">
+            {[
+              { id: ROLE_GROUPS.EXECUTIVE, label: 'Master Executive', icon: Crown },
+              { id: ROLE_GROUPS.RETAILER, label: 'Store Retailer', icon: Eye },
+              { id: ROLE_GROUPS.WAREHOUSE, label: 'DC Warehouse', icon: Eye },
+              { id: ROLE_GROUPS.ANALYST, label: 'SC Analyst', icon: Eye },
+            ].map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setViewLens(id)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                  activeScope === id
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-700/60'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{label}</span>
+              </button>
+            ))}
           </div>
         </div>
-      </div>
+      )}
 
-        {/* Dynamic Section based on role and tab */}
-        {(entityTab === 'all' || entityTab === 'stores') && (
-          <MyStoresSection
-            onOpenSearchModal={() => {
-              setSearchModalType('store')
-              setIsSearchModalOpen(true)
-            }}
-          />
-        )}
+      {/* RENDER ACTIVE ROLE VIEW */}
+      {activeScope === ROLE_GROUPS.RETAILER && (
+        <RetailerDashboardView user={user} onOpenRescue={handleRunOptimization} />
+      )}
 
-        {(entityTab === 'all' || entityTab === 'warehouses') && (
-          <MyWarehousesSection
-            onOpenSearchModal={() => {
-              setSearchModalType('warehouse')
-              setIsSearchModalOpen(true)
-            }}
-          />
-        )}
-      </div>
+      {activeScope === ROLE_GROUPS.WAREHOUSE && (
+        <WarehouseDashboardView user={user} />
+      )}
 
-      {/* Global Network Search & Claim Modal */}
+      {activeScope === ROLE_GROUPS.ANALYST && (
+        <AnalystDashboardView user={user} latestRun={latestRun} summary={s} />
+      )}
+
+      {activeScope === ROLE_GROUPS.EXECUTIVE && (
+        <ExecutiveDashboardView
+          user={user}
+          summary={summary}
+          overviewData={overviewData}
+          latestRun={latestRun}
+          loading={loading}
+          onOpenSearchModal={(type) => {
+            setSearchModalType(type)
+            setIsSearchModalOpen(true)
+          }}
+          DEMAND_TREND={DEMAND_TREND}
+          INVENTORY_DISTRIBUTION={INVENTORY_DISTRIBUTION}
+          STORE_DEMAND={STORE_DEMAND}
+          WAREHOUSE_INVENTORY={WAREHOUSE_INVENTORY}
+          RECENT_ACTIVITY={RECENT_ACTIVITY}
+          ChartTooltip={ChartTooltip}
+          ActivityItem={ActivityItem}
+          DEMO_SUMMARY={DEMO_SUMMARY}
+        />
+      )}
+
+      {/* Global Facility Discovery / Search Modal */}
       <SearchNetworkModal
         isOpen={isSearchModalOpen}
-        defaultType={searchModalType}
         onClose={() => setIsSearchModalOpen(false)}
+        defaultType={searchModalType}
       />
 
-      {/* Data Provenance & Methodology Disclosure Banner */}
-      <div style={{ marginBottom: '20px' }}>
-        <ProvenanceDisclosureBanner />
-      </div>
 
-      {/* KPI Grid */}
-      <div className="ss-kpi-grid" style={{ marginBottom: '20px' }}>
-        <KPICard
-          id="kpi-total-inventory"
-          icon={Package}
-          label="Total Network Inventory"
-          value={overviewData?.summary?.totalInventoryUnits ?? s.totalInventory}
-          unit="units"
-          change={s.inventoryChange}
-          changeLabel="vs last week"
-          color="blue"
-          loading={loading}
-          provenanceType={overviewData?.summary?.totalInventoryUnits ? 'historical' : 'demo'}
-          provenanceTooltip={overviewData?.summary?.totalInventoryUnits
-            ? 'Aggregated from live MongoDB Inventory collection via /api/v1/analytics/overview'
-            : 'Demo benchmark fallback value (active while Atlas inventory collection is unpopulated)'}
-        />
-        <KPICard
-          id="kpi-inventory-valuation"
-          icon={DollarSign}
-          label="Inventory Valuation"
-          value={overviewData?.summary?.totalInventoryValuation ? Math.round(overviewData.summary.totalInventoryValuation) : 11959500}
-          unit="₹"
-          change={2.4}
-          changeLabel="valuation"
-          color="success"
-          loading={loading}
-          provenanceType={overviewData?.summary?.totalInventoryValuation ? 'historical' : 'demo'}
-          provenanceTooltip={overviewData?.summary?.totalInventoryValuation
-            ? 'Calculated dynamically: Sum of (Inventory Level × Unit Cost) across all SKUs'
-            : 'Demo benchmark valuation fallback (active while Atlas inventory collection is unpopulated)'}
-        />
-        <KPICard
-          id="kpi-stores-at-risk"
-          icon={AlertTriangle}
-          label="Low-Stock Combinations"
-          value={overviewData?.summary?.lowStockCombinations ?? s.storesAtRisk}
-          unit="alerts"
-          change={s.riskChange}
-          changeLabel="vs reorder point"
-          color="critical"
-          loading={loading}
-          provenanceType={overviewData?.summary?.lowStockCombinations !== undefined ? 'historical' : 'demo'}
-          provenanceTooltip={overviewData?.summary?.lowStockCombinations !== undefined
-            ? 'SKU-Facility combinations currently below safety reorder threshold'
-            : 'Demo benchmark stockout risk count'}
-        />
-        <KPICard
-          id="kpi-days-of-supply"
-          icon={Clock}
-          label="Avg Days of Supply"
-          value={overviewData?.summary?.avgDaysOfSupply ?? 14.2}
-          unit="days"
-          change={-0.8}
-          changeLabel="7d burn rate"
-          color="warning"
-          loading={loading}
-          provenanceType={overviewData?.summary?.avgDaysOfSupply ? 'historical' : 'demo'}
-          provenanceTooltip={overviewData?.summary?.avgDaysOfSupply
-            ? 'Inventory Level divided by 7-day average daily sales velocity'
-            : 'Demo benchmark 14-day supply average'}
-        />
-        <KPICard
-          id="kpi-solver-status"
-          icon={TrendingUp}
-          label="Latest Solver Status"
-          value={latestRun?.status || latestRun?.solverStatus || 'OPTIMAL'}
-          unit={latestRun?.solverRuntimeSeconds !== undefined ? `${Math.round(latestRun.solverRuntimeSeconds * 1000)}ms` : (latestRun?.solverTimeMs ? `${latestRun.solverTimeMs}ms` : '38ms')}
-          change={latestRun?.metrics?.baselineTransportCost && latestRun?.metrics?.optimizedTransportCost
-            ? Number((((latestRun.metrics.optimizedTransportCost - latestRun.metrics.baselineTransportCost) / Math.max(1, latestRun.metrics.baselineTransportCost)) * 100).toFixed(1))
-            : (latestRun?.costDeltaPercent ? Number(latestRun.costDeltaPercent.toFixed(1)) : -18.4)}
-          changeLabel="vs greedy cost"
-          color={(latestRun?.status === 'INFEASIBLE' || latestRun?.status === 'FAILED') ? 'critical' : 'success'}
-          loading={loading}
-          provenanceType="optimizer"
-          provenanceTooltip="Verified Google OR-Tools CP-SAT discrete solver status from MongoDB OptimizationRun ledger"
-        />
-        <KPICard
-          id="kpi-freight-cost"
-          icon={DollarSign}
-          label="Optimized Freight Cost"
-          value={latestRun?.metrics?.optimizedTransportCost ?? (latestRun?.totalOptimizedCost ?? s.distributionCost)}
-          unit="₹"
-          change={latestRun?.metrics?.baselineTransportCost && latestRun?.metrics?.optimizedTransportCost
-            ? Number((((latestRun.metrics.optimizedTransportCost - latestRun.metrics.baselineTransportCost) / Math.max(1, latestRun.metrics.baselineTransportCost)) * 100).toFixed(1))
-            : (latestRun?.costDeltaPercent ? Number(latestRun.costDeltaPercent.toFixed(1)) : s.costChange)}
-          changeLabel="vs greedy baseline"
-          color="success"
-          loading={loading}
-          provenanceType="assumed"
-          provenanceTooltip="Calculated using assumed demo freight rates: ₹0.10 - ₹0.40 / unit per corridor"
-        />
-        <KPICard
-          id="kpi-service-level"
-          icon={CheckCircle}
-          label="Demand Fulfillment Rate"
-          value={latestRun?.metrics?.demandFulfillmentRatePct !== undefined ? Number(latestRun.metrics.demandFulfillmentRatePct.toFixed(1)) : (latestRun?.fulfillmentRate !== undefined ? Number(latestRun.fulfillmentRate.toFixed(1)) : s.serviceLevel)}
-          unit="%"
-          change={s.serviceLevelChange}
-          changeLabel="fulfilled"
-          color="success"
-          loading={loading}
-          provenanceType="optimizer"
-          provenanceTooltip="Ratio of dispatched units to target demand across all retail store corridors"
-        />
-        <div
-          className="ss-kpi-card group cursor-pointer transition-all duration-300 hover:border-sky-400 hover:shadow-md"
-          id="kpi-run-optimization"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '12px',
-            border: '1.5px dashed #38bdf8',
-            background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
-            minHeight: '170px',
-          }}
-          onClick={handleRunOptimization}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => e.key === 'Enter' && handleRunOptimization()}
-        >
-          <div
-            className="group-hover:scale-110 group-hover:shadow-lg transition-all duration-300"
-            style={{
-              width: '50px',
-              height: '50px',
-              borderRadius: '16px',
-              background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 8px 20px -4px rgba(2, 132, 199, 0.4)',
-            }}
-          >
-            <Play size={22} color="#ffffff" fill="#ffffff" style={{ marginLeft: '2px' }} />
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontWeight: 800, fontSize: '15px', color: '#0c4a6e' }}>Run Optimization</div>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: '#0369a1', marginTop: '2px' }}>
-              Start a new rescue scenario
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Charts Row 1 */}
-      <div className="ss-chart-grid" style={{ marginBottom: '20px' }}>
-        {/* Demand Trend */}
-        <div className="ss-card" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: '15px', color: '#17324d' }}>Network Demand Trend</div>
-              <div style={{ fontSize: '12px', color: '#64778b', marginTop: '2px' }}>Actual vs. forecast — last 6 weeks</div>
-            </div>
-            <div style={{ display: 'flex', gap: '6px' }}>
-              <ProvenanceBadge type="historical" tooltip="Actuals from historical demand series" />
-              <ProvenanceBadge type="forecast" tooltip="Moving Average / LightGBM 14-day horizon" />
-            </div>
-          </div>
-          <ResponsiveContainer width="100%" height={220}>
-            <AreaChart data={DEMAND_TREND} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-              <defs>
-                <linearGradient id="actualGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#247bc1" stopOpacity={0.2} />
-                  <stop offset="95%" stopColor="#247bc1" stopOpacity={0} />
-                </linearGradient>
-                <linearGradient id="forecastGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6ab0e1" stopOpacity={0.15} />
-                  <stop offset="95%" stopColor="#6ab0e1" stopOpacity={0} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#eef6ff" />
-              <XAxis dataKey="period" tick={{ fontSize: 11, fill: '#99aabb' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: '#99aabb' }} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '12px', color: '#64778b' }} />
-              <Area type="monotone" dataKey="actual" name="Actual" stroke="#247bc1" strokeWidth={2.5} fill="url(#actualGrad)" dot={{ r: 3, fill: '#247bc1' }} activeDot={{ r: 5 }} />
-              <Area type="monotone" dataKey="forecast" name="Forecast" stroke="#6ab0e1" strokeWidth={2} strokeDasharray="5 3" fill="url(#forecastGrad)" dot={false} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Inventory Status Pie */}
-        <div className="ss-card" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: '15px', color: '#17324d' }}>Inventory Status</div>
-              <div style={{ fontSize: '12px', color: '#64778b', marginTop: '2px' }}>By stock level across all locations</div>
-            </div>
-            <ProvenanceBadge type="historical" tooltip="Aggregated current inventory records" />
-          </div>
-          <ResponsiveContainer width="100%" height={160}>
-            <PieChart>
-              <Pie
-                data={INVENTORY_DISTRIBUTION}
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={75}
-                paddingAngle={3}
-                dataKey="value"
-              >
-                {INVENTORY_DISTRIBUTION.map((entry) => (
-                  <Cell key={entry.name} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip
-                formatter={(value) => [`${value}%`, '']}
-                contentStyle={{ background: '#102f50', border: 'none', borderRadius: '8px', color: '#fff', fontSize: '12px' }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            {INVENTORY_DISTRIBUTION.map((d) => (
-              <div key={d.name} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: d.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: '13px', color: '#64778b' }}>{d.name}</span>
-                </div>
-                <span className="tabular-nums" style={{ fontSize: '13px', fontWeight: 700, color: '#17324d' }}>{d.value}%</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Charts Row 2 */}
-      <div className="ss-chart-grid" style={{ marginBottom: '20px' }}>
-        {/* Store Demand Histogram */}
-        <div className="ss-card" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: '15px', color: '#17324d' }}>Store Demand vs. Fulfillment</div>
-              <div style={{ fontSize: '12px', color: '#64778b', marginTop: '2px' }}>Units demanded vs. fulfilled this week</div>
-            </div>
-            <ProvenanceBadge type="optimizer" tooltip="Target demand vs solver dispatched units" />
-          </div>
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={STORE_DEMAND} margin={{ top: 4, right: 8, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#eef6ff" />
-              <XAxis dataKey="store" tick={{ fontSize: 11, fill: '#99aabb' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: '#99aabb' }} axisLine={false} tickLine={false} />
-              <Tooltip content={<ChartTooltip />} />
-              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: '12px', color: '#64778b' }} />
-              <Bar dataKey="demand" name="Demand" fill="#d7e6f5" radius={[3, 3, 0, 0]} />
-              <Bar dataKey="fulfilled" name="Fulfilled" fill="#247bc1" radius={[3, 3, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Warehouse Inventory */}
-        <div className="ss-card" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: '15px', color: '#17324d' }}>Warehouse Capacity</div>
-              <div style={{ fontSize: '12px', color: '#64778b', marginTop: '2px' }}>Used vs. available inventory</div>
-            </div>
-            <ProvenanceBadge type="configured" tooltip="3 Regional Hubs configured in demo network" />
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {WAREHOUSE_INVENTORY.map((wh) => {
-              const usedPct = Math.round((wh.used / wh.capacity) * 100)
-              const reservedPct = Math.round((wh.reserved / wh.capacity) * 100)
-              const isHigh = usedPct > 80
-              return (
-                <div key={wh.name}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Warehouse size={14} color="#64778b" />
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#17324d' }}>{wh.name}</span>
-                    </div>
-                    <span className="tabular-nums" style={{ fontSize: '12px', color: isHigh ? '#d94b50' : '#64778b', fontWeight: 600 }}>
-                      {usedPct}% used
-                    </span>
-                  </div>
-                  <div style={{ height: '8px', background: '#eef6ff', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div style={{ display: 'flex', height: '100%' }}>
-                      <div style={{ width: `${usedPct}%`, background: isHigh ? '#d94b50' : '#247bc1', borderRadius: '4px', transition: 'width 0.6s ease' }} />
-                      <div style={{ width: `${reservedPct}%`, background: isHigh ? 'rgba(217,75,80,0.3)' : 'rgba(36,123,193,0.3)', transition: 'width 0.6s ease' }} />
-                    </div>
-                  </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px' }}>
-                    <span style={{ fontSize: '11px', color: '#99aabb' }}>{wh.used.toLocaleString()} in stock</span>
-                    <span style={{ fontSize: '11px', color: '#99aabb' }}>{wh.capacity.toLocaleString()} cap.</span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom Row: Activity + Alerts */}
-      <div className="ss-activity-grid">
-        {/* Activity Feed */}
-        <div className="ss-card" style={{ padding: '20px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-            <div style={{ fontWeight: 700, fontSize: '15px', color: '#17324d' }}>Recent Activity</div>
-            <button className="ss-btn-ghost" style={{ fontSize: '12px', padding: '4px 10px' }}>
-              <RefreshCw size={13} />
-              Refresh
-            </button>
-          </div>
-          <div>
-            {RECENT_ACTIVITY.map((item) => (
-              <ActivityItem key={item.id} item={item} />
-            ))}
-          </div>
-        </div>
-
-        {/* Critical Alerts */}
-        <div className="ss-card" style={{ padding: '20px' }}>
-          <div style={{ fontWeight: 700, fontSize: '15px', color: '#17324d', marginBottom: '16px' }}>
-            Critical Alerts
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {[
-              {
-                title: 'S-04 Critical Stockout',
-                body: 'SKU-MILK-001 at 8% — less than 6 hours supply',
-                severity: 'critical',
-              },
-              {
-                title: 'Batch Expiry in 6 Days',
-                body: 'B-2024-089 — 840 units YOGURT at WH-Delhi',
-                severity: 'warning',
-              },
-              {
-                title: 'NH-48 Route Partially Closed',
-                body: '3 shipments affected, estimated 4h delay',
-                severity: 'warning',
-              },
-              {
-                title: '2 Plans Need Approval',
-                body: 'P-2024-11 and P-2024-12 awaiting sign-off',
-                severity: 'info',
-              },
-            ].map((alert, i) => (
-              <div
-                key={i}
-                style={{
-                  padding: '12px 14px',
-                  borderRadius: '8px',
-                  background:
-                    alert.severity === 'critical' ? '#fff5f5' :
-                    alert.severity === 'warning' ? '#fffbeb' :
-                    '#eef6ff',
-                  border: `1px solid ${
-                    alert.severity === 'critical' ? '#fde8e9' :
-                    alert.severity === 'warning' ? '#fef3cd' :
-                    '#d7e6f5'
-                  }`,
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                  <AlertTriangle
-                    size={13}
-                    color={
-                      alert.severity === 'critical' ? '#d94b50' :
-                      alert.severity === 'warning' ? '#d99a27' :
-                      '#247bc1'
-                    }
-                  />
-                  <span style={{ fontSize: '13px', fontWeight: 700, color: '#17324d' }}>{alert.title}</span>
-                </div>
-                <p style={{ margin: 0, fontSize: '12px', color: '#64778b', lineHeight: 1.4 }}>{alert.body}</p>
-              </div>
-            ))}
-
-            <button
-              id="run-rescue-cta"
-              className="ss-btn-primary"
-              style={{ width: '100%', marginTop: '4px' }}
-              onClick={handleRunOptimization}
-            >
-              <Zap size={15} />
-              Run Inventory Rescue
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <style>{`
-        @media (max-width: 1024px) {
-          .ss-chart-grid > *:last-child,
-          .ss-chart-grid + div > *:last-child {
-            display: none;
-          }
-        }
-      `}</style>
     </AppLayout>
   )
 }
