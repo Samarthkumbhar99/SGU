@@ -20,6 +20,7 @@ import entityRoutes from './routes/entityRoutes.js'
 import onboardingRoutes from './routes/onboardingRoutes.js'
 import optimizationRoutes from './routes/optimizationRoutes.js'
 import notificationRoutes from './routes/notificationRoutes.js'
+import chatRoutes from './routes/chatRoutes.js'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
 
 const app = express()
@@ -118,6 +119,7 @@ app.use('/api/v1', analyticsRoutes)
 app.use('/api/v1', forecastRoutes)
 app.use('/api/v1', optimizationRoutes)
 app.use('/api/v1/notifications', notificationRoutes)
+app.use('/api/v1/chat', chatRoutes)
 
 
 // ——— 404 & Centralized Error handling ———
