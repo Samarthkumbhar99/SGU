@@ -117,17 +117,26 @@ export default function NotificationDrawer() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden select-none" role="dialog" aria-modal="true">
+    <div
+      className="fixed inset-0 select-none"
+      style={{ zIndex: 9999 }}
+      role="dialog"
+      aria-modal="true"
+    >
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity duration-300 animate-fade-in"
+        style={{ zIndex: 9999 }}
         onClick={closeDrawer}
         aria-hidden="true"
       />
 
       {/* Slide-over Drawer Panel */}
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10 pointer-events-none">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col pointer-events-auto transform transition-all duration-300 ease-out border-l border-slate-200">
+      <div
+        className="fixed inset-y-0 right-0 max-w-full flex pl-6 sm:pl-10 pointer-events-none"
+        style={{ zIndex: 10000 }}
+      >
+        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col pointer-events-auto h-full border-l border-slate-200 animate-slide-left">
           {/* Header */}
           <div className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/70">
             <div className="flex items-center justify-between mb-2">

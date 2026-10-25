@@ -22,7 +22,7 @@ export default function AuthVideoHero() {
 
   return (
     <div
-      className="relative flex flex-col justify-between overflow-hidden p-6 sm:p-8 lg:p-10 select-none h-full min-h-[500px]"
+      className="relative flex flex-col justify-between overflow-hidden p-6 sm:p-8 lg:p-36 select-none h-full min-h-[500px]"
       style={{
         background: 'linear-gradient(150deg, #f0f7ff 0%, #e0f2fe 45%, #dbeafe 100%)',
       }}
