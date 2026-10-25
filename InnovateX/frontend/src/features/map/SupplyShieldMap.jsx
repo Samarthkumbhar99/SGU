@@ -24,6 +24,9 @@ import {
   ArrowRight,
   ArrowLeftRight,
   GripVertical,
+  Zap,
+  AlertTriangle,
+  CheckCircle2,
   X,
 } from 'lucide-react'
 
@@ -385,6 +388,65 @@ export function generateFallbackHighwayRoute(originCoords, destCoords) {
 }
 
 /**
+ * Automatically identifies all candidate Warehouses and DCs for a low-stock/risky store,
+ * calculates real road paths, ranks by shortest distance, and computes estimations
+ * (Distance, Time, Stock Needed, Transport Cost in INR, Tolls, Fuel, and CO2).
+ */
+export async function planRescueRoutesForStore(storeNode, allNodes) {
+  if (!storeNode || !allNodes || allNodes.length === 0) return null
+
+  const warehouses = allNodes.filter(
+    (n) => n.type === 'Warehouse' && n.id !== storeNode.id && Array.isArray(n.coordinates)
+  )
+  if (warehouses.length === 0) return null
+
+  const candidatePromises = warehouses.map(async (wh) => {
+    const route = await calculateShortestRoadPath(wh.coordinates, storeNode.coordinates)
+    if (!route) return null
+
+    // Commercial Logistics Estimations in INR
+    const estimatedCostINR = Math.round(1850 + route.distanceKm * 24.5)
+    const estimatedTollINR = Math.round(route.distanceKm * 3.6)
+    const estimatedFuelINR = Math.round((route.distanceKm / 4.2) * 94)
+    const co2Kg = Number((route.distanceKm * 0.16 * 2.2).toFixed(1))
+
+    // Stock allocation
+    const targetSupply = Math.round((storeNode.weeklyDemand || 2600) * 2)
+    const currentStock = storeNode.stockOnHand || 0
+    const unitsNeeded = Math.max(250, targetSupply - currentStock)
+
+    return {
+      warehouse: wh,
+      store: storeNode,
+      route,
+      distanceKm: route.distanceKm,
+      durationFormatted: route.durationFormatted,
+      durationSec: route.durationSec,
+      coordinates: route.coordinates,
+      estimatedCostINR,
+      estimatedTollINR,
+      estimatedFuelINR,
+      co2Kg,
+      unitsNeeded,
+      unitsAvailable: wh.stockOnHand || 60000,
+      daysProtected: 14,
+    }
+  })
+
+  const candidates = (await Promise.all(candidatePromises)).filter(Boolean)
+  candidates.sort((a, b) => a.distanceKm - b.distanceKm)
+
+  if (candidates.length === 0) return null
+
+  return {
+    targetStore: storeNode,
+    primary: candidates[0],
+    alternatives: candidates.slice(1),
+    allCandidates: candidates,
+  }
+}
+
+/**
  * Generates photorealistic 3D architectural house/warehouse polygons ONLY for the dataset points.
  * Regional DCs feature a 4-part complex (Logistics Hall, Cross-Dock Wing, Operations Tower, Ground Apron).
  * Retail Stores feature a 3-part commercial house (Main Storehouse, Portico Pavilion, Royal Blue Roof Crown).
@@ -565,6 +627,7 @@ export default function SupplyShieldMap({
   nodes = distributionNetworkData.nodes || [],
   selectedNodeId,
   onNodeSelect,
+  activeRescueStore = null,
   className = '',
   initialShowHeatmap = false,
   initialShowArcs = false,
@@ -587,6 +650,10 @@ export default function SupplyShieldMap({
   const [cardOffset, setCardOffset] = useState({ x: 0, y: 0 })
   const [isDragging, setIsDragging] = useState(false)
   const dragStartRef = useRef({ startX: 0, startY: 0, initialOffsetX: 0, initialOffsetY: 0 })
+
+  // Store Emergency Rescue State
+  const [rescuePlan, setRescuePlan] = useState(null)
+  const [selectedRescueIndex, setSelectedRescueIndex] = useState(0)
 
   // Active Cluster: 'north' (Delhi Hub) | 'central' (Mumbai Hub) | 'south' (Bangalore Hub) | 'all' (All 15 Facilities)
   const [activeCluster, setActiveCluster] = useState('north')
@@ -715,23 +782,113 @@ export default function SupplyShieldMap({
     setRouteError(null)
     setIsRouteLoading(false)
     setCardOffset({ x: 0, y: 0 })
+    setRescuePlan(null)
+    setSelectedRescueIndex(0)
 
     // Remove route markers
     routeMarkersRef.current.forEach((m) => m.remove())
     routeMarkersRef.current = []
 
     const map = mapInstanceRef.current
-    if (map && map.getSource('shortest-road-route-source')) {
-      try {
-        map.getSource('shortest-road-route-source').setData({
-          type: 'FeatureCollection',
-          features: [],
-        })
-      } catch (err) {
-        // ignore
+    if (map) {
+      if (map.getSource('shortest-road-route-source')) {
+        try {
+          map.getSource('shortest-road-route-source').setData({
+            type: 'FeatureCollection',
+            features: [],
+          })
+        } catch (err) {
+          // ignore
+        }
+      }
+      if (map.getSource('alternative-road-routes-source')) {
+        try {
+          map.getSource('alternative-road-routes-source').setData({
+            type: 'FeatureCollection',
+            features: [],
+          })
+        } catch (err) {
+          // ignore
+        }
       }
     }
   }, [])
+
+  // Trigger emergency rescue for low-stock / risky store
+  const triggerStoreRescue = useCallback(
+    async (storeNode) => {
+      if (!storeNode) return
+      setIsRouteLoading(true)
+      setRouteError(null)
+
+      try {
+        const plan = await planRescueRoutesForStore(storeNode, networkNodes)
+        if (plan && plan.primary) {
+          setRescuePlan(plan)
+          setSelectedRescueIndex(0)
+          setRouteOrigin(plan.primary.warehouse)
+          setRouteDest(storeNode)
+          setRouteData({
+            ...plan.primary,
+            originName: plan.primary.warehouse.name,
+            destName: storeNode.name,
+            originType: plan.primary.warehouse.type,
+            destType: storeNode.type,
+            isRescue: true,
+          })
+          setShowRoutePlanner(true)
+        } else {
+          setRouteError('No suitable supplying warehouses found.')
+        }
+      } catch (err) {
+        console.error('Failed to plan rescue routes:', err)
+        setRouteError('Emergency rescue route planning failed.')
+      } finally {
+        setIsRouteLoading(false)
+      }
+    },
+    [networkNodes]
+  )
+
+  // Choose an alternative supply warehouse path
+  const handleSelectRescueAlternative = useCallback(
+    (index) => {
+      if (!rescuePlan || !rescuePlan.allCandidates || !rescuePlan.allCandidates[index]) return
+      const chosen = rescuePlan.allCandidates[index]
+      setSelectedRescueIndex(index)
+      setRouteOrigin(chosen.warehouse)
+      setRouteDest(rescuePlan.targetStore)
+      setRouteData({
+        ...chosen,
+        originName: chosen.warehouse.name,
+        destName: rescuePlan.targetStore.name,
+        originType: chosen.warehouse.type,
+        destType: rescuePlan.targetStore.type,
+        isRescue: true,
+      })
+    },
+    [rescuePlan]
+  )
+
+  // Auto-trigger rescue if activeRescueStore prop is passed
+  useEffect(() => {
+    if (activeRescueStore) {
+      triggerStoreRescue(activeRescueStore)
+    }
+  }, [activeRescueStore, triggerStoreRescue])
+
+  // Expose global rescue trigger for marker popups
+  useEffect(() => {
+    window.__triggerStoreRescue = (nodeId) => {
+      const target = networkNodes.find((n) => n.id === nodeId || n.code === nodeId)
+      if (target) {
+        triggerStoreRescue(target)
+      }
+    }
+    return () => {
+      delete window.__triggerStoreRescue
+    }
+  }, [networkNodes, triggerStoreRescue])
 
   // Handle clicking any node (3D house or HTML pin)
   const handleNodeClick = useCallback(
@@ -1033,6 +1190,53 @@ export default function SupplyShieldMap({
           console.warn('Notice adding shortest road route layer:', routeErr)
         }
 
+        // Add custom GeoJSON source and layer for Alternative Rescue Road Routes
+        try {
+          map.addSource('alternative-road-routes-source', {
+            type: 'geojson',
+            data: {
+              type: 'FeatureCollection',
+              features: [],
+            },
+          })
+
+          map.addLayer({
+            id: 'alternative-road-routes-line',
+            type: 'line',
+            source: 'alternative-road-routes-source',
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round',
+            },
+            paint: {
+              'line-color': '#a855f7', // Distinct dashed purple line for alternative routes
+              'line-width': 4,
+              'line-dasharray': [2.5, 2],
+              'line-opacity': 0.85,
+            },
+          })
+
+          // Interactive click on alternative route line to choose and activate it
+          map.on('click', 'alternative-road-routes-line', (e) => {
+            if (e.features && e.features.length > 0) {
+              const candidateIdx = e.features[0].properties?.candidateIndex
+              if (typeof candidateIdx === 'number') {
+                handleSelectRescueAlternative(candidateIdx)
+              }
+            }
+          })
+
+          map.on('mouseenter', 'alternative-road-routes-line', () => {
+            map.getCanvas().style.cursor = 'pointer'
+          })
+
+          map.on('mouseleave', 'alternative-road-routes-line', () => {
+            map.getCanvas().style.cursor = ''
+          })
+        } catch (altErr) {
+          console.warn('Notice adding alternative road routes layer:', altErr)
+        }
+
         setMapLoaded(true)
       })
 
@@ -1270,8 +1474,42 @@ export default function SupplyShieldMap({
         </div>
       `
 
+      const isStore = node.type === 'Retail Store'
+      const rescueBtnHtml = isStore
+        ? `
+          <button
+            type="button"
+            class="ss-popup-rescue-btn"
+            data-node-id="${node.id}"
+            onclick="window.__triggerStoreRescue && window.__triggerStoreRescue('${node.id}')"
+            style="
+              width: 100%;
+              margin-top: 8px;
+              margin-bottom: 6px;
+              padding: 7px 10px;
+              background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+              color: #ffffff;
+              border: none;
+              border-radius: 6px;
+              font-size: 11px;
+              font-weight: 700;
+              letter-spacing: 0.2px;
+              cursor: pointer;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 5px;
+              box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+            "
+          >
+            <span>⚡</span>
+            <span>Auto-Rescue Store (Shortest Path)</span>
+          </button>
+        `
+        : ''
+
       const popupContent = `
-        <div style="font-family: inherit; padding: 6px 4px; min-width: 220px;">
+        <div style="font-family: inherit; padding: 6px 4px; min-width: 230px;">
           <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
             <span style="font-size: 12px; font-weight: 800; color: #17324d;">${node.name}</span>
           </div>
@@ -1296,6 +1534,7 @@ export default function SupplyShieldMap({
               <span style="display: inline-block; font-weight: 700; color: ${bgColor};">${node.status || 'Active'}</span>
             </div>
           </div>
+          ${rescueBtnHtml}
           <div style="font-size: 10px; color: #94a3b8; font-style: italic; border-top: 1px solid #e2e8f0; padding-top: 4px;">
             Dataset Node • Lat: ${node.coordinates[1].toFixed(4)}, Lng: ${node.coordinates[0].toFixed(4)}
           </div>
@@ -1306,8 +1545,22 @@ export default function SupplyShieldMap({
         offset: 25,
         closeButton: true,
         closeOnClick: false,
-        maxWidth: '300px',
+        maxWidth: '310px',
       }).setHTML(popupContent)
+
+      popup.on('open', () => {
+        const dom = popup.getElement()
+        if (dom) {
+          const btn = dom.querySelector('.ss-popup-rescue-btn')
+          if (btn) {
+            btn.onclick = (ev) => {
+              ev.stopPropagation()
+              triggerStoreRescue(node)
+              popup.remove()
+            }
+          }
+        }
+      })
 
       const marker = new Marker({ element: el })
         .setLngLat(displayCoords)
@@ -1364,6 +1617,53 @@ export default function SupplyShieldMap({
       console.warn('Notice updating shortest road path layer:', err)
     }
   }, [routeData, mapLoaded])
+
+  // Synchronize alternative rescue road routes with MapLibre (dashed lines for alternative hubs)
+  useEffect(() => {
+    const map = mapInstanceRef.current
+    if (!map || !mapLoaded) return
+
+    try {
+      const source = map.getSource('alternative-road-routes-source')
+      if (source) {
+        if (rescuePlan && rescuePlan.allCandidates && rescuePlan.allCandidates.length > 1) {
+          const altFeatures = rescuePlan.allCandidates
+            .map((cand, idx) => {
+              // The currently selected route is already rendered on the primary cyan layer
+              if (idx === selectedRescueIndex) return null
+              if (!cand.coordinates || cand.coordinates.length < 2) return null
+              return {
+                type: 'Feature',
+                properties: {
+                  candidateIndex: idx,
+                  name: cand.warehouse.name,
+                  distanceKm: cand.distanceKm,
+                  duration: cand.durationFormatted,
+                  estimatedCostINR: cand.estimatedCostINR,
+                },
+                geometry: {
+                  type: 'LineString',
+                  coordinates: cand.coordinates,
+                },
+              }
+            })
+            .filter(Boolean)
+
+          source.setData({
+            type: 'FeatureCollection',
+            features: altFeatures,
+          })
+        } else {
+          source.setData({
+            type: 'FeatureCollection',
+            features: [],
+          })
+        }
+      }
+    } catch (err) {
+      console.warn('Notice updating alternative road routes layer:', err)
+    }
+  }, [rescuePlan, selectedRescueIndex, mapLoaded])
 
   // Synchronize Point A (Origin) and Point B (Destination) glowing markers
   useEffect(() => {
@@ -1974,6 +2274,40 @@ export default function SupplyShieldMap({
               ))}
             </select>
 
+            {/* Auto-Rescue Low-Stock Store Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', borderLeft: '1px solid #cbd5e1', paddingLeft: '8px' }}>
+              <select
+                value={rescuePlan?.targetStore?.id || ''}
+                onChange={(e) => {
+                  const target = networkNodes.find((n) => n.id === e.target.value)
+                  if (target) {
+                    triggerStoreRescue(target)
+                  }
+                }}
+                style={{
+                  fontSize: '11px',
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  border: '1px solid #ef4444',
+                  backgroundColor: '#fef2f2',
+                  color: '#b91c1c',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  maxWidth: '190px',
+                }}
+              >
+                <option value="">⚡ Auto-Rescue Risky Store...</option>
+                {networkNodes
+                  .filter((n) => n.type === 'Retail Store')
+                  .sort((a, b) => (a.status === 'Critical Stockout' ? -1 : 1))
+                  .map((store) => (
+                    <option key={store.id} value={store.id}>
+                      {store.name} ({store.status || 'Active'})
+                    </option>
+                  ))}
+              </select>
+            </div>
+
             {/* Loading Indicator */}
             {isRouteLoading && (
               <span style={{ fontSize: '11px', color: '#0284c7', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -2288,18 +2622,20 @@ export default function SupplyShieldMap({
             right: '16px',
             transform: `translate3d(${cardOffset.x}px, ${cardOffset.y}px, 0)`,
             transition: isDragging ? 'none' : 'box-shadow 0.2s ease',
-            backgroundColor: 'rgba(15, 23, 42, 0.96)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid #38bdf8',
+            backgroundColor: 'rgba(15, 23, 42, 0.97)',
+            backdropFilter: 'blur(12px)',
+            border: rescuePlan ? '1px solid #ef4444' : '1px solid #38bdf8',
             borderRadius: '14px',
             padding: '14px 16px',
             color: '#ffffff',
             boxShadow: isDragging
-              ? '0 24px 48px rgba(0,0,0,0.55), 0 0 0 2px #38bdf8'
-              : '0 10px 32px rgba(0,0,0,0.4)',
+              ? '0 24px 48px rgba(0,0,0,0.6), 0 0 0 2px #38bdf8'
+              : '0 12px 36px rgba(0,0,0,0.45)',
             zIndex: 40,
-            width: '330px',
+            width: '380px',
             maxWidth: 'calc(100% - 24px)',
+            maxHeight: 'calc(100vh - 220px)',
+            overflowY: 'auto',
             userSelect: 'none',
           }}
         >
@@ -2319,13 +2655,7 @@ export default function SupplyShieldMap({
             title="Click and drag to reposition route card anywhere on screen"
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  color: '#94a3b8',
-                }}
-              >
+              <div style={{ display: 'flex', alignItems: 'center', color: '#94a3b8' }}>
                 <GripVertical size={14} />
               </div>
               <div
@@ -2333,24 +2663,24 @@ export default function SupplyShieldMap({
                   width: '22px',
                   height: '22px',
                   borderRadius: '4px',
-                  backgroundColor: '#0284c7',
+                  backgroundColor: rescuePlan ? '#ef4444' : '#0284c7',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                <Truck size={13} color="#ffffff" />
+                {rescuePlan ? <Zap size={13} color="#ffffff" /> : <Truck size={13} color="#ffffff" />}
               </div>
               <span
                 style={{
                   fontSize: '11px',
                   fontWeight: 800,
-                  color: '#38bdf8',
+                  color: rescuePlan ? '#f87171' : '#38bdf8',
                   letterSpacing: '0.03em',
                   whiteSpace: 'nowrap',
                 }}
               >
-                SHORTEST ROAD TRANSPORT
+                {rescuePlan ? '⚡ AUTO-RESCUE SHORTEST PATH' : 'SHORTEST ROAD TRANSPORT'}
               </span>
             </div>
             <button
@@ -2375,8 +2705,29 @@ export default function SupplyShieldMap({
             </button>
           </div>
 
-          {/* Origin & Destination Labels */}
-          <div style={{ fontSize: '11px', lineHeight: '1.4', marginBottom: '10px' }}>
+          {/* Rescue Notification Banner */}
+          {rescuePlan && (
+            <div
+              style={{
+                backgroundColor: 'rgba(239, 68, 68, 0.16)',
+                border: '1px solid rgba(239, 68, 68, 0.35)',
+                borderRadius: '6px',
+                padding: '6px 8px',
+                marginBottom: '8px',
+                fontSize: '10.5px',
+                color: '#fca5a5',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <span>Auto-connected nearest center via shortest road path.</span>
+              <span style={{ fontWeight: 800, color: '#4ade80' }}>✓ Protected</span>
+            </div>
+          )}
+
+          {/* Origin & Destination Facilities */}
+          <div style={{ fontSize: '11px', lineHeight: '1.4', marginBottom: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
               <span
                 style={{
@@ -2395,7 +2746,9 @@ export default function SupplyShieldMap({
               >
                 A
               </span>
-              <span style={{ color: '#94a3b8' }}>Origin:</span>
+              <span style={{ color: '#94a3b8' }}>
+                {rescuePlan ? 'Supplying Hub:' : 'Origin:'}
+              </span>
               <strong
                 style={{
                   color: '#ffffff',
@@ -2425,7 +2778,9 @@ export default function SupplyShieldMap({
               >
                 B
               </span>
-              <span style={{ color: '#94a3b8' }}>Dest:</span>
+              <span style={{ color: '#94a3b8' }}>
+                {rescuePlan ? 'Rescue Target Store:' : 'Destination:'}
+              </span>
               <strong
                 style={{
                   color: '#ffffff',
@@ -2439,12 +2794,12 @@ export default function SupplyShieldMap({
             </div>
           </div>
 
-          {/* Metrics Grid: Distance & Transit Time */}
+          {/* Primary Estimations Grid: Distance, Transit Time, Freight Cost, Units / CO2 */}
           <div
             style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '8px',
+              gap: '6px',
               backgroundColor: 'rgba(30, 41, 59, 0.8)',
               padding: '8px 10px',
               borderRadius: '8px',
@@ -2456,22 +2811,188 @@ export default function SupplyShieldMap({
               <div style={{ fontSize: '9px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
                 Road Distance
               </div>
-              <div style={{ fontSize: '16px', fontWeight: 900, color: '#38bdf8' }}>
+              <div style={{ fontSize: '15px', fontWeight: 900, color: '#38bdf8' }}>
                 {routeData.distanceKm} km
               </div>
             </div>
             <div>
               <div style={{ fontSize: '9px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
-                Transit Time
+                Expected Transit
               </div>
-              <div style={{ fontSize: '16px', fontWeight: 900, color: '#4ade80' }}>
+              <div style={{ fontSize: '15px', fontWeight: 900, color: '#4ade80' }}>
                 {routeData.durationFormatted}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '9px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
+                Freight Transport Cost
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#fbbf24' }}>
+                ₹{(routeData.estimatedCostINR || Math.round(1850 + routeData.distanceKm * 24.5)).toLocaleString('en-IN')}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '9px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
+                {rescuePlan ? 'Stock Required' : 'Carbon Footprint'}
+              </div>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#c084fc' }}>
+                {rescuePlan
+                  ? `${(routeData.unitsNeeded || 2400).toLocaleString('en-IN')} units`
+                  : `${routeData.co2Kg || Number((routeData.distanceKm * 0.16 * 2.2).toFixed(1))} kg CO₂e`}
               </div>
             </div>
           </div>
 
+          {/* Detailed Estimations Row (Fuel, Tolls, CO2, Stockout Avoidance) */}
+          <div
+            style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.65)',
+              border: '1px solid rgba(255,255,255,0.06)',
+              borderRadius: '6px',
+              padding: '6px 8px',
+              marginBottom: '10px',
+              fontSize: '10.5px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '3px',
+              color: '#94a3b8',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>⛽ Fuel & Tolls:</span>
+              <span style={{ color: '#e2e8f0', fontWeight: 600 }}>
+                Fuel: ₹{(routeData.estimatedFuelINR || Math.round((routeData.distanceKm / 4.2) * 94)).toLocaleString('en-IN')} • Tolls: ₹{(routeData.estimatedTollINR || Math.round(routeData.distanceKm * 3.6)).toLocaleString('en-IN')}
+              </span>
+            </div>
+            {rescuePlan && (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>🌱 Carbon Footprint:</span>
+                <span style={{ color: '#e2e8f0', fontWeight: 600 }}>
+                  {routeData.co2Kg || Number((routeData.distanceKm * 0.16 * 2.2).toFixed(1))} kg CO₂e
+                </span>
+              </div>
+            )}
+            {rescuePlan && (
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span>🛡️ Stockout Risk Mitigation:</span>
+                <span style={{ color: '#4ade80', fontWeight: 700 }}>
+                  14-Day Supply Buffer Secured
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Alternative Rescue Supply Paths */}
+          {rescuePlan && rescuePlan.allCandidates && rescuePlan.allCandidates.length > 1 && (
+            <div
+              style={{
+                borderTop: '1px solid rgba(255,255,255,0.1)',
+                paddingTop: '8px',
+                marginBottom: '10px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '6px',
+                }}
+              >
+                <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#e2e8f0' }}>
+                  Alternative Supply Centers ({rescuePlan.allCandidates.length - 1} available):
+                </span>
+                <span style={{ fontSize: '9px', color: '#c084fc' }}>
+                  Click path or dashed line on map
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                {rescuePlan.allCandidates.map((cand, idx) => {
+                  const isSelected = idx === selectedRescueIndex
+                  return (
+                    <div
+                      key={cand.warehouse.id || idx}
+                      onClick={() => handleSelectRescueAlternative(idx)}
+                      style={{
+                        padding: '6px 8px',
+                        borderRadius: '6px',
+                        backgroundColor: isSelected ? 'rgba(56, 189, 248, 0.18)' : 'rgba(30, 41, 59, 0.6)',
+                        border: isSelected ? '1px solid #38bdf8' : '1px solid rgba(255,255,255,0.08)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '6px',
+                        transition: 'all 0.15s ease',
+                      }}
+                      onMouseOver={(e) => {
+                        if (!isSelected) e.currentTarget.style.backgroundColor = 'rgba(51, 65, 85, 0.8)'
+                      }}
+                      onMouseOut={(e) => {
+                        if (!isSelected) e.currentTarget.style.backgroundColor = 'rgba(30, 41, 59, 0.6)'
+                      }}
+                    >
+                      <div style={{ minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: isSelected ? '#38bdf8' : '#ffffff' }}>
+                            {cand.warehouse.name}
+                          </span>
+                          {idx === 0 && (
+                            <span style={{ fontSize: '8.5px', backgroundColor: '#0284c7', color: '#fff', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>
+                              SHORTEST
+                            </span>
+                          )}
+                          {isSelected && (
+                            <span style={{ fontSize: '8.5px', backgroundColor: '#10b981', color: '#fff', padding: '1px 4px', borderRadius: '3px', fontWeight: 800 }}>
+                              ACTIVE
+                            </span>
+                          )}
+                        </div>
+                        <div style={{ fontSize: '10px', color: '#94a3b8' }}>
+                          {cand.distanceKm} km • {cand.durationFormatted} • ₹{cand.estimatedCostINR.toLocaleString('en-IN')}
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleSelectRescueAlternative(idx)
+                        }}
+                        style={{
+                          backgroundColor: isSelected ? '#38bdf8' : 'rgba(255,255,255,0.12)',
+                          color: isSelected ? '#0f172a' : '#ffffff',
+                          border: 'none',
+                          borderRadius: '4px',
+                          padding: '3px 7px',
+                          fontSize: '10px',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {isSelected ? 'Selected' : 'Choose Path'}
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Drag instruction & Close Shortest Path Button */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '10px', color: '#94a3b8' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '10px',
+              color: '#94a3b8',
+              borderTop: '1px solid rgba(255,255,255,0.08)',
+              paddingTop: '6px',
+            }}
+          >
             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
               <span>🛣️ Highway road route</span>
               <span style={{ color: '#64748b' }}>• Drag to move</span>
