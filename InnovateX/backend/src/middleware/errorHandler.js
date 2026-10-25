@@ -1,7 +1,7 @@
-// Centralized error handling middleware
-// Must be registered AFTER all routes with app.use(errorHandler)
+import logger from '../utils/logger.js'
+import env from '../config/env.js'
 
-const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, req, res, next) => {
   let statusCode = err.statusCode || 500
   let message = err.message || 'An unexpected error occurred.'
 
@@ -25,7 +25,7 @@ const errorHandler = (err, req, res, next) => {
     message = `Invalid value for field '${err.path}'.`
   }
 
-  // JWT errors handled in middleware — just in case
+  // JWT errors
   if (err.name === 'JsonWebTokenError') {
     statusCode = 401
     message = 'Invalid token.'
@@ -35,7 +35,7 @@ const errorHandler = (err, req, res, next) => {
     message = 'Token expired. Please sign in again.'
   }
 
-  // Zod errors (if thrown directly)
+  // Zod errors
   if (err.name === 'ZodError') {
     statusCode = 400
     message = 'Validation failed'
@@ -46,27 +46,35 @@ const errorHandler = (err, req, res, next) => {
     })
   }
 
-  // Never expose internal errors in production
-  if (process.env.NODE_ENV === 'production' && statusCode === 500) {
+  // Never expose internal error messages in production
+  if (env.NODE_ENV === 'production' && statusCode === 500) {
     message = 'An internal server error occurred.'
   }
 
-  console.error(`[${statusCode}] ${req.method} ${req.originalUrl} — ${message}`)
-  if (statusCode === 500) console.error(err.stack)
+  logger.error(
+    {
+      statusCode,
+      method: req.method,
+      url: req.originalUrl,
+      correlationId: req.headers['x-correlation-id'] || req.headers['x-request-id'],
+      err: statusCode === 500 ? err.stack : undefined,
+    },
+    message
+  )
 
   return res.status(statusCode).json({
     success: false,
     message,
-    ...(process.env.NODE_ENV === 'development' && statusCode === 500 && { stack: err.stack }),
+    ...(env.NODE_ENV === 'development' && statusCode === 500 && { stack: err.stack }),
   })
 }
 
-// 404 handler — call for unmatched routes
-const notFound = (req, res) => {
+// 404 handler for unmatched routes
+export const notFound = (req, res) => {
   res.status(404).json({
     success: false,
     message: `Route ${req.method} ${req.originalUrl} not found.`,
   })
 }
 
-module.exports = { errorHandler, notFound }
+export default { errorHandler, notFound }

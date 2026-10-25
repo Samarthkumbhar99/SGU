@@ -61,6 +61,7 @@ class ResilienceInsights(BaseModel):
 class ScenarioSimulateResponse(BaseModel):
     """Comparative response detailing baseline vs. disrupted optimization plans."""
 
+    run_id: Optional[str] = Field(None, description="Unique execution run identifier")
     scenario_name: str = Field(..., description="Scenario identifier or name")
     applied_disruptions: List[DisruptionItem] = Field(..., description="Disruptions applied to baseline")
     affected_entities: Dict[str, List[str]] = Field(

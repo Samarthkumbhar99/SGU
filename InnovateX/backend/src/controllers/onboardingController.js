@@ -1,6 +1,7 @@
-const User = require('../models/User')
-const Store = require('../models/Store')
-const Warehouse = require('../models/Warehouse')
+import User from '../models/User.js'
+import Store from '../models/Store.js'
+import Warehouse from '../models/Warehouse.js'
+
 
 // Optional Groq LLM integration
 async function queryGroqLLM(messages) {
@@ -38,7 +39,7 @@ async function queryGroqLLM(messages) {
 // @desc    Process a turn in the AI onboarding conversation (RAY)
 // @route   POST /api/v1/onboarding/chat
 // @access  Private
-exports.chatWithRay = async (req, res, next) => {
+export const chatWithRay = async (req, res, next) => {
   try {
     const { step = 0, message = '', selection = null, liveLocation = null, profileData = {} } = req.body
     const user = req.user
@@ -227,7 +228,7 @@ exports.chatWithRay = async (req, res, next) => {
 // @desc    Complete onboarding & provision default/custom store or warehouse
 // @route   POST /api/v1/onboarding/complete
 // @access  Private
-exports.completeOnboarding = async (req, res, next) => {
+export const completeOnboarding = async (req, res, next) => {
   try {
     const {
       role,

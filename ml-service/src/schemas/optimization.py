@@ -69,6 +69,7 @@ class OptimizeRequest(BaseModel):
 class OptimizeResponse(BaseModel):
     """Optimization response comparing CP-SAT optimal plan against greedy baseline."""
 
+    run_id: Optional[str] = Field(None, description="Unique execution run identifier")
     status: str = Field(..., description="Solver status: OPTIMAL, FEASIBLE, INFEASIBLE, etc.")
     planning_horizon_days: int = Field(..., description="Planning horizon in days")
     forecast_origin: str = Field(..., description="Historical anchor date for forecasting")
@@ -80,3 +81,19 @@ class OptimizeResponse(BaseModel):
     store_summaries: List[StoreProductDemandSummary] = Field(..., description="Reconciliation by store and product")
     feasibility: FeasibilityReport = Field(..., description="Independent feasibility check of the optimized plan")
     warnings: List[str] = Field(default_factory=list, description="Diagnostic warnings")
+
+
+class OptimizationRunSummary(BaseModel):
+    """Metadata summary of an optimization or simulation execution run."""
+
+    run_id: str = Field(..., description="Unique run identifier")
+    timestamp: str = Field(..., description="Execution ISO timestamp")
+    run_type: str = Field(..., description="'solve' or 'simulate'")
+    status: str = Field(..., description="Solver or simulation completion status")
+    solver_runtime_seconds: float = Field(..., description="Execution time in seconds")
+    objective_score: float = Field(..., description="Optimized or disrupted objective score")
+    total_transport_cost: float = Field(..., description="Total transport cost in dollars")
+    total_unmet_demand_units: int = Field(..., description="Total unfulfilled shortage units")
+    demand_fulfillment_rate: float = Field(..., description="Percentage of demand satisfied")
+    warnings: List[str] = Field(default_factory=list, description="Execution warnings")
+    parameters: Dict[str, Any] = Field(default_factory=dict, description="Input execution parameters")

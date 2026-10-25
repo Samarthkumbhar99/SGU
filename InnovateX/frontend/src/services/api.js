@@ -2,8 +2,8 @@ import axios from 'axios'
 import { useAuthStore } from '../store/index.js'
 
 const api = axios.create({
-  baseURL: '/api/v1',
-  timeout: 30000,
+  baseURL: import.meta.env.VITE_API_BASE_URL || '/api/v1',
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -63,14 +63,41 @@ export const productsAPI = {
   getAll: () => api.get('/products'),
 }
 
-// Inventory
+// Inventory & Multi-Day Simulation
 export const inventoryAPI = {
   getAll: (params) => api.get('/inventory', { params }),
+  getMatrix: (params) => api.get('/analytics/inventory', { params }),
+  simulate: (data) => api.post('/inventory/simulate', data),
 }
 
 // Routes
 export const routesAPI = {
   getAll: () => api.get('/routes'),
+}
+
+// Optimization & Decision Intelligence (Phase 4 & 5)
+export const optimizationAPI = {
+  solve: (data) => api.post('/optimization/solve', data),
+  simulate: (data) => api.post('/optimization/simulate', data),
+  getRuns: (params) => api.get('/optimization/runs', { params }),
+  getRunById: (runId) => api.get(`/optimization/runs/${runId}`),
+}
+
+// Analytical Intelligence & Reorder Monitoring (Phase 2)
+export const analyticsAPI = {
+  getOverview: (params) => api.get('/analytics/overview', { params }),
+  getInventory: (params) => api.get('/analytics/inventory', { params }),
+  getDemand: (params) => api.get('/analytics/demand', { params }),
+  getSuppliers: () => api.get('/analytics/suppliers'),
+  getRecommendations: () => api.get('/analytics/recommendations'),
+}
+
+// Demand Forecasting Engine (Phase 3)
+export const forecastingAPI = {
+  predict: (data) => api.post('/forecast/predict', data),
+  train: (data) => api.post('/forecast/train', data),
+  evaluate: (data) => api.post('/forecast/evaluate', data),
+  getModels: () => api.get('/forecast/models'),
 }
 
 // Scenarios

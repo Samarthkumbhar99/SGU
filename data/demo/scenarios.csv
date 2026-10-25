@@ -1,0 +1,4 @@
+scenario_id,scenario_name,affected_location_or_lane,target_id,disruption_type,start_time,duration_hours,capacity_reduction_fraction,change_value,demand_multiplier,description
+SCN-001,North Corridor Lane Closure,WH-NORTH__STORE-01,WH-NORTH__STORE-01,route_closure,2026-02-01T00:00:00Z,72,1.0,unavailable,1.0,Complete highway shutdown on northern freight lane to Retail Outlet 01.
+SCN-002,South Logistics Congestion,WH-SOUTH__STORE-04,WH-SOUTH__STORE-04,delivery_delay,2026-02-05T06:00:00Z,48,0.5,0.50,1.0,50% throughput choking on southern lane due to port transit delay.
+SCN-003,Western Regional Retail Surge,STORE-01,STORE-01,demand_spike,2026-02-10T00:00:00Z,96,0.0,0.30,1.3,30% unexpected retail demand surge across western stores during flash sale.

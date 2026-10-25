@@ -1,6 +1,5 @@
-const express = require('express')
-const router = express.Router()
-const {
+import express from 'express'
+import {
   signup,
   login,
   googleAuth,
@@ -8,8 +7,10 @@ const {
   googleRedirect,
   googleCallback,
   getMe,
-} = require('../controllers/authController')
-const { protect } = require('../middleware/auth')
+} from '../controllers/authController.js'
+import { protect } from '../middleware/auth.js'
+
+const router = express.Router()
 
 // Email/password auth
 router.post('/signup', signup)
@@ -28,4 +29,4 @@ router.get('/google/callback', googleCallback)
 // Protected user profile
 router.get('/me', protect, getMe)
 
-module.exports = router
+export default router
