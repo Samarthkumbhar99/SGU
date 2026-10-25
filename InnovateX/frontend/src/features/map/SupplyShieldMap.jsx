@@ -23,6 +23,7 @@ import {
   Clock,
   ArrowRight,
   ArrowLeftRight,
+  GripVertical,
   X,
 } from 'lucide-react'
 
@@ -583,6 +584,9 @@ export default function SupplyShieldMap({
   const [isRouteLoading, setIsRouteLoading] = useState(false)
   const [showRoutePlanner, setShowRoutePlanner] = useState(false)
   const [routeError, setRouteError] = useState(null)
+  const [cardOffset, setCardOffset] = useState({ x: 0, y: 0 })
+  const [isDragging, setIsDragging] = useState(false)
+  const dragStartRef = useRef({ startX: 0, startY: 0, initialOffsetX: 0, initialOffsetY: 0 })
 
   // Active Cluster: 'north' (Delhi Hub) | 'central' (Mumbai Hub) | 'south' (Bangalore Hub) | 'all' (All 15 Facilities)
   const [activeCluster, setActiveCluster] = useState('north')
@@ -710,6 +714,7 @@ export default function SupplyShieldMap({
     setRouteData(null)
     setRouteError(null)
     setIsRouteLoading(false)
+    setCardOffset({ x: 0, y: 0 })
 
     // Remove route markers
     routeMarkersRef.current.forEach((m) => m.remove())
@@ -763,6 +768,78 @@ export default function SupplyShieldMap({
     },
     [networkNodes, onNodeSelect, routeOrigin, routeDest, calculateRouteBetweenNodes]
   )
+
+  // Drag handlers for movable route card
+  const handleDragStart = useCallback(
+    (e) => {
+      if (e.target.closest('button') || e.target.closest('select')) return
+      e.preventDefault()
+      setIsDragging(true)
+      dragStartRef.current = {
+        startX: e.clientX,
+        startY: e.clientY,
+        initialOffsetX: cardOffset.x,
+        initialOffsetY: cardOffset.y,
+      }
+    },
+    [cardOffset]
+  )
+
+  const handleTouchStart = useCallback(
+    (e) => {
+      if (e.target.closest('button') || e.target.closest('select')) return
+      if (e.touches && e.touches.length > 0) {
+        setIsDragging(true)
+        dragStartRef.current = {
+          startX: e.touches[0].clientX,
+          startY: e.touches[0].clientY,
+          initialOffsetX: cardOffset.x,
+          initialOffsetY: cardOffset.y,
+        }
+      }
+    },
+    [cardOffset]
+  )
+
+  useEffect(() => {
+    if (!isDragging) return
+
+    const handleMouseMove = (e) => {
+      const dx = e.clientX - dragStartRef.current.startX
+      const dy = e.clientY - dragStartRef.current.startY
+      setCardOffset({
+        x: dragStartRef.current.initialOffsetX + dx,
+        y: dragStartRef.current.initialOffsetY + dy,
+      })
+    }
+
+    const handleTouchMove = (e) => {
+      if (e.touches && e.touches.length > 0) {
+        const dx = e.touches[0].clientX - dragStartRef.current.startX
+        const dy = e.touches[0].clientY - dragStartRef.current.startY
+        setCardOffset({
+          x: dragStartRef.current.initialOffsetX + dx,
+          y: dragStartRef.current.initialOffsetY + dy,
+        })
+      }
+    }
+
+    const handleDragEnd = () => {
+      setIsDragging(false)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseup', handleDragEnd)
+    window.addEventListener('touchmove', handleTouchMove)
+    window.addEventListener('touchend', handleDragEnd)
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleDragEnd)
+      window.removeEventListener('touchmove', handleTouchMove)
+      window.removeEventListener('touchend', handleDragEnd)
+    }
+  }, [isDragging])
 
   // Initialize MapLibre GL map and deck.gl MapboxOverlay
   useEffect(() => {
@@ -2202,27 +2279,34 @@ export default function SupplyShieldMap({
         </div>
       </div>
 
-      {/* Floating Shortest Road Route Card (Distance, Transit Time & Option to Close) */}
+      {/* Floating Shortest Road Route Card (Draggable anywhere on screen, positioned slightly upside) */}
       {routeData && (
         <div
           style={{
             position: 'absolute',
-            bottom: '28px',
-            right: '12px',
-            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-            backdropFilter: 'blur(8px)',
+            bottom: '130px',
+            right: '16px',
+            transform: `translate3d(${cardOffset.x}px, ${cardOffset.y}px, 0)`,
+            transition: isDragging ? 'none' : 'box-shadow 0.2s ease',
+            backgroundColor: 'rgba(15, 23, 42, 0.96)',
+            backdropFilter: 'blur(10px)',
             border: '1px solid #38bdf8',
-            borderRadius: '12px',
+            borderRadius: '14px',
             padding: '14px 16px',
             color: '#ffffff',
-            boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
-            zIndex: 10,
-            width: '320px',
+            boxShadow: isDragging
+              ? '0 24px 48px rgba(0,0,0,0.55), 0 0 0 2px #38bdf8'
+              : '0 10px 32px rgba(0,0,0,0.4)',
+            zIndex: 40,
+            width: '330px',
             maxWidth: 'calc(100% - 24px)',
+            userSelect: 'none',
           }}
         >
-          {/* Card Header with Close Button */}
+          {/* Card Header with Drag Handle & Close Button */}
           <div
+            onMouseDown={handleDragStart}
+            onTouchStart={handleTouchStart}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -2230,9 +2314,20 @@ export default function SupplyShieldMap({
               marginBottom: '8px',
               borderBottom: '1px solid rgba(255,255,255,0.12)',
               paddingBottom: '6px',
+              cursor: isDragging ? 'grabbing' : 'grab',
             }}
+            title="Click and drag to reposition route card anywhere on screen"
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  color: '#94a3b8',
+                }}
+              >
+                <GripVertical size={14} />
+              </div>
               <div
                 style={{
                   width: '22px',
@@ -2252,6 +2347,7 @@ export default function SupplyShieldMap({
                   fontWeight: 800,
                   color: '#38bdf8',
                   letterSpacing: '0.03em',
+                  whiteSpace: 'nowrap',
                 }}
               >
                 SHORTEST ROAD TRANSPORT
@@ -2265,7 +2361,7 @@ export default function SupplyShieldMap({
                 border: 'none',
                 color: '#cbd5e1',
                 borderRadius: '4px',
-                padding: '3px 6px',
+                padding: '3px 7px',
                 cursor: 'pointer',
                 fontSize: '11px',
                 display: 'flex',
@@ -2281,7 +2377,7 @@ export default function SupplyShieldMap({
 
           {/* Origin & Destination Labels */}
           <div style={{ fontSize: '11px', lineHeight: '1.4', marginBottom: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '3px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
               <span
                 style={{
                   width: '15px',
@@ -2294,6 +2390,7 @@ export default function SupplyShieldMap({
                   justifyContent: 'center',
                   fontSize: '9.5px',
                   fontWeight: 800,
+                  flexShrink: 0,
                 }}
               >
                 A
@@ -2323,6 +2420,7 @@ export default function SupplyShieldMap({
                   justifyContent: 'center',
                   fontSize: '9.5px',
                   fontWeight: 800,
+                  flexShrink: 0,
                 }}
               >
                 B
@@ -2372,9 +2470,12 @@ export default function SupplyShieldMap({
             </div>
           </div>
 
-          {/* Highway network indicator & Close Shortest Path Button */}
+          {/* Drag instruction & Close Shortest Path Button */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '10px', color: '#94a3b8' }}>
-            <span>🛣️ Highway road routing</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span>🛣️ Highway road route</span>
+              <span style={{ color: '#64748b' }}>• Drag to move</span>
+            </span>
             <button
               type="button"
               onClick={handleClearRoute}
@@ -2395,13 +2496,13 @@ export default function SupplyShieldMap({
         </div>
       )}
 
-      {/* Guide Toast when Origin is selected, waiting for Destination */}
+      {/* Guide Toast when Origin is selected, waiting for Destination (Slightly upside) */}
       {routeOrigin && !routeDest && (
         <div
           style={{
             position: 'absolute',
-            bottom: '28px',
-            right: '12px',
+            bottom: '130px',
+            right: '16px',
             backgroundColor: 'rgba(15, 23, 42, 0.95)',
             backdropFilter: 'blur(8px)',
             border: '1px solid #10b981',
@@ -2409,7 +2510,7 @@ export default function SupplyShieldMap({
             padding: '10px 14px',
             color: '#ffffff',
             boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-            zIndex: 10,
+            zIndex: 40,
             maxWidth: '320px',
             display: 'flex',
             alignItems: 'center',
