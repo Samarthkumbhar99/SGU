@@ -144,7 +144,7 @@ export default function OptimizationWorkbenchPage() {
 
           {result && (
             <div className="flex items-center gap-2">
-              <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${result.status === 'OPTIMAL' ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800' : 'bg-amber-50 text-amber-700 border-amber-200'}`}>
+              <span className={`px-3 py-1 rounded-full text-xs font-bold border shadow-2xs ${result.status === 'OPTIMAL' ? 'bg-emerald-50 text-emerald-900 border-emerald-300' : 'bg-amber-50 text-amber-900 border-amber-300'}`}>
                 Status: {result.status}
               </span>
               <span className="text-xs text-slate-400 font-mono bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">

@@ -130,11 +130,11 @@ export default function NetworkExplorerPage() {
           </div>
 
           <div className="flex items-center gap-2 text-xs">
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 font-medium border border-emerald-200 dark:border-emerald-800">
+            <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-900 font-bold border border-emerald-300 shadow-2xs">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
               35 Active Corridors
             </span>
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 font-medium border border-rose-200 dark:border-rose-800">
+            <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 text-rose-900 font-bold border border-rose-300 shadow-2xs">
               <span className="w-2 h-2 rounded-full bg-rose-500"></span>
               1 Disrupted Lane
             </span>

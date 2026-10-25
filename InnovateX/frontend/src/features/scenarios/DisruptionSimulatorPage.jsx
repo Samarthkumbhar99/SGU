@@ -265,14 +265,14 @@ export default function DisruptionSimulatorPage() {
 
               {/* Affected Entities Chips */}
               <div className="flex flex-wrap items-center gap-3 pt-1">
-                <span className="text-slate-500 font-medium">Affected Network Entities:</span>
+                <span className="text-slate-600 font-semibold">Affected Network Entities:</span>
                 {simulationResult.affected_entities.lanes?.map((l) => (
-                  <span key={l} className="px-2 py-0.5 rounded bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 font-mono text-[11px] border border-rose-200 dark:border-rose-900">
+                  <span key={l} className="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-900 font-mono text-[11px] font-bold border border-rose-200 shadow-2xs">
                     Lane: {l}
                   </span>
                 ))}
                 {simulationResult.affected_entities.stores?.map((s) => (
-                  <span key={s} className="px-2 py-0.5 rounded bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 font-mono text-[11px] border border-amber-200 dark:border-amber-900">
+                  <span key={s} className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 font-mono text-[11px] font-bold border border-amber-200 shadow-2xs">
                     Store: {s}
                   </span>
                 ))}

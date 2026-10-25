@@ -634,25 +634,25 @@ export default function InventoryMatrixPage() {
                           </td>
                           <td className="py-3 px-4 text-center">
                             {item.status === 'CRITICAL_SHORTAGE' && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-900 border border-rose-200 shadow-2xs">
                                 <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                                 Critical
                               </span>
                             )}
                             {item.status === 'REORDER_REQUIRED' && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-700 border border-amber-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200 shadow-2xs">
                                 <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                                 Reorder
                               </span>
                             )}
                             {item.status === 'HEALTHY' && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-900 border border-emerald-200 shadow-2xs">
                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                                 Optimal
                               </span>
                             )}
                             {item.status === 'OVERSTOCK' && (
-                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-200">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-900 border border-indigo-200 shadow-2xs">
                                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                                 Surplus
                               </span>
