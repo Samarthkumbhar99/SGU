@@ -19,6 +19,7 @@ import forecastRoutes from './routes/forecastRoutes.js'
 import entityRoutes from './routes/entityRoutes.js'
 import onboardingRoutes from './routes/onboardingRoutes.js'
 import optimizationRoutes from './routes/optimizationRoutes.js'
+import notificationRoutes from './routes/notificationRoutes.js'
 import { errorHandler, notFound } from './middleware/errorHandler.js'
 
 const app = express()
@@ -116,6 +117,7 @@ app.use('/api/v1', dataRoutes)
 app.use('/api/v1', analyticsRoutes)
 app.use('/api/v1', forecastRoutes)
 app.use('/api/v1', optimizationRoutes)
+app.use('/api/v1/notifications', notificationRoutes)
 
 
 // ——— 404 & Centralized Error handling ———

@@ -15,6 +15,8 @@ import InventoryMatrixPage from './features/inventory/InventoryMatrixPage.jsx'
 import InventoryPage from './features/inventory/InventoryPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
+import SearchPage from './features/search/SearchPage.jsx'
+import ProfilePage from './features/profile/ProfilePage.jsx'
 
 // Protected route wrapper
 function ProtectedRoute({ children, allowUnonboarded = false }) {
@@ -160,6 +162,22 @@ export default function App() {
                 breadcrumbs={['Dashboard', 'Settings']}
                 description="User profile, warehouse/store management, product catalog, transport lanes, demo dataset reset, and service health. Coming in Phase 8."
               />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/search"
+          element={
+            <ProtectedRoute>
+              <SearchPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
             </ProtectedRoute>
           }
         />

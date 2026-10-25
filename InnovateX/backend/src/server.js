@@ -2,6 +2,7 @@ import app from './app.js'
 import env from './config/env.js'
 import connectDB from './config/db.js'
 import logger from './utils/logger.js'
+import { initSocket } from './services/socketService.js'
 
 const PORT = env.PORT || 5000
 
@@ -17,6 +18,10 @@ const server = app.listen(PORT, () => {
   logger.info(`🔗 Dependency probe available at: http://localhost:${PORT}/api/v1/health/dependencies`)
   logger.info(`📚 Swagger docs available at: http://localhost:${PORT}/api-docs`)
 })
+
+// Initialize WebSocket realtime notification server
+initSocket(server)
+logger.info('🔌 Realtime Notification WebSocket server initialized')
 
 // Graceful shutdown handling
 const shutdown = (signal) => {
