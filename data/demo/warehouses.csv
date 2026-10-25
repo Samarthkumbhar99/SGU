@@ -1,0 +1,4 @@
+warehouse_id,warehouse_name,region,latitude,longitude,storage_capacity_units
+WH-NORTH,Northern Regional Hub (Delhi NCR),North,28.7041,77.1025,100000
+WH-CENTRAL,Western Regional Hub (Mumbai MMR),Central,19.076,72.8777,150000
+WH-SOUTH,Southern Regional Hub (Bangalore),South,12.9716,77.5946,120000

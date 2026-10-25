@@ -6,6 +6,10 @@ const cookieParser = require('cookie-parser')
 
 const authRoutes = require('./routes/authRoutes')
 const dashboardRoutes = require('./routes/dashboardRoutes')
+const inventoryRoutes = require('./routes/inventoryRoutes')
+const entityRoutes = require('./routes/entityRoutes')
+const onboardingRoutes = require('./routes/onboardingRoutes')
+const notificationRoutes = require('./routes/notificationRoutes')
 const { errorHandler, notFound } = require('./middleware/errorHandler')
 
 const app = express()
@@ -59,6 +63,10 @@ app.get('/api/v1/health', (req, res) => {
 // ——— API Routes ———
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/dashboard', dashboardRoutes)
+app.use('/api/v1/inventory', inventoryRoutes)
+app.use('/api/v1/entities', entityRoutes)
+app.use('/api/v1/onboarding', onboardingRoutes)
+app.use('/api/v1/notifications', notificationRoutes)
 
 // ——— 404 & Error handling ———
 app.use(notFound)
