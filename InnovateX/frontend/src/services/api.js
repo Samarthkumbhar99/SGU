@@ -68,6 +68,8 @@ export const inventoryAPI = {
   getAll: (params) => api.get('/inventory', { params }),
   getMatrix: (params) => api.get('/analytics/inventory', { params }),
   simulate: (data) => api.post('/inventory/simulate', data),
+  getSummary: () => api.get('/inventory/summary'),
+  createBatch: (data) => api.post('/inventory', data),
 }
 
 // Routes
@@ -113,4 +115,18 @@ export const plansAPI = {
   getById: (id) => api.get(`/optimization-plans/${id}`),
   approve: (id, data) => api.post(`/optimization-plans/${id}/approve`, data),
   reject: (id, data) => api.post(`/optimization-plans/${id}/reject`, data),
+}
+
+// Network Entities
+export const entityAPI = {
+  getMyNetwork: () => api.get('/entities/my-network'),
+  getAllEntities: () => api.get('/entities'),
+  createEntity: (data) => api.post('/entities', data),
+}
+
+// Real-Time Notifications
+export const notificationAPI = {
+  getAll: (params) => api.get('/notifications', { params }),
+  markAsRead: (id) => api.patch(`/notifications/${id}/read`),
+  markAllAsRead: () => api.post('/notifications/read-all'),
 }

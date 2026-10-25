@@ -6,11 +6,13 @@ import AuthCallback from './features/auth/AuthCallback.jsx'
 import LandingPage from './features/landing/LandingPage.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
 import NetworkExplorerPage from './features/network/NetworkExplorerPage.jsx'
+import NetworkMapPage from './features/map/NetworkMapPage.jsx'
 import OptimizationWorkbenchPage from './features/optimization/OptimizationWorkbenchPage.jsx'
 import DisruptionSimulatorPage from './features/scenarios/DisruptionSimulatorPage.jsx'
 import RunHistoryPage from './features/scenarios/RunHistoryPage.jsx'
 import DemandForecastingPage from './features/forecasting/DemandForecastingPage.jsx'
 import InventoryMatrixPage from './features/inventory/InventoryMatrixPage.jsx'
+import InventoryPage from './features/inventory/InventoryPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
 
@@ -89,6 +91,14 @@ export default function App() {
           path="/network-map"
           element={
             <ProtectedRoute>
+              <NetworkMapPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/network-explorer"
+          element={
+            <ProtectedRoute>
               <NetworkExplorerPage />
             </ProtectedRoute>
           }
@@ -98,6 +108,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <InventoryMatrixPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/inventory-table"
+          element={
+            <ProtectedRoute>
+              <InventoryPage />
             </ProtectedRoute>
           }
         />

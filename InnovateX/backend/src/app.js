@@ -12,6 +12,7 @@ import setupSwagger from './config/swagger.js'
 import healthRoutes from './routes/healthRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 import dashboardRoutes from './routes/dashboardRoutes.js'
+import inventoryRoutes from './routes/inventoryRoutes.js'
 import dataRoutes from './routes/dataRoutes.js'
 import analyticsRoutes from './routes/analyticsRoutes.js'
 import forecastRoutes from './routes/forecastRoutes.js'
@@ -102,6 +103,7 @@ setupSwagger(app)
 app.use('/api/v1/health', healthRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/dashboard', dashboardRoutes)
+app.use('/api/v1/inventory', inventoryRoutes)
 app.use('/api/v1/entities', entityRoutes)
 app.use('/api/v1/onboarding', onboardingRoutes)
 app.use('/api/v1', dataRoutes)

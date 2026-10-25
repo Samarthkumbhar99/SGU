@@ -1,13 +1,13 @@
-store_id,store_name,region_id,region,latitude,longitude,storage_capacity,store_capacity_units,service_priority
-STORE-01,Retail Outlet 01 (Synthetic),Central,Central,16.15,73.85,5000,5000,P1_CRITICAL
-STORE-02,Retail Outlet 02 (Synthetic),North,North,17.3,74.7,4000,4000,P2_STANDARD
-STORE-03,Retail Outlet 03 (Synthetic),South,South,18.45,75.55,4000,4000,P3_FLEXIBLE
-STORE-04,Retail Outlet 04 (Synthetic),West,West,19.6,76.4,5000,5000,P1_CRITICAL
-STORE-05,Retail Outlet 05 (Synthetic),Central,Central,20.75,77.25,4000,4000,P2_STANDARD
-STORE-06,Retail Outlet 06 (Synthetic),North,North,21.9,78.1,4000,4000,P3_FLEXIBLE
-STORE-07,Retail Outlet 07 (Synthetic),South,South,23.05,78.95,5000,5000,P1_CRITICAL
-STORE-08,Retail Outlet 08 (Synthetic),West,West,24.2,79.8,4000,4000,P2_STANDARD
-STORE-09,Retail Outlet 09 (Synthetic),Central,Central,25.35,80.65,4000,4000,P3_FLEXIBLE
-STORE-10,Retail Outlet 10 (Synthetic),North,North,26.5,81.5,5000,5000,P1_CRITICAL
-STORE-11,Retail Outlet 11 (Synthetic),South,South,27.65,82.35,4000,4000,P2_STANDARD
-STORE-12,Retail Outlet 12 (Synthetic),West,West,28.8,83.2,4000,4000,P3_FLEXIBLE
+store_id,store_name,region,latitude,longitude,store_capacity_units
+STORE-01,Store S-01 (South Delhi),North,28.5244,77.215,3500
+STORE-02,Store S-02 (West Mumbai),Central,19.0596,72.8295,3200
+STORE-03,Store S-03 (Indiranagar),South,12.9719,77.6412,3000
+STORE-04,Store S-04 (Navi Mumbai),Central,19.1136,72.8697,2900
+STORE-05,Store S-05 (Koramangala),South,12.9352,77.6221,2800
+STORE-06,Store S-06 (Connaught Place),North,28.6328,77.2167,2700
+STORE-07,Store S-07 (Whitefield),South,12.9698,77.7499,2600
+STORE-08,Store S-08 (Powai),Central,19.1176,72.9051,2500
+STORE-09,Store S-09 (Noida Sec-18),North,28.5708,77.321,2400
+STORE-10,Store S-10 (Thane West),Central,19.2183,72.9781,2300
+STORE-11,Store S-11 (Gurgaon CyberHub),North,28.495,77.089,2500
+STORE-12,Store S-12 (Jayanagar),South,12.925,77.5938,2400

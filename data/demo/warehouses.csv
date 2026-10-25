@@ -1,4 +1,4 @@
 warehouse_id,warehouse_name,region,latitude,longitude,storage_capacity_units
-WH-CENTRAL,Central Hub (Fictional Demo),Central,19.076,72.877,50000
-WH-NORTH,North DC (Fictional Demo),North,28.704,77.102,45000
-WH-SOUTH,South Logistics (Fictional Demo),South,13.082,80.27,45000
+WH-NORTH,Northern Regional Hub (Delhi NCR),North,28.7041,77.1025,100000
+WH-CENTRAL,Western Regional Hub (Mumbai MMR),Central,19.076,72.8777,150000
+WH-SOUTH,Southern Regional Hub (Bangalore),South,12.9716,77.5946,120000
