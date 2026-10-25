@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { AppLayout } from '../../components/layout/AppLayout.jsx'
 import SupplyShieldMap from './SupplyShieldMap.jsx'
 import distributionNetworkData from './distributionNetwork3D.json'
-import { MapPin, Warehouse, Store, Layers, X, ExternalLink } from 'lucide-react'
+import { MapPin, Warehouse, Store, Layers, X, ExternalLink, Zap } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 export default function NetworkMapPage() {
   const [selectedNode, setSelectedNode] = useState(null)
+  const [activeRescueStore, setActiveRescueStore] = useState(null)
   const navigate = useNavigate()
 
   return (
@@ -103,6 +104,30 @@ export default function NetworkMapPage() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+              {selectedNode.type === 'Retail Store' && (
+                <button
+                  type="button"
+                  onClick={() => setActiveRescueStore({ ...selectedNode })}
+                  style={{
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    backgroundColor: '#ef4444',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    boxShadow: '0 2px 6px rgba(239, 68, 68, 0.35)',
+                  }}
+                  title="Auto-connect shortest road path from nearest warehouse"
+                >
+                  <Zap size={13} />
+                  ⚡ Auto-Rescue Store
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => navigate('/inventory')}
@@ -145,6 +170,7 @@ export default function NetworkMapPage() {
           height="calc(100vh - 195px)"
           nodes={distributionNetworkData.nodes}
           selectedNodeId={selectedNode?.id}
+          activeRescueStore={activeRescueStore}
           onNodeSelect={(node) => setSelectedNode(node)}
           initial3D={true}
           initialShowColumns={true}

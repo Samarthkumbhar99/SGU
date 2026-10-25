@@ -16,11 +16,10 @@ export default function LandingNavbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
           ? 'bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-sm py-3.5'
           : 'bg-transparent py-5'
-      }`}
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
@@ -56,6 +55,9 @@ export default function LandingNavbar() {
             <a href="#roi" className="hover:text-sky-600 transition-colors">
               ROI Calculator
             </a>
+            <Link to="/plans" className="hover:text-sky-600 transition-colors flex items-center gap-1 text-blue-600">
+              Plans & Pricing
+            </Link>
             <a href="#personas" className="hover:text-sky-600 transition-colors">
               Operations Team
             </a>
