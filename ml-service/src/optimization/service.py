@@ -91,7 +91,7 @@ class OptimizationService:
                 lane_capacities[lane_key] = int(row["capacity_units_per_day"])
 
         # 4. Generate Demand Forecasts over planning horizon
-        forecasting_service = ForecastingService(self.dataset_dir)
+        forecasting_service = ForecastingService(self.dataset_dir, daily_demand=bundle.daily_demand)
         forecast_demand: Dict[Tuple[str, str], int] = {}
         forecast_origin = str(bundle.daily_demand["date"].max())
 

@@ -1,10 +1,20 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
 
 const warehouseSchema = new mongoose.Schema(
   {
+    warehouseId: {
+      type: String,
+      trim: true,
+      uppercase: true,
+      index: true,
+      sparse: true,
+    },
+    warehouseName: {
+      type: String,
+      trim: true,
+    },
     name: {
       type: String,
-      required: [true, 'Warehouse name is required'],
       trim: true,
       maxlength: [140, 'Warehouse name cannot exceed 140 characters'],
     },
@@ -14,11 +24,12 @@ const warehouseSchema = new mongoose.Schema(
       trim: true,
       uppercase: true,
       sparse: true,
+      index: true,
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: false,
     },
     managers: [
       {
@@ -31,13 +42,28 @@ const warehouseSchema = new mongoose.Schema(
       enum: ['Regional Distribution Center', 'Transit Hub', 'Cold-Chain Depot', 'Urban Fulfillment Hub'],
       default: 'Regional Distribution Center',
     },
+    regionsServed: [
+      {
+        type: String,
+        trim: true,
+        index: true,
+      },
+    ],
+    storageCapacityUnits: {
+      type: Number,
+      default: 10000,
+      min: [0, 'Storage capacity cannot be negative'],
+    },
     location: {
-      latitude: { type: Number, required: true },
-      longitude: { type: Number, required: true },
-      accuracy: { type: Number, default: 10 },
-      city: { type: String, default: 'Logistics Corridor' },
-      state: { type: String, default: 'MH' },
-      address: { type: String, default: 'National Highway Depot Sector' },
+      type: mongoose.Schema.Types.Mixed,
+      default: () => ({
+        latitude: 19.076,
+        longitude: 72.8777,
+        accuracy: 10,
+        city: 'Logistics Corridor',
+        state: 'MH',
+        address: 'National Highway Depot Sector',
+      }),
     },
     totalPalletCapacity: {
       type: Number,
@@ -73,12 +99,27 @@ const warehouseSchema = new mongoose.Schema(
 )
 
 warehouseSchema.pre('save', function () {
-  if (!this.code) {
-    const cityPrefix = (this.location?.city || 'DC').substring(0, 3).toUpperCase()
+  if (!this.warehouseName && this.name) {
+    this.warehouseName = this.name
+  } else if (!this.name && this.warehouseName) {
+    this.name = this.warehouseName
+  }
+
+  if (!this.code && this.warehouseId) {
+    this.code = this.warehouseId
+  } else if (!this.warehouseId && this.code) {
+    this.warehouseId = this.code
+  }
+
+  if (!this.code && !this.warehouseId) {
+    const city = (typeof this.location === 'object' ? this.location?.city : 'DC') || 'DC'
+    const cityPrefix = city.substring(0, 3).toUpperCase()
     const rand = Math.floor(1000 + Math.random() * 9000)
-    this.code = `DC-${cityPrefix}-${rand}`
+    const generated = `DC-${cityPrefix}-${rand}`
+    this.code = generated
+    this.warehouseId = generated
   }
 })
 
-const Warehouse = mongoose.model('Warehouse', warehouseSchema)
-module.exports = Warehouse
+const Warehouse = mongoose.models.Warehouse || mongoose.model('Warehouse', warehouseSchema)
+export default Warehouse

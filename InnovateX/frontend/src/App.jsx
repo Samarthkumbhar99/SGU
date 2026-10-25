@@ -5,6 +5,12 @@ import SignupPage from './features/auth/SignupPage.jsx'
 import AuthCallback from './features/auth/AuthCallback.jsx'
 import LandingPage from './features/landing/LandingPage.jsx'
 import DashboardPage from './features/dashboard/DashboardPage.jsx'
+import NetworkExplorerPage from './features/network/NetworkExplorerPage.jsx'
+import OptimizationWorkbenchPage from './features/optimization/OptimizationWorkbenchPage.jsx'
+import DisruptionSimulatorPage from './features/scenarios/DisruptionSimulatorPage.jsx'
+import RunHistoryPage from './features/scenarios/RunHistoryPage.jsx'
+import DemandForecastingPage from './features/forecasting/DemandForecastingPage.jsx'
+import InventoryMatrixPage from './features/inventory/InventoryMatrixPage.jsx'
 import PlaceholderPage from './features/shared/PlaceholderPage.jsx'
 import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
 
@@ -83,11 +89,7 @@ export default function App() {
           path="/network-map"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Network Map"
-                breadcrumbs={['Dashboard', 'Network Map']}
-                description="Interactive Leaflet map with warehouse markers, store markers, route lines, risk overlays, and post-optimization shipment quantities. Coming in Phase 4."
-              />
+              <NetworkExplorerPage />
             </ProtectedRoute>
           }
         />
@@ -95,11 +97,7 @@ export default function App() {
           path="/inventory"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Inventory Management"
-                breadcrumbs={['Dashboard', 'Inventory']}
-                description="Searchable, filterable inventory table with expiry tracking, batch management, CSV import/export, and validated create/edit forms. Coming in Phase 4."
-              />
+              <InventoryMatrixPage />
             </ProtectedRoute>
           }
         />
@@ -107,11 +105,7 @@ export default function App() {
           path="/forecasting"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Demand Forecasting"
-                breadcrumbs={['Dashboard', 'Forecasting']}
-                description="Moving Average, Exponential Smoothing, Holt-Winters forecasting with MAE/WAPE evaluation and model comparison. Coming in Phase 5."
-              />
+              <DemandForecastingPage />
             </ProtectedRoute>
           }
         />
@@ -119,11 +113,7 @@ export default function App() {
           path="/rescue"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Adaptive Inventory Rescue"
-                breadcrumbs={['Dashboard', 'Inventory Rescue']}
-                description="Guided 6-stage workflow: Select scenario → Configure → Optimize → Compare → Inspect → Approve. OR-Tools MILP engine. Coming in Phase 7."
-              />
+              <DisruptionSimulatorPage />
             </ProtectedRoute>
           }
         />
@@ -131,11 +121,7 @@ export default function App() {
           path="/optimization"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Optimization Results"
-                breadcrumbs={['Dashboard', 'Optimization']}
-                description="Shipment recommendation table, before/after KPI comparison, route utilization, shortage analysis, and CSV export. Coming in Phase 6."
-              />
+              <OptimizationWorkbenchPage />
             </ProtectedRoute>
           }
         />
@@ -143,11 +129,7 @@ export default function App() {
           path="/scenarios"
           element={
             <ProtectedRoute>
-              <PlaceholderPage
-                title="Scenario History"
-                breadcrumbs={['Dashboard', 'Scenarios']}
-                description="Past scenarios with trigger type, solver result, cost comparison, approval state, and plan versioning. Coming in Phase 7."
-              />
+              <RunHistoryPage />
             </ProtectedRoute>
           }
         />

@@ -1,0 +1,1 @@
+date,sku_id,warehouse_id,supplier_id,region,units_sold,inventory_level,supplier_lead_time_days,reorder_point,order_quantity,unit_cost,unit_price,promotion_flag,stockout_flag,demand_forecast_raw,gross_margin,inventory_valuation,is_below_reorder_point

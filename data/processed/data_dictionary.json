@@ -1,0 +1,89 @@
+{
+  "dataset_name": "SupplyShield AI Canonical Daily Supply Chain Dataset",
+  "version": "1.0.0",
+  "format": [
+    "parquet",
+    "csv"
+  ],
+  "source": "E:\\Hackathons\\Triwizathon\\data\\supply_chain_dataset1.csv.bak",
+  "generated_rows": 91250,
+  "quarantined_rows": 0,
+  "date_range": {
+    "start": "2024-01-01",
+    "end": "2024-12-30"
+  },
+  "columns": {
+    "date": {
+      "type": "string (YYYY-MM-DD)",
+      "description": "Calendar observation date"
+    },
+    "sku_id": {
+      "type": "string",
+      "description": "Unique product SKU identifier"
+    },
+    "warehouse_id": {
+      "type": "string",
+      "description": "Unique distribution warehouse facility ID"
+    },
+    "supplier_id": {
+      "type": "string",
+      "description": "Primary restocking supplier ID"
+    },
+    "region": {
+      "type": "string",
+      "description": "Customer/outlet demand market region"
+    },
+    "units_sold": {
+      "type": "int64",
+      "description": "Daily units sold to retail destinations"
+    },
+    "inventory_level": {
+      "type": "int64",
+      "description": "End-of-day available stock on hand"
+    },
+    "supplier_lead_time_days": {
+      "type": "int64",
+      "description": "Replenishment delivery lead time in days"
+    },
+    "reorder_point": {
+      "type": "int64",
+      "description": "Inventory threshold triggering replenishment"
+    },
+    "order_quantity": {
+      "type": "int64",
+      "description": "Units received from replenishment order on date"
+    },
+    "unit_cost": {
+      "type": "float64",
+      "description": "Unit acquisition cost in USD"
+    },
+    "unit_price": {
+      "type": "float64",
+      "description": "Unit retail selling price in USD"
+    },
+    "promotion_flag": {
+      "type": "int64 (0/1)",
+      "description": "1 if product had an active price promotion"
+    },
+    "stockout_flag": {
+      "type": "int64 (0/1)",
+      "description": "1 if inventory was completely exhausted"
+    },
+    "demand_forecast_raw": {
+      "type": "float64",
+      "description": "Synthetic benchmark forecast from source file (contains target leakage; not used for ML training)"
+    },
+    "gross_margin": {
+      "type": "float64",
+      "description": "Unit margin: unit_price - unit_cost"
+    },
+    "inventory_valuation": {
+      "type": "float64",
+      "description": "Total position dollar value: inventory_level * unit_cost"
+    },
+    "is_below_reorder_point": {
+      "type": "bool",
+      "description": "True if inventory_level <= reorder_point"
+    }
+  }
+}
