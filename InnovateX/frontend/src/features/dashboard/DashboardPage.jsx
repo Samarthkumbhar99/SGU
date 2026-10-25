@@ -17,6 +17,8 @@ import {
   Store,
   Zap,
   BarChart2,
+  FileText,
+  Sparkles,
 } from 'lucide-react'
 import {
   LineChart,
@@ -445,8 +447,21 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          {/* Entity Tab Filters */}
-          <div className="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 text-xs font-bold">
+          <div className="flex flex-wrap items-center gap-2.5">
+            {/* Export Dashboard PDF Report Button */}
+            <button
+              type="button"
+              onClick={() => navigate('/report?section=dashboard')}
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 hover:text-sky-800 border border-sky-200 text-xs font-bold transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
+              title="Export Executive Dashboard Audit (PDF)"
+            >
+              <FileText size={14} className="text-sky-600" />
+              <span>Export PDF Report</span>
+              <Sparkles size={11} className="text-amber-500" />
+            </button>
+
+            {/* Entity Tab Filters */}
+            <div className="flex items-center gap-1 p-1 bg-white rounded-xl border border-slate-200 text-xs font-bold">
             <button
               type="button"
               onClick={() => setEntityTab('all')}
@@ -476,6 +491,7 @@ export default function DashboardPage() {
             </button>
           </div>
         </div>
+      </div>
 
         {/* Dynamic Section based on role and tab */}
         {(entityTab === 'all' || entityTab === 'stores') && (

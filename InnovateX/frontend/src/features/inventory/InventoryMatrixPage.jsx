@@ -24,6 +24,7 @@ import {
   ChevronRight,
   Activity,
   Zap,
+  FileText,
 } from 'lucide-react'
 import {
   ResponsiveContainer,
@@ -565,7 +566,17 @@ export default function InventoryMatrixPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => navigate('/report?section=inventory')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 hover:text-sky-800 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
+                  title="Export FEFO Perishable Inventory Audit (PDF)"
+                >
+                  <FileText size={14} className="text-sky-600" />
+                  <span>Export Inventory PDF</span>
+                  <Sparkles size={11} className="text-amber-500" />
+                </button>
                 <span className="text-xs text-slate-400 font-medium">Showing {filteredMatrix.length} positions</span>
               </div>
             </div>

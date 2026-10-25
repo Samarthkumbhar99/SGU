@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Menu, Bell, Search, ChevronDown, CheckCircle2, AlertTriangle, Cpu, RefreshCw } from 'lucide-react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { Menu, Bell, Search, ChevronDown, CheckCircle2, AlertTriangle, Cpu, RefreshCw, FileText, Sparkles } from 'lucide-react'
 import { useUIStore, useAuthStore } from '../../store/index.js'
 import { useNotificationStore } from '../../store/notificationStore.js'
 import NotificationDrawer from './NotificationDrawer.jsx'
@@ -10,6 +10,16 @@ export function Topbar({ pageTitle, breadcrumbs = [] }) {
   const { user } = useAuthStore()
   const { unreadCount, openDrawer, notifications, initSocket } = useNotificationStore()
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const getSectionFromPath = (pathname) => {
+    if (pathname.includes('/inventory')) return 'inventory'
+    if (pathname.includes('/forecasting')) return 'forecasting'
+    if (pathname.includes('/optimization')) return 'optimization'
+    if (pathname.includes('/rescue')) return 'rescue'
+    if (pathname.includes('/scenarios')) return 'scenarios'
+    return 'dashboard'
+  }
 
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false)
 
@@ -119,6 +129,21 @@ export function Topbar({ pageTitle, breadcrumbs = [] }) {
 
         {/* Right side actions - compact icons on mobile */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+          {/* Global AI PDF Report Export Button */}
+          <button
+            id="global-export-report-btn"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-sky-700 bg-sky-50 hover:bg-sky-100 hover:text-sky-800 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
+            onClick={() => {
+              const sec = getSectionFromPath(location.pathname)
+              navigate(`/report?section=${sec}`)
+            }}
+            title="Export AI Audit Report (PDF) with Groq LLM"
+          >
+            <FileText size={14} className="text-sky-600" />
+            <span>Export PDF</span>
+            <Sparkles size={11} className="text-amber-500" />
+          </button>
+
           {/* Global Search Button -> Navigates to dedicated /search page */}
           <button
             id="global-search-btn"

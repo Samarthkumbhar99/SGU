@@ -17,6 +17,7 @@ import {
   Store,
   Clock,
   Sparkles,
+  FileText,
 } from 'lucide-react'
 import {
   ResponsiveContainer,
@@ -219,7 +220,17 @@ export default function DemandForecastingPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/report?section=forecasting')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
+              title="Export AI Forecast Report (PDF) with Groq LLM"
+            >
+              <FileText className="w-3.5 h-3.5 text-sky-600" />
+              <span>Export PDF Report</span>
+              <Sparkles className="w-3 h-3 text-amber-500" />
+            </button>
             <button
               onClick={() => navigate('/optimization')}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition"

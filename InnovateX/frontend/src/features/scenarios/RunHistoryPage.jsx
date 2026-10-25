@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   History,
   Search,
@@ -14,12 +15,15 @@ import {
   Layers,
   DollarSign,
   Percent,
+  FileText,
+  Sparkles,
 } from 'lucide-react'
 import { AppLayout } from '../../components/layout/AppLayout.jsx'
 import { optimizationAPI } from '../../services/api.js'
 import { ProvenanceBadge, ProvenanceDisclosureBanner } from '../../components/ui/ProvenanceBadge.jsx'
 
 export default function RunHistoryPage() {
+  const navigate = useNavigate()
   const [runs, setRuns] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -92,8 +96,20 @@ export default function RunHistoryPage() {
             </p>
           </div>
 
-          <div className="text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
-            Total Logged Runs: <span className="text-slate-900 dark:text-white font-bold">{totalCount}</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/report?section=scenarios')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 transition-all hover:scale-105 cursor-pointer shadow-2xs active:scale-95"
+              title="Export Scenario Audit Report (PDF) with Groq LLM"
+            >
+              <FileText className="w-3.5 h-3.5 text-sky-600" />
+              <span>Export Audit PDF</span>
+              <Sparkles className="w-3 h-3 text-amber-500" />
+            </button>
+            <div className="text-xs font-semibold text-slate-500 bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+              Total Logged Runs: <span className="text-slate-900 dark:text-white font-bold">{totalCount}</span>
+            </div>
           </div>
         </div>
 
