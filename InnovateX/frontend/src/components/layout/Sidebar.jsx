@@ -14,6 +14,7 @@ import {
   X,
   Search,
   User,
+  CreditCard,
 } from 'lucide-react'
 import { useUIStore, useAuthStore } from '../../store/index.js'
 import BranchedMenu from '../ui/BranchedMenu.jsx'
@@ -42,6 +43,7 @@ const SIDEBAR_BRANCHED_ITEMS = [
     children: [
       { value: '/search', label: 'Global Search', icon: Search },
       { value: '/profile', label: 'Operations Profile', icon: User },
+      { value: '/plans', label: 'Subscription Plans', icon: CreditCard },
       { value: '/onboarding', label: 'AI Telemetry / KYC', icon: Sparkles },
       { value: '/settings', label: 'Settings & Data', icon: Settings },
     ],

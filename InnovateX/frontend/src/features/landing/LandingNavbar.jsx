@@ -56,6 +56,10 @@ export default function LandingNavbar() {
             <a href="#roi" className="hover:text-sky-600 transition-colors">
               ROI Calculator
             </a>
+            <Link to="/plans" className="hover:text-sky-600 transition-colors flex items-center gap-1 text-blue-600">
+              Plans & Pricing
+              <span className="text-[10px] bg-blue-100 text-blue-700 font-extrabold px-1.5 py-0.2 rounded-full">INR</span>
+            </Link>
             <a href="#personas" className="hover:text-sky-600 transition-colors">
               Operations Team
             </a>

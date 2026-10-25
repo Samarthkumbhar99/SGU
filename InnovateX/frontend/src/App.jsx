@@ -18,6 +18,7 @@ import RayOnboardingPage from './features/onboarding/RayOnboardingPage.jsx'
 import SearchPage from './features/search/SearchPage.jsx'
 import ProfilePage from './features/profile/ProfilePage.jsx'
 import AiReportPage from './features/reports/AiReportPage.jsx'
+import PlansPage from './features/plans/PlansPage.jsx'
 import SupplyShieldConcierge from './features/landing/SupplyShieldConcierge.jsx'
 
 // Global AI Chatbot wrapper (active everywhere except /login and /signup)
@@ -198,6 +199,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <AiReportPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/plans"
+          element={
+            <ProtectedRoute>
+              <PlansPage />
             </ProtectedRoute>
           }
         />
